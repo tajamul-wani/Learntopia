@@ -16,6 +16,15 @@ import { useLanguage } from "../context/LanguageContext";
  *  - isCompleted: Whether this module is already completed (review mode)
  *  - saving: Whether we're currently saving progress
  */
+// Per-pair accent: a matched term and its definition share this colour + number
+// so the pairing reads at a glance (cycled if there are more pairs than colours).
+const MATCH_ACCENTS = [
+  { badge: "bg-violet-600 text-white", tile: "border-violet-500/50 bg-violet-500/[0.12] text-violet-200" },
+  { badge: "bg-sky text-ground", tile: "border-sky/50 bg-sky/[0.12] text-sky" },
+  { badge: "bg-state-success text-ground", tile: "border-state-success/50 bg-state-success/[0.12] text-state-success" },
+  { badge: "bg-state-warning text-ground", tile: "border-state-warning/50 bg-state-warning/[0.12] text-state-warning" },
+];
+
 const ExerciseEngine = ({ exercises = [], onAllCorrect, onFirstAttempt, isCompleted = false, saving = false }) => {
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
@@ -27,6 +36,10 @@ const ExerciseEngine = ({ exercises = [], onAllCorrect, onFirstAttempt, isComple
   // Fire onFirstAttempt only once per mount, so a retry never overwrites the
   // learner's genuine first-try accuracy for this module.
   const firstAttemptFiredRef = useRef(false);
+
+  // Cache each match question's shuffled right column so re-renders (tapping a
+  // term) never re-randomize the positions.
+  const shuffledDefsRef = useRef({});
 
   const totalQ = exercises.length;
 
@@ -327,12 +340,12 @@ const ExerciseEngine = ({ exercises = [], onAllCorrect, onFirstAttempt, isComple
     const state = matchState[qIndex] || { left: null, right: null, matched: [] };
     const { pairs } = exercise;
 
-    // Shuffle right-side definitions (deterministic by qIndex)
-    const shuffledDefs = isDone
-      ? pairs.map(p => p.definition)
-      : [...pairs.map(p => p.definition)].sort(() => {
-          return 0.5 - Math.random();
-        });
+    // Shuffle the right column ONCE per question and cache it, so tapping a term
+    // (which re-renders) never reshuffles the definitions' positions.
+    if (!shuffledDefsRef.current[qIndex]) {
+      shuffledDefsRef.current[qIndex] = [...pairs.map((p) => p.definition)].sort(() => 0.5 - Math.random());
+    }
+    const shuffledDefs = isDone ? pairs.map((p) => p.definition) : shuffledDefsRef.current[qIndex];
 
     // For completed state, show the correct matches
     if (isDone) {
@@ -362,11 +375,12 @@ const ExerciseEngine = ({ exercises = [], onAllCorrect, onFirstAttempt, isComple
               const isActive = state.left === pair.term;
               const isCorrectMatch = hasFeedback && state.matched.some(m => m.left === pair.term && m.right === pair.definition);
               const isWrongMatch = hasFeedback && state.matched.some(m => m.left === pair.term && m.right !== pair.definition);
+              const accent = MATCH_ACCENTS[i % MATCH_ACCENTS.length];
 
               let s = "border-white/10 bg-surface-2 shadow-clay-sm hover:border-violet-500/50 hover:bg-surface-3";
               if (isCorrectMatch) s = "border-state-success bg-state-success/15 text-state-success";
               else if (isWrongMatch) s = "border-state-danger bg-state-danger/15 text-state-danger";
-              else if (isMatched) s = "border-sky/30 bg-sky/10 text-sky";
+              else if (isMatched) s = accent.tile;
               else if (isActive) s = "border-violet-500 bg-violet-500/20 text-white shadow-[0_0_12px_rgba(139,92,246,0.3)]";
 
               return (
@@ -375,9 +389,12 @@ const ExerciseEngine = ({ exercises = [], onAllCorrect, onFirstAttempt, isComple
                   type="button"
                   disabled={isMatched || submitted}
                   onClick={() => handleMatchSelect(qIndex, "left", pair.term)}
-                  className={`w-full rounded-xl border px-4 py-3 text-left text-sm font-medium transition-all duration-300 ${s}`}
+                  className={`flex min-h-[3.25rem] w-full items-center gap-3 rounded-xl border px-4 py-3 text-left text-sm font-medium transition-all duration-200 ${s}`}
                 >
-                  {pair.term}
+                  <span className={`grid h-6 w-6 flex-none place-items-center rounded-lg text-xs font-extrabold ${isMatched && !hasFeedback ? accent.badge : "bg-white/10 text-ink-low"}`}>
+                    {i + 1}
+                  </span>
+                  <span className="min-w-0">{pair.term}</span>
                 </button>
               );
             })}
@@ -393,11 +410,14 @@ const ExerciseEngine = ({ exercises = [], onAllCorrect, onFirstAttempt, isComple
               const correctPair = pairs.find(p => p.definition === def);
               const isCorrectMatch = hasFeedback && matchedPair && matchedPair.left === correctPair?.term;
               const isWrongMatch = hasFeedback && matchedPair && matchedPair.left !== correctPair?.term;
+              // A matched definition borrows its term's number + colour, so the pair links visually.
+              const termIdx = matchedPair ? pairs.findIndex(p => p.term === matchedPair.left) : -1;
+              const accent = termIdx >= 0 ? MATCH_ACCENTS[termIdx % MATCH_ACCENTS.length] : null;
 
               let s = "border-white/10 bg-surface-2 shadow-clay-sm hover:border-sky/50 hover:bg-surface-3";
               if (isCorrectMatch) s = "border-state-success bg-state-success/15 text-state-success";
               else if (isWrongMatch) s = "border-state-danger bg-state-danger/15 text-state-danger";
-              else if (isMatched) s = "border-sky/30 bg-sky/10 text-sky";
+              else if (isMatched && accent) s = accent.tile;
               else if (isActive) s = "border-sky bg-sky/20 text-white shadow-[0_0_12px_rgba(56,189,248,0.3)]";
 
               return (
@@ -406,9 +426,14 @@ const ExerciseEngine = ({ exercises = [], onAllCorrect, onFirstAttempt, isComple
                   type="button"
                   disabled={isMatched || submitted}
                   onClick={() => handleMatchSelect(qIndex, "right", def)}
-                  className={`w-full rounded-xl border px-4 py-3 text-left text-sm font-medium transition-all duration-300 ${s}`}
+                  className={`flex min-h-[3.25rem] w-full items-center gap-3 rounded-xl border px-4 py-3 text-left text-sm font-medium transition-all duration-200 ${s}`}
                 >
-                  {def}
+                  {isMatched && termIdx >= 0 && (
+                    <span className={`grid h-6 w-6 flex-none place-items-center rounded-lg text-xs font-extrabold ${!hasFeedback ? accent.badge : "bg-white/10 text-ink-low"}`}>
+                      {termIdx + 1}
+                    </span>
+                  )}
+                  <span className="min-w-0">{def}</span>
                 </button>
               );
             })}
