@@ -1,8 +1,11 @@
 import { useId } from "react";
 
-// Learntopia brand mark: "Robo-Py" — the coding-buddy mascot, rendered as a soft
-// clay robot. Vector, so it stays crisp at every size and matches the favicon /
-// splash / OG image. `withWordmark` toggles the "Learntopia" text beside it.
+// Learntopia brand mark: the app mascot, rendered as a soft clay robot. This is the
+// brand's own character and is distinct from the AI-tutor avatars (see BotAvatar,
+// which uses glowing "orb" companions so a course tutor never mirrors the logo).
+// Note: the name "Robo-Py" belongs to the Python tutor, not this brand mark.
+// Vector, so it stays crisp at every size and matches the favicon / splash / OG
+// image. `withWordmark` toggles the "Learntopia" text beside it.
 
 const LogoMark = ({ size = 36, className = "" }) => {
   const gid = useId();

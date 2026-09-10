@@ -6,6 +6,7 @@ import StatsSection from "../Components/StatsSection";
 import { COURSES } from "../data/coursesData";
 import { getLocalizedCourse } from "../utils/localizationUtils";
 import { useLanguage } from "../context/LanguageContext";
+import { useAuth } from "../context/AuthContext";
 
 // Accent tints reused for icon wells/tiles across the page.
 const TINT = {
@@ -34,7 +35,19 @@ const GAME = [
 const Home = () => {
   const navigate = useNavigate();
   const { t } = useLanguage();
+  const { currentUser } = useAuth();
   const featured = COURSES.slice(0, 3).map((c) => getLocalizedCourse(c, t));
+
+  // Enrolling requires an account: send logged-out users to login first, then
+  // bounce them back to the course they picked (where enrollment is recorded).
+  const handleEnroll = (courseId) => {
+    const returnTo = `/course/${courseId}`;
+    if (currentUser) {
+      navigate(returnTo);
+    } else {
+      navigate("/login", { state: { returnTo } });
+    }
+  };
 
   return (
     <div className="container-page">
@@ -140,8 +153,8 @@ const Home = () => {
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-surface-2 px-3 py-1.5 text-xs font-extrabold text-state-success shadow-clay-sm">
                   <Icon name="check" size={13} /> {t("home.freeLabel")}
                 </span>
-                <Button size="sm" onClick={() => navigate(`/course/${c.id}`)}>
-                  <Icon name="play" size={14} /> {t("home.startBtn")}
+                <Button size="sm" onClick={() => handleEnroll(c.id)}>
+                  {t("home.enrollBtn")} <Icon name="arrow-right" size={14} />
                 </Button>
               </div>
             </div>

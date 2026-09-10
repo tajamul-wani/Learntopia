@@ -73,6 +73,7 @@ export const translations = {
       featuredDesc: "Real skills, taught the fun way. Every course is completely free.",
       freeLabel: "Free",
       startBtn: "Start",
+      enrollBtn: "Enroll now",
       browseAll: "Browse all courses",
       gameEyebrow: "Why kids keep coming back",
       gameTitle: "It feels like a game",
@@ -163,7 +164,12 @@ export const translations = {
       courseModules: "Course Modules",
       moduleUnlockHint: "Complete all exercises in a module to unlock the next one.",
       needHelpAskAi: "Need help? Ask AI",
-      completePreviousToUnlock: "Complete the previous module to unlock"
+      completePreviousToUnlock: "Complete the previous module to unlock",
+      certificate: "Certificate",
+      certificateEarned: "Earned. View it on your dashboard.",
+      certificateLocked: "Complete every module to earn it.",
+      journeyDone: "You made it to the end. Nice work!",
+      journeyProgress: "{done} of {total} done. Keep going to earn your certificate!"
     },
     lessonPlayer: {
       story: "Story Time",
@@ -927,6 +933,7 @@ export const translations = {
       featuredDesc: "Habilidades reales, enseñadas de forma divertida. Cada curso es completamente gratis.",
       freeLabel: "Gratis",
       startBtn: "Empezar",
+      enrollBtn: "Inscríbete ya",
       browseAll: "Explorar todos los cursos",
       gameEyebrow: "Por qué los niños siguen volviendo",
       gameTitle: "Se siente como un juego",
@@ -1017,7 +1024,12 @@ export const translations = {
       courseModules: "Módulos del Curso",
       moduleUnlockHint: "Completa todos los ejercicios de un módulo para desbloquear el siguiente.",
       needHelpAskAi: "¿Necesitas ayuda? Pregunta a la IA",
-      completePreviousToUnlock: "Completa el módulo anterior para desbloquear"
+      completePreviousToUnlock: "Completa el módulo anterior para desbloquear",
+      certificate: "Certificado",
+      certificateEarned: "¡Obtenido! Míralo en tu panel.",
+      certificateLocked: "Completa cada módulo para obtenerlo.",
+      journeyDone: "¡Llegaste hasta el final. Buen trabajo!",
+      journeyProgress: "{done} de {total} completados. ¡Sigue así para obtener tu certificado!"
     },
     lessonPlayer: {
       story: "Hora de Historia",
@@ -1664,6 +1676,7 @@ export const translations = {
       featuredDesc: "De vraies compétences, enseignées de façon ludique. Chaque cours est entièrement gratuit.",
       freeLabel: "Gratuit",
       startBtn: "Commencer",
+      enrollBtn: "S'inscrire",
       browseAll: "Parcourir tous les cours",
       gameEyebrow: "Pourquoi les enfants reviennent",
       gameTitle: "Ça ressemble à un jeu",
@@ -1746,7 +1759,12 @@ export const translations = {
       level: "Niveau",
       category: "Catégorie",
       backToCourses: "Retour aux Cours",
-      module: "Module"
+      module: "Module",
+      certificate: "Certificat",
+      certificateEarned: "Obtenu. Consulte-le sur ton tableau de bord.",
+      certificateLocked: "Termine tous les modules pour l'obtenir.",
+      journeyDone: "Tu es arrivé au bout. Bravo !",
+      journeyProgress: "{done} sur {total} terminés. Continue pour obtenir ton certificat !"
     },
     lessonPlayer: {
       story: "Histoire",
@@ -2203,6 +2221,7 @@ export const translations = {
       featuredDesc: "Echte Fähigkeiten, auf spielerische Weise vermittelt. Jeder Kurs ist völlig kostenlos.",
       freeLabel: "Kostenlos",
       startBtn: "Starten",
+      enrollBtn: "Jetzt einschreiben",
       browseAll: "Alle Kurse durchsuchen",
       gameEyebrow: "Warum Kinder immer wiederkommen",
       gameTitle: "Es fühlt sich wie ein Spiel an",
@@ -2285,7 +2304,12 @@ export const translations = {
       level: "Stufe",
       category: "Kategorie",
       backToCourses: "Zurück zu den Kursen",
-      module: "Modul"
+      module: "Modul",
+      certificate: "Zertifikat",
+      certificateEarned: "Erhalten. Sieh es in deinem Dashboard an.",
+      certificateLocked: "Schließe jedes Modul ab, um es zu verdienen.",
+      journeyDone: "Du hast es bis zum Ende geschafft. Gut gemacht!",
+      journeyProgress: "{done} von {total} geschafft. Mach weiter, um dein Zertifikat zu verdienen!"
     },
     lessonPlayer: {
       story: "Geschichtszeit",
@@ -2742,6 +2766,7 @@ export const translations = {
       featuredDesc: "مهارات حقيقية تُدرّس بطريقة ممتعة. كل دورة مجانية تمامًا.",
       freeLabel: "مجاني",
       startBtn: "ابدأ",
+      enrollBtn: "سجّل الآن",
       browseAll: "تصفح جميع الدورات",
       gameEyebrow: "لماذا يعود الأطفال دائمًا",
       gameTitle: "يبدو وكأنه لعبة",
@@ -2824,7 +2849,12 @@ export const translations = {
       level: "المستوى",
       category: "الفئة",
       backToCourses: "العودة للدورات",
-      module: "وحدة"
+      module: "وحدة",
+      certificate: "الشهادة",
+      certificateEarned: "تم الحصول عليها. شاهدها في لوحة التحكم الخاصة بك.",
+      certificateLocked: "أكمل كل وحدة للحصول عليها.",
+      journeyDone: "لقد وصلت إلى النهاية. عمل رائع!",
+      journeyProgress: "أنجزت {done} من {total}. واصل لتحصل على شهادتك!"
     },
     lessonPlayer: {
       story: "قصة مشوقة",
