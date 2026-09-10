@@ -163,7 +163,12 @@ export const translations = {
       courseModules: "Course Modules",
       moduleUnlockHint: "Complete all exercises in a module to unlock the next one.",
       needHelpAskAi: "Need help? Ask AI",
-      completePreviousToUnlock: "Complete the previous module to unlock"
+      completePreviousToUnlock: "Complete the previous module to unlock",
+      certificate: "Certificate",
+      certificateEarned: "Earned. View it on your dashboard.",
+      certificateLocked: "Complete every module to earn it.",
+      journeyDone: "You made it to the end. Nice work!",
+      journeyProgress: "{done} of {total} done. Keep going to earn your certificate!"
     },
     lessonPlayer: {
       story: "Story Time",
@@ -1017,7 +1022,12 @@ export const translations = {
       courseModules: "Módulos del Curso",
       moduleUnlockHint: "Completa todos los ejercicios de un módulo para desbloquear el siguiente.",
       needHelpAskAi: "¿Necesitas ayuda? Pregunta a la IA",
-      completePreviousToUnlock: "Completa el módulo anterior para desbloquear"
+      completePreviousToUnlock: "Completa el módulo anterior para desbloquear",
+      certificate: "Certificado",
+      certificateEarned: "¡Obtenido! Míralo en tu panel.",
+      certificateLocked: "Completa cada módulo para obtenerlo.",
+      journeyDone: "¡Llegaste hasta el final. Buen trabajo!",
+      journeyProgress: "{done} de {total} completados. ¡Sigue así para obtener tu certificado!"
     },
     lessonPlayer: {
       story: "Hora de Historia",
@@ -1746,7 +1756,12 @@ export const translations = {
       level: "Niveau",
       category: "Catégorie",
       backToCourses: "Retour aux Cours",
-      module: "Module"
+      module: "Module",
+      certificate: "Certificat",
+      certificateEarned: "Obtenu. Consulte-le sur ton tableau de bord.",
+      certificateLocked: "Termine tous les modules pour l'obtenir.",
+      journeyDone: "Tu es arrivé au bout. Bravo !",
+      journeyProgress: "{done} sur {total} terminés. Continue pour obtenir ton certificat !"
     },
     lessonPlayer: {
       story: "Histoire",
@@ -2285,7 +2300,12 @@ export const translations = {
       level: "Stufe",
       category: "Kategorie",
       backToCourses: "Zurück zu den Kursen",
-      module: "Modul"
+      module: "Modul",
+      certificate: "Zertifikat",
+      certificateEarned: "Erhalten. Sieh es in deinem Dashboard an.",
+      certificateLocked: "Schließe jedes Modul ab, um es zu verdienen.",
+      journeyDone: "Du hast es bis zum Ende geschafft. Gut gemacht!",
+      journeyProgress: "{done} von {total} geschafft. Mach weiter, um dein Zertifikat zu verdienen!"
     },
     lessonPlayer: {
       story: "Geschichtszeit",
@@ -2824,7 +2844,12 @@ export const translations = {
       level: "المستوى",
       category: "الفئة",
       backToCourses: "العودة للدورات",
-      module: "وحدة"
+      module: "وحدة",
+      certificate: "الشهادة",
+      certificateEarned: "تم الحصول عليها. شاهدها في لوحة التحكم الخاصة بك.",
+      certificateLocked: "أكمل كل وحدة للحصول عليها.",
+      journeyDone: "لقد وصلت إلى النهاية. عمل رائع!",
+      journeyProgress: "أنجزت {done} من {total}. واصل لتحصل على شهادتك!"
     },
     lessonPlayer: {
       story: "قصة مشوقة",

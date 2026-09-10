@@ -361,8 +361,8 @@ const CourseDetails = () => {
           <div className="flex gap-2">
             <button 
               onClick={() => handleTabSwitch("overview")}
-              className={`px-5 py-3 text-sm font-bold transition-all relative ${
-                activeTab === "overview" 
+              className={`whitespace-nowrap px-4 py-3 text-sm font-bold transition-all relative sm:px-5 ${
+                activeTab === "overview"
                   ? "text-ink-hi" 
                   : "text-ink-low hover:text-ink-hi hover:bg-white/[0.02] rounded-t-lg"
               }`}
@@ -374,8 +374,8 @@ const CourseDetails = () => {
             </button>
             <button 
               onClick={() => handleTabSwitch("syllabus")}
-              className={`px-5 py-3 text-sm font-bold transition-all relative flex items-center gap-2 ${
-                activeTab === "syllabus" 
+              className={`flex items-center gap-2 whitespace-nowrap px-4 py-3 text-sm font-bold transition-all relative sm:px-5 ${
+                activeTab === "syllabus"
                   ? "text-ink-hi" 
                   : "text-ink-low hover:text-ink-hi hover:bg-white/[0.02] rounded-t-lg"
               }`}
@@ -393,7 +393,7 @@ const CourseDetails = () => {
           <Button
             variant="secondary"
             size="sm"
-            className="mb-1 gap-2 border-violet-500/30 text-xs font-semibold text-violet-300 hover:bg-violet-500/10 hover:text-white"
+            className="mb-1 hidden gap-2 whitespace-nowrap border-violet-500/30 text-xs font-semibold text-violet-300 hover:bg-violet-500/10 hover:text-white sm:inline-flex"
             onClick={handleBackToCourses}
           >
             <Icon name="arrow-left" size={14} />
@@ -470,6 +470,10 @@ const CourseDetails = () => {
               </Button>
             </div>
             
+            <div className="relative">
+              {/* Connecting spine of the journey (first node center to certificate). */}
+              <div aria-hidden="true" className="pointer-events-none absolute bottom-8 left-8 top-8 hidden w-px -translate-x-1/2 bg-white/10 sm:block" />
+              <div className="relative flex flex-col gap-5">
             {course.syllabus.map((module, moduleIndex) => {
               const done = moduleIndex < currentIndex || isCompleted;
               const active = moduleIndex === currentIndex && !isCompleted;
@@ -477,101 +481,136 @@ const CourseDetails = () => {
               const open = expandedIndex === moduleIndex && !locked;
 
               return (
-                <Card
-                  key={moduleIndex}
-                  className={`overflow-hidden p-0 transition-all duration-300 ${active ? "border-violet-500/40 shadow-[0_0_25px_rgba(139,92,246,0.15)]" : ""} ${locked ? "opacity-60" : ""}`}
-                >
-                  {/* Row header */}
-                  <button
-                    type="button"
-                    disabled={locked}
-                    onClick={() => {
-                      if (open) setExpandedIndex(-1);
-                      else {
-                        setExpandedIndex(moduleIndex);
-                        if (active) {
-                          setLessonPhase(true);
-                        }
-                      }
-                    }}
-                    className={`flex w-full items-center gap-4 p-5 text-left transition-colors md:p-6 ${
-                      locked ? "cursor-not-allowed" : "hover:bg-white/[0.03]"
-                    }`}
-                  >
+                <div key={moduleIndex} className="flex items-start gap-3 sm:gap-4">
+                  {/* Node on the spine */}
+                  <div className="relative flex-none">
+                    {active && (
+                      <span aria-hidden="true" className="absolute inset-0 animate-ping rounded-2xl bg-violet-500/25 [animation-duration:2s] sm:rounded-[20px]" />
+                    )}
                     <div
-                      className={`grid h-12 w-12 flex-none place-items-center rounded-2xl text-sm font-extrabold transition-colors ${
+                      className={`relative grid h-11 w-11 place-items-center rounded-2xl font-display text-base font-bold shadow-clay-sm sm:h-16 sm:w-16 sm:rounded-[20px] sm:text-lg ${
                         done
-                          ? "bg-state-success/20 text-state-success shadow-[0_0_10px_rgba(52,211,153,0.3)]"
+                          ? "bg-state-success text-ground"
                           : active
-                          ? "bg-violet-500/20 text-violet-400 shadow-[0_0_10px_rgba(139,92,246,0.3)]"
-                          : "bg-surface-2 text-ink-low shadow-clay-sm"
+                          ? "bg-violet-600 text-white"
+                          : "bg-surface-2 text-ink-low"
                       }`}
                     >
-                      {done ? <Icon name="check" size={20} /> : locked ? <Icon name="lock" size={16} /> : moduleIndex + 1}
+                      {done ? <Icon name="check" size={20} className="h-5 w-5 sm:h-6 sm:w-6" /> : locked ? <Icon name="lock" size={16} className="h-4 w-4 sm:h-[18px] sm:w-[18px]" /> : moduleIndex + 1}
                     </div>
-                    <div className="min-w-0 flex-grow">
-                      <h3 className="text-lg font-bold text-ink-hi">{module.title}</h3>
-                      <p className="mt-1 truncate text-sm text-ink-low">
-                        {locked ? t("courseDetails.completePreviousToUnlock") : module.desc}
-                      </p>
-                    </div>
-                    {!locked && (
-                      <Icon
-                        name="chevron-down"
-                        size={20}
-                        className={`flex-none text-ink-low transition-transform duration-300 ${open ? "rotate-180" : ""}`}
-                      />
-                    )}
-                  </button>
+                  </div>
 
-                  {/* Expanded body */}
-                  {open && (
-                    <div className="border-t border-white/[0.07] p-5 md:p-8">
-                      
-                      {/* Step-by-step Lesson Player (active modules only) */}
-                      {active && lessonPhase && module.contentSections?.length > 0 && (
-                        <div className="mb-10">
-                          <LessonPlayer
-                            sections={module.contentSections}
-                            moduleName={module.title}
-                            onComplete={() => setLessonPhase(false)}
-                          />
-                        </div>
-                      )}
-
-                      {/* For completed modules, show a compact content summary */}
-                      {done && (
-                        <div className="space-y-4 mb-10">
-                          <div className="flex items-center gap-2 mb-2">
-                            <Icon name="book-open" size={18} className="text-violet-400" />
-                            <span className="text-sm font-bold text-ink-low">Lesson content ({module.contentSections?.length || 0} steps completed)</span>
-                          </div>
-                          <div className="grid gap-2 sm:grid-cols-2">
-                            {module.contentSections?.map((section, idx) => (
-                              <div key={idx} className="flex items-center gap-2 rounded-xl border border-white/10 bg-surface-2 px-4 py-3 text-sm text-ink-low shadow-clay-sm">
-                                <Icon name="check-circle" size={14} className="text-state-success flex-none" />
-                                <span className="truncate">{section.title}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Exercises — shown after lesson phase is complete or for completed modules */}
-                      {(!active || !lessonPhase || !module.contentSections?.length) && (
-                        <ExerciseEngine
-                          exercises={module.exercises || []}
-                          isCompleted={done}
-                          saving={saving}
-                          onFirstAttempt={(correct, totalForModule) => recordFirstAttempt(moduleIndex, correct, totalForModule)}
-                          onAllCorrect={() => checkAnswersAndComplete(moduleIndex)}
+                  {/* Module content */}
+                  <div className="min-w-0 flex-1">
+                    <button
+                      type="button"
+                      disabled={locked}
+                      onClick={() => {
+                        if (open) setExpandedIndex(-1);
+                        else {
+                          setExpandedIndex(moduleIndex);
+                          if (active) setLessonPhase(true);
+                        }
+                      }}
+                      className={`flex w-full items-start justify-between gap-3 pt-1.5 text-left ${locked ? "cursor-not-allowed" : ""}`}
+                    >
+                      <div className="min-w-0">
+                        <h3 className={`text-lg font-bold ${locked ? "text-ink-low" : "text-ink-hi"}`}>{module.title}</h3>
+                        <p className="mt-1 line-clamp-1 text-sm text-ink-low">
+                          {locked ? t("courseDetails.completePreviousToUnlock") : module.desc}
+                        </p>
+                        {done && !open && (
+                          <span className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-surface-2 px-3 py-1 text-xs font-extrabold text-state-success shadow-clay-sm">
+                            <Icon name="check" size={12} /> Done
+                          </span>
+                        )}
+                        {active && !open && (
+                          <span className="mt-2 inline-flex items-center gap-1.5 rounded-xl bg-violet-600 px-3.5 py-1.5 text-xs font-bold text-white shadow-clay-btn">
+                            <Icon name="play" size={13} /> Continue
+                          </span>
+                        )}
+                      </div>
+                      {!locked && (
+                        <Icon
+                          name="chevron-down"
+                          size={20}
+                          className={`mt-1.5 flex-none text-ink-low transition-transform duration-300 ${open ? "rotate-180" : ""}`}
                         />
                       )}
-                    </div>
-                  )}
-                </Card>
+                    </button>
+
+                    {/* Expanded body — same lesson/exercise flow, now inside the journey node */}
+                    {open && (
+                      <div className="mt-4 -ml-14 rounded-2xl border border-white/10 bg-surface p-4 shadow-clay sm:ml-0 sm:p-5 md:p-6">
+                        {active && lessonPhase && module.contentSections?.length > 0 && (
+                          <div className="mb-8">
+                            <LessonPlayer
+                              sections={module.contentSections}
+                              moduleName={module.title}
+                              onComplete={() => setLessonPhase(false)}
+                            />
+                          </div>
+                        )}
+
+                        {done && (
+                          <div className="mb-8 space-y-4">
+                            <div className="mb-2 flex items-center gap-2">
+                              <Icon name="book-open" size={18} className="text-violet-400" />
+                              <span className="text-sm font-bold text-ink-low">Lesson content ({module.contentSections?.length || 0} steps completed)</span>
+                            </div>
+                            <div className="grid gap-2 sm:grid-cols-2">
+                              {module.contentSections?.map((section, idx) => (
+                                <div key={idx} className="flex items-start gap-2 rounded-xl border border-white/10 bg-surface-2 px-4 py-3 text-sm text-ink-low shadow-clay-sm">
+                                  <Icon name="check-circle" size={14} className="mt-0.5 flex-none text-state-success" />
+                                  <span className="min-w-0 break-words">{section.title}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {(!active || !lessonPhase || !module.contentSections?.length) && (
+                          <ExerciseEngine
+                            exercises={module.exercises || []}
+                            isCompleted={done}
+                            saving={saving}
+                            onFirstAttempt={(correct, totalForModule) => recordFirstAttempt(moduleIndex, correct, totalForModule)}
+                            onAllCorrect={() => checkAnswersAndComplete(moduleIndex)}
+                          />
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
               );
             })}
+
+                {/* Certificate — the finish line */}
+                <div className="flex items-start gap-3 sm:gap-4">
+                  <div className={`grid h-11 w-11 flex-none place-items-center rounded-2xl shadow-clay-sm sm:h-16 sm:w-16 sm:rounded-[20px] ${isCompleted ? "bg-state-warning text-ground" : "bg-surface-2 text-ink-low"}`}>
+                    <Icon name="graduation-cap" size={22} />
+                  </div>
+                  <div className="min-w-0 flex-1 pt-1.5 sm:pt-2.5">
+                    <h3 className={`text-lg font-bold ${isCompleted ? "text-ink-hi" : "text-ink-low"}`}>{t("courseDetails.certificate")}</h3>
+                    <p className="mt-1 text-sm text-ink-low">
+                      {isCompleted ? t("courseDetails.certificateEarned") : t("courseDetails.certificateLocked")}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Robo-Py guide at the end of the journey */}
+            <div className="mt-6 flex items-end gap-3">
+              <div className="flex-none">
+                <BotAvatar name={course.aiTutor?.name || "Robo-Py"} size="sm" />
+              </div>
+              <div className="rounded-2xl rounded-bl-md border border-white/10 bg-surface px-4 py-2.5 text-sm font-semibold text-ink shadow-clay-sm">
+                {isCompleted
+                  ? t("courseDetails.journeyDone")
+                  : t("courseDetails.journeyProgress", { done: completedModules.length, total })}
+              </div>
+            </div>
 
             {/* Completion Card now placed at the bottom of the Syllabus tab */}
             <Card className={`mt-10 p-6 md:p-8 transition-colors duration-500 ${isCompleted ? "border-state-success/40 bg-state-success/[0.05]" : "border-violet-500/20"}`}>
