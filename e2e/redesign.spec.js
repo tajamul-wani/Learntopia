@@ -10,7 +10,7 @@ import { test, expect } from "@playwright/test";
 
 // A leaked key looks like `namespace.something` from one of our dictionaries.
 const KEY_LEAK =
-  /\b(home|hero|quiz|thankYou|nav|common|courses|dashboard|profileSetup|toasts|gamification|courseData|contact|footer|leaderboard|profile|aiTutor|exerciseEngine|notFound)\.[a-zA-Z][a-zA-Z0-9]/;
+  /\b(home|hero|quiz|thankYou|nav|common|courses|courseDetails|dashboard|profileSetup|toasts|gamification|courseData|contact|footer|leaderboard|profile|aiTutor|exerciseEngine|lessonPlayer|notFound)\.[a-zA-Z][a-zA-Z0-9]/;
 
 const PUBLIC_ROUTES = ["/", "/courses", "/quiz", "/contact", "/login", "/signUp"];
 
@@ -25,6 +25,11 @@ for (const route of PUBLIC_ROUTES) {
     // The Robo-Py logo is in the navbar on every page — a reliable "React mounted"
     // signal that also replaces the initial loading splash.
     await expect(page.getByRole("img", { name: /learntopia/i }).first()).toBeVisible();
+    // Pages are lazy-loaded (Suspense -> PageSkeleton, aria-label "Loading page").
+    // Wait for that skeleton to clear so we assert on real route content, not the
+    // fallback — cold WSL /mnt/c Vite servers can take several seconds to transform
+    // a route chunk on first hit.
+    await expect(page.getByLabel("Loading page")).toBeHidden({ timeout: 20000 });
     const text = await page.locator("body").innerText();
     expect(text.trim().length, `no content rendered on ${route}`).toBeGreaterThan(20);
 
@@ -38,10 +43,15 @@ for (const route of PUBLIC_ROUTES) {
 test.describe("home page", () => {
   test("hero, featured courses and CTAs render", async ({ page }) => {
     await page.goto("/", { waitUntil: "domcontentloaded" });
+    // Wait for the lazy Home chunk to finish loading (skeleton clears).
+    await expect(page.getByLabel("Loading page")).toBeHidden({ timeout: 20000 });
     // Hero headline.
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-    // Featured course section renders its cards (each has a "Start" action).
-    await expect(page.getByRole("button", { name: /start/i }).first()).toBeVisible();
+    // Hero has its own "Start free" CTA (it appears in the hero and a lower CTA
+    // band, so scope to the first).
+    await expect(page.getByRole("button", { name: /start free/i }).first()).toBeVisible();
+    // Featured course cards use the "Enroll now" CTA (gated; see home-enroll.spec.js).
+    await expect(page.getByRole("button", { name: /enroll now/i }).first()).toBeVisible();
     // Browse-all CTA links onward.
     await expect(page.getByRole("button", { name: /browse all courses/i })).toBeVisible();
     // The Robo-Py logo mark is present in the navbar.
