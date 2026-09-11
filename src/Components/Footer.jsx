@@ -78,7 +78,7 @@ const Footer = () => {
             <span>
               Built by{" "}
               <a
-                href="https://github.com/tajamul11"
+                href="https://github.com/tajamul-wani"
                 target="_blank"
                 rel="noreferrer"
                 className="font-semibold text-ink transition-colors hover:text-ink-hi"
@@ -88,7 +88,7 @@ const Footer = () => {
             </span>
             <div className="flex items-center gap-2">
               <a
-                href="https://github.com/tajamul11"
+                href="https://github.com/tajamul-wani"
                 target="_blank"
                 rel="noreferrer"
                 aria-label="GitHub"
