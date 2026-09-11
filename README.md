@@ -62,14 +62,17 @@ The platform is designed to be fast, accessible, and mobile-friendly, with authe
 | **Daily Streaks & Milestone Rewards** | Consecutive daily login counter tracked with `Date.UTC` integer arithmetic (DST-safe), global and real-time across devices. Milestone popups at **7 / 15 / 30 days** grant bonus XP (**+20 / +40 / +80**), shown once per day from server-confirmed data. Resets on a missed day. |
 | **Global Leaderboard** | Public leaderboard ranking all users by total points and quiz scores. Access restricted exclusively to authenticated users. |
 | **Guest Score Preservation** | Guest quiz scores are automatically saved to the user profile when signing in or registering from the results screen. |
-| **Google Gemini AI Tutor** | Interactive slide-out AI assistant powered by Google Gemini (`AIChatDrawer.jsx`). Each course features a persona-driven AI tutor (*Robo-Py, Count AI-Cula, CoinBot, PixelBot, MarketBot, ArtBot*) rendering stylized vector SVG robot avatars (`BotAvatar.jsx`), providing kid-friendly, course-contextual responses and hints in real-time. Calls go through a **Cloudflare Worker proxy** (`worker/`) that holds the Gemini API key server-side, so it never ships in the client bundle; the app only knows the proxy URL. |
+| **Google Gemini AI Tutor** | Interactive slide-out AI assistant powered by Google Gemini (`AIChatDrawer.jsx`). Each course features a persona-driven AI tutor (*Robo-Py, Count AI-Cula, CoinBot, PixelBot, MarketBot, ArtBot*) rendering distinct glowing-orb vector SVG avatars (`BotAvatar.jsx`) — deliberately unlike the robot brand logo, so a course tutor is never mistaken for the app mascot — providing kid-friendly, course-contextual responses and hints in real-time. Calls go through a **Cloudflare Worker proxy** (`worker/`) that holds the Gemini API key server-side, so it never ships in the client bundle; the app only knows the proxy URL. |
 | **Strict Focus Mode** | Route-level navigation blocker prevents accidental loss of quiz or module progress. |
+| **Journey-Map Course View** | The syllabus renders as a winding path of clay nodes — done / current / locked — ending in a certificate node, with the course's AI tutor as a guide at the finish. Fully responsive: on phones the connecting rail is hidden, node markers shrink, and lesson cards expand to full width. |
+| **Gated Enrollment** | Featured course cards use an **Enroll now** call to action that sends logged-out visitors to login first (carrying a `returnTo`), so after signing in they land on the course they picked and are enrolled on arrival. Logged-in visitors go straight through. |
 | **Course Controls** | Resume or reset courses from the dashboard. Unenrolling is non-destructive — progress and XP are kept and the course moves to an Unenrolled tab, where it (and the catalog, flagged "Rejoin") can restore it anytime. |
 | **Google OAuth** | One-tap sign-in with Google alongside standard email/password authentication. |
 | **Smart Auth Guidance** | Interactive account guidance modals and seamless email pre-filling when transitioning between `/login` and `/signUp`. |
 | **Firestore Security Rules** | Server-side rules enforce per-user data isolation, anti-cheat (monotonic points/XP), and a PII-free public leaderboard. Covered by an automated **rules-test suite** run in the emulator on every PR (the **Firestore Rules Tests** GitHub Action). |
 | **Bot Protection (App Check)** | Firebase App Check with **reCAPTCHA v3** attests that requests come from the real app, blocking bots/scripts that replay the public config against Firestore. Wired in dormant (activates via `VITE_RECAPTCHA_SITE_KEY`); live in production. |
 | **Error Monitoring (Sentry)** | Production crashes are reported to Sentry with stack traces and breadcrumbs. Loaded via dynamic import and gated to production + a DSN, so it no-ops otherwise (activates via `VITE_SENTRY_DSN`). |
+| **Automatic Error Triage (Sentry → Linear)** | A new Sentry issue automatically files a Linear task — **Backlog**, priority **High**, label **Bug** — carrying the error message, level, environment, culprit, top stack frames and browser/OS/URL, plus a link back to Sentry. Handled by a Cloudflare Worker (`worker-sentry-linear/`) that verifies Sentry's webhook signature and de-duplicates on the Sentry issue id, so a recurring error never spams the backlog. |
 | **SEO & Meta** | Canonical links, Open Graph, JSON-LD schema, geographic meta, and custom favicon/meta image on every page. |
 | **Fully Responsive** | Mobile, tablet, and desktop layouts. Dynamic viewport height and custom overscroll colours for native-feel scrolling. |
 | **Contact Form** | Redesigned contact page with Firestore-backed submissions (`ContactMessages` collection). No third-party form services — messages are owned entirely and reviewable in the Firebase Console. |
@@ -90,6 +93,7 @@ The platform is designed to be fast, accessible, and mobile-friendly, with authe
 | Backend | Firebase Authentication + Cloud Firestore |
 | Hosting | Firebase Hosting (CI/CD on push to `main`) |
 | AI Tutor | Google Gemini via a Cloudflare Worker proxy (key server-side — see `worker/`) |
+| Error triage | Sentry → Linear via a Cloudflare Worker webhook (see `worker-sentry-linear/`) |
 | Notifications | Hybrid toasts + centered modal (`ToastContext`) |
 | Animation (icons) | dotLottie player (self-hosted WASM) with SVG fallback |
 | Testing | Playwright (end-to-end) + Firestore rules tests (emulator) — run in CI on every PR |
@@ -181,6 +185,11 @@ src/
 │   └── ThankYou.jsx      # Post-submission thank you page with animated check icon
 ├── App.jsx               # Route definitions
 └── main.jsx
+
+e2e/                      # Playwright end-to-end specs (one file per feature area)
+test/                     # Firestore security-rules tests (emulator)
+worker/                   # Cloudflare Worker — Gemini API proxy (key server-side)
+worker-sentry-linear/     # Cloudflare Worker — files Sentry errors as Linear issues
 ```
 
 ---

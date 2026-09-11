@@ -25,13 +25,18 @@ for (const route of PUBLIC_ROUTES) {
     // The Robo-Py logo is in the navbar on every page — a reliable "React mounted"
     // signal that also replaces the initial loading splash.
     await expect(page.getByRole("img", { name: /learntopia/i }).first()).toBeVisible();
-    // Pages are lazy-loaded (Suspense -> PageSkeleton, aria-label "Loading page").
-    // Wait for that skeleton to clear so we assert on real route content, not the
-    // fallback — cold WSL /mnt/c Vite servers can take several seconds to transform
-    // a route chunk on first hit.
-    await expect(page.getByLabel("Loading page")).toBeHidden({ timeout: 20000 });
+    // Pages are lazy-loaded behind a Suspense skeleton, and a cold WSL /mnt/c Vite
+    // server can take seconds to transform a route chunk. Poll until the route has
+    // actually rendered — reading innerText once races the loader and can catch
+    // just the navbar wordmark.
+    await expect
+      .poll(async () => (await page.locator("body").innerText()).trim().length, {
+        message: `no content rendered on ${route}`,
+        timeout: 20000,
+      })
+      .toBeGreaterThan(20);
+
     const text = await page.locator("body").innerText();
-    expect(text.trim().length, `no content rendered on ${route}`).toBeGreaterThan(20);
 
     // No raw translation keys on screen.
     expect(text, `raw i18n key leaked on ${route}`).not.toMatch(KEY_LEAK);

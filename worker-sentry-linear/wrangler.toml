@@ -1,0 +1,7 @@
+name = "learntopia-sentry-linear"
+main = "worker.js"
+compatibility_date = "2024-11-01"
+
+# No keys live here. Set both as secrets (never committed):
+#   npx wrangler secret put LINEAR_API_KEY
+#   npx wrangler secret put SENTRY_CLIENT_SECRET
