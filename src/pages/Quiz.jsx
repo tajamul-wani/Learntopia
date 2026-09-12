@@ -9,6 +9,7 @@ import { useSound } from "../context/SoundContext";
 import { useLanguage } from "../context/LanguageContext";
 import { useGamification } from "../context/GamificationContext";
 import { toast } from "../context/ToastContext";
+import { useNavChrome } from "../context/NavChromeContext";
 import Card from "../Components/ui/Card";
 import Button from "../Components/ui/Button";
 import Badge from "../Components/ui/Badge";
@@ -48,6 +49,14 @@ const Quiz = () => {
     ({ currentLocation, nextLocation }) =>
       screen === "active" && currentLocation.pathname !== nextLocation.pathname
   );
+
+  // Tuck the mobile bottom bar away while a quiz is running, so the UI stops offering
+  // the navigation Strict Focus Mode exists to block.
+  const { setImmersive } = useNavChrome();
+  useEffect(() => {
+    setImmersive(screen === "active");
+    return () => setImmersive(false);
+  }, [screen, setImmersive]);
 
   // Timer (15s per question)
   const [timeLeft, setTimeLeft] = useState(15);
