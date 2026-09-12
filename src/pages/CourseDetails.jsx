@@ -5,6 +5,7 @@ import { useGamification } from "../context/GamificationContext";
 import { useSound } from "../context/SoundContext";
 import { useLanguage } from "../context/LanguageContext";
 import { toast } from "../context/ToastContext";
+import { useNavChrome } from "../context/NavChromeContext";
 import { db } from "../firebase/firebase";
 import { doc, getDoc, setDoc, deleteField, increment, arrayUnion } from "firebase/firestore";
 import { COURSES } from "../data/coursesData";
@@ -64,6 +65,14 @@ const CourseDetails = () => {
     ({ currentLocation, nextLocation }) =>
       activeTab === "syllabus" && currentLocation.pathname !== nextLocation.pathname
   );
+
+  // Tuck the mobile bottom bar away while a module is open, so the UI stops offering
+  // the navigation Strict Focus Mode exists to block.
+  const { setImmersive } = useNavChrome();
+  useEffect(() => {
+    setImmersive(activeTab === "syllabus");
+    return () => setImmersive(false);
+  }, [activeTab, setImmersive]);
 
   const handleTabSwitch = (tab) => {
     playClick();

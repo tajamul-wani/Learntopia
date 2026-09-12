@@ -2,6 +2,13 @@
 // and semantic states without pulling extra weight from an icon font.
 
 const PATHS = {
+  home: (
+    <>
+      <path d="M3 10.4 12 3l9 7.4" />
+      <path d="M5.5 9.6V20h13V9.6" />
+      <path d="M9.6 20v-5.6h4.8V20" />
+    </>
+  ),
   search: (
     <>
       <circle cx="11" cy="11" r="7" />

@@ -1,6 +1,7 @@
 import { useEffect, Suspense } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import Navbar from "../Components/Navbar";
+import BottomNav from "../Components/BottomNav";
 import Footer from "../Components/Footer";
 import PageSkeleton from "../Components/ui/PageSkeleton";
 import ChunkErrorBoundary from "../Components/ChunkErrorBoundary";
@@ -20,7 +21,7 @@ const ScrollToTop = () => {
 
 const RootLayout = () => {
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col pb-[calc(4.25rem+env(safe-area-inset-bottom))] md:pb-0">
       <ScrollToTop />
       {/* Ambient drifting clay orbs — subtle animated depth behind all content. */}
       <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
@@ -38,6 +39,7 @@ const RootLayout = () => {
       </main>
       <Footer />
       <StreakModal />
+      <BottomNav />
     </div>
   );
 };

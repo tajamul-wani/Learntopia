@@ -11,6 +11,7 @@ import { AuthProvider, useAuth } from "./context/AuthContext";
 import { GamificationProvider } from "./context/GamificationContext";
 import { SoundProvider } from "./context/SoundContext";
 import { LanguageProvider } from "./context/LanguageContext";
+import { NavChromeProvider } from "./context/NavChromeContext";
 import { ToastProvider } from "./context/ToastContext";
 import NotificationModal from "./Components/ui/NotificationModal";
 import ToastStack from "./Components/ui/ToastStack";
@@ -84,10 +85,12 @@ const App = () => {
         <GamificationProvider>
           <SoundProvider>
             <LanguageProvider>
-              <AppRoot />
-              <CelebrationOverlay />
-              <ToastStack />
-              <NotificationModal />
+              <NavChromeProvider>
+                <AppRoot />
+                <CelebrationOverlay />
+                <ToastStack />
+                <NotificationModal />
+              </NavChromeProvider>
             </LanguageProvider>
           </SoundProvider>
         </GamificationProvider>
