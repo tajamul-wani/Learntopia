@@ -25,6 +25,9 @@ jobs:
         echo "VITE_RECAPTCHA_SITE_KEY=${{ secrets.VITE_RECAPTCHA_SITE_KEY }}" >> .env
     - name: Install dependencies
       run: npm ci
+    # Fails the build if an off-palette colour or hardcoded hex creeps into the UI.
+    - name: Palette guard
+      run: npm run test:palette
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
     # Note: the signed-in course specs (e2e/course-experience.spec.js) skip here.
