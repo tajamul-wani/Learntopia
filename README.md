@@ -97,7 +97,7 @@ The platform is designed to be fast, accessible, and mobile-friendly, with authe
 | Error triage | Sentry → Linear via a Cloudflare Worker webhook (see `worker-sentry-linear/`) |
 | Notifications | Hybrid toasts + centered modal (`ToastContext`) |
 | Animation (icons) | dotLottie player (self-hosted WASM) with SVG fallback |
-| Testing | Playwright (end-to-end) + Firestore rules tests (emulator) — run in CI on every PR |
+| Testing | Playwright (end-to-end) + Firestore rules tests (emulator) + a palette guard (`npm run test:palette`) that fails the build on off-palette colours — all run in CI on every PR |
 
 ---
 

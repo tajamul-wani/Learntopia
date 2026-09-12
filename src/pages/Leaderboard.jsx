@@ -249,7 +249,7 @@ const Leaderboard = () => {
               className="w-full appearance-none rounded-lg border border-white/10 bg-white/[0.04] px-4 py-3 pr-10 text-sm font-semibold text-white focus:border-violet-500/60 focus:ring-1 focus:ring-violet-500/40 focus:outline-none transition-all"
             >
               {TABS.map((tab) => (
-                <option key={tab.id} value={tab.id} className="bg-[#0d0a18] text-white">
+                <option key={tab.id} value={tab.id} className="bg-ground-900 text-ink-hi">
                   {tab.label}
                 </option>
               ))}

@@ -153,7 +153,7 @@ function CelebrationCard({ celebration }) {
       <div
         className={`relative w-full max-w-md overflow-hidden rounded-3xl border border-white/10 bg-surface p-6 text-center shadow-clay transition-all ${dur} sm:p-8 ${show ? "opacity-100" : "opacity-0"} ${reduce ? "" : show ? "scale-100" : "scale-95"}`}
       >
-        <div className="mx-auto mb-5 flex h-[68px] w-[68px] items-center justify-center overflow-hidden rounded-full border-2 border-violet-500/50 bg-gradient-to-br from-violet-500/20 to-sky/20 shadow-[0_0_30px_rgba(139,92,246,0.4)] md:mb-6 md:h-24 md:w-24">
+        <div className="mx-auto mb-5 flex h-[68px] w-[68px] items-center justify-center overflow-hidden rounded-full border-2 border-violet-500/50 bg-gradient-to-br from-violet-500/20 to-sky/20 shadow-[0_0_30px_rgba(139,124,246,0.4)] md:mb-6 md:h-24 md:w-24">
           <LottieIcon src={art.lottie} size={isSmall ? 46 : 72} fallbackIcon={art.fallback} loop className={art.cls} />
         </div>
 

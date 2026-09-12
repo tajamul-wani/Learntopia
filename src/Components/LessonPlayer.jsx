@@ -252,9 +252,9 @@ const LessonPlayer = ({ sections = [], onComplete }) => {
               key={i}
               className={`h-2 flex-1 rounded-full transition-all duration-500 ${
                 i < currentStep
-                  ? "bg-violet-500 shadow-[0_0_6px_rgba(139,92,246,0.5)]"
+                  ? "bg-violet-500 shadow-[0_0_6px_rgba(139,124,246,0.5)]"
                   : i === currentStep
-                  ? "bg-gradient-to-r from-violet-500 to-sky shadow-[0_0_8px_rgba(139,92,246,0.4)]"
+                  ? "bg-gradient-to-r from-violet-500 to-sky shadow-[0_0_8px_rgba(139,124,246,0.4)]"
                   : "clay-inset"
               }`}
             />
@@ -278,14 +278,14 @@ const LessonPlayer = ({ sections = [], onComplete }) => {
           style={{
             background: `radial-gradient(circle, ${
               sectionType === "fact" || sectionType === "example"
-                ? "rgba(123,191,242,0.3)"
+                ? "rgba(78,197,232,0.3)"
                 : sectionType === "tip"
                 ? "rgba(251,191,36,0.3)"
                 : sectionType === "activity"
                 ? "rgba(52,211,153,0.3)"
                 : sectionType === "recap"
                 ? "rgba(255,255,255,0.12)"
-                : "rgba(139,99,227,0.3)"
+                : "rgba(139,124,246,0.3)"
             }, transparent)`,
           }}
         />
@@ -337,7 +337,7 @@ const LessonPlayer = ({ sections = [], onComplete }) => {
               disabled={i > currentStep}
               className={`h-2.5 w-2.5 rounded-full transition-all duration-300 ${
                 i === currentStep
-                  ? "scale-125 bg-violet-500 shadow-[0_0_8px_rgba(139,92,246,0.6)]"
+                  ? "scale-125 bg-violet-500 shadow-[0_0_8px_rgba(139,124,246,0.6)]"
                   : i < currentStep
                   ? "bg-violet-500/40 hover:bg-violet-500/60 cursor-pointer"
                   : "bg-white/[0.1] cursor-not-allowed"
