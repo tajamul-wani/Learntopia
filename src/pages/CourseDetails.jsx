@@ -378,7 +378,7 @@ const CourseDetails = () => {
             >
               {t("courseDetails.overview")}
               {activeTab === "overview" && (
-                <div className="absolute bottom-[-1px] left-0 right-0 h-[2px] bg-violet-500 rounded-t-full shadow-[0_0_10px_rgba(139,92,246,0.5)]" />
+                <div className="absolute bottom-[-1px] left-0 right-0 h-[2px] bg-violet-500 rounded-t-full shadow-[0_0_10px_rgba(139,124,246,0.5)]" />
               )}
             </button>
             <button 
@@ -391,7 +391,7 @@ const CourseDetails = () => {
             >
               {t("courseDetails.curriculum")}
               {activeTab === "syllabus" && (
-                <div className="absolute bottom-[-1px] left-0 right-0 h-[2px] bg-violet-500 rounded-t-full shadow-[0_0_10px_rgba(139,92,246,0.5)]" />
+                <div className="absolute bottom-[-1px] left-0 right-0 h-[2px] bg-violet-500 rounded-t-full shadow-[0_0_10px_rgba(139,124,246,0.5)]" />
               )}
               {completedModules.length > 0 && !isCompleted && activeTab !== "syllabus" && (
                  <span className="flex h-2 w-2 rounded-full bg-sky animate-pulse" />
@@ -431,7 +431,7 @@ const CourseDetails = () => {
                 <ul className="space-y-3 rounded-2xl border border-white/10 bg-surface p-6 shadow-clay">
                   {course.prerequisites?.map((req, i) => (
                     <li key={i} className="flex items-center gap-3 text-sm font-medium text-ink-low">
-                      <div className="h-1.5 w-1.5 flex-none rounded-full bg-violet-500 shadow-[0_0_8px_rgba(139,92,246,0.8)]" />
+                      <div className="h-1.5 w-1.5 flex-none rounded-full bg-violet-500 shadow-[0_0_8px_rgba(139,124,246,0.8)]" />
                       {req}
                     </li>
                   ))}
@@ -457,7 +457,7 @@ const CourseDetails = () => {
                   <p className="mt-2 text-sm leading-relaxed text-ink-low">
                     {t("courseDetails.aiTutorSub")}
                   </p>
-                  <Button variant="primary" className="mt-4 w-full gap-2 shadow-[0_0_15px_rgba(139,92,246,0.4)] hover:shadow-[0_0_25px_rgba(139,92,246,0.6)]" onClick={() => setShowAIDrawer(true)}>
+                  <Button variant="primary" className="mt-4 w-full gap-2 shadow-[0_0_15px_rgba(139,124,246,0.4)] hover:shadow-[0_0_25px_rgba(139,124,246,0.6)]" onClick={() => setShowAIDrawer(true)}>
                     <Icon name="message-circle" size={16} /> {t("courseDetails.askTutor", { name: course.aiTutor?.name })}
                   </Button>
                 </div>
@@ -652,7 +652,7 @@ const CourseDetails = () => {
                       <Icon name="refresh-cw" size={16} /> Start Again
                     </Button>
                   ) : (
-                    <Button onClick={markCourseComplete} disabled={!allDone} loading={saving && allDone} className="shadow-[0_0_15px_rgba(139,92,246,0.3)]">
+                    <Button onClick={markCourseComplete} disabled={!allDone} loading={saving && allDone} className="shadow-[0_0_15px_rgba(139,124,246,0.3)]">
                       Mark as complete
                     </Button>
                   )}

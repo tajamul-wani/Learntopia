@@ -19,7 +19,7 @@ import { useLanguage } from "../context/LanguageContext";
 // Per-pair accent: a matched term and its definition share this colour + number
 // so the pairing reads at a glance (cycled if there are more pairs than colours).
 const MATCH_ACCENTS = [
-  { badge: "bg-violet-600 text-white", tile: "border-violet-500/50 bg-violet-500/[0.12] text-violet-200" },
+  { badge: "bg-violet-600 text-white", tile: "border-violet-500/50 bg-violet-500/[0.12] text-violet-300" },
   { badge: "bg-sky text-ground", tile: "border-sky/50 bg-sky/[0.12] text-sky" },
   { badge: "bg-state-success text-ground", tile: "border-state-success/50 bg-state-success/[0.12] text-state-success" },
   { badge: "bg-state-warning text-ground", tile: "border-state-warning/50 bg-state-warning/[0.12] text-state-warning" },
@@ -217,7 +217,7 @@ const ExerciseEngine = ({ exercises = [], onAllCorrect, onFirstAttempt, isComple
             else if (isOptionCorrect) style = "border-state-success/50 bg-state-success/10 text-state-success";
             else style = "border-white/[0.03] opacity-40";
           } else if (isSelected) {
-            style = "border-violet-500 bg-violet-500/20 text-white shadow-[0_0_15px_rgba(139,92,246,0.3)]";
+            style = "border-violet-500 bg-violet-500/20 text-white shadow-[0_0_15px_rgba(139,124,246,0.3)]";
           }
 
           return (
@@ -264,7 +264,7 @@ const ExerciseEngine = ({ exercises = [], onAllCorrect, onFirstAttempt, isComple
         if (isThisCorrect) return "border-state-success/50 bg-state-success/10 text-state-success";
         return "border-white/[0.03] opacity-40";
       }
-      if (isSelected) return "border-violet-500 bg-violet-500/20 text-white shadow-[0_0_15px_rgba(139,92,246,0.3)] scale-[1.02]";
+      if (isSelected) return "border-violet-500 bg-violet-500/20 text-white shadow-[0_0_15px_rgba(139,124,246,0.3)] scale-[1.02]";
       return "border-white/10 bg-surface-2 shadow-clay-sm hover:border-violet-500/50 hover:bg-surface-3";
     };
 
@@ -381,7 +381,7 @@ const ExerciseEngine = ({ exercises = [], onAllCorrect, onFirstAttempt, isComple
               if (isCorrectMatch) s = "border-state-success bg-state-success/15 text-state-success";
               else if (isWrongMatch) s = "border-state-danger bg-state-danger/15 text-state-danger";
               else if (isMatched) s = accent.tile;
-              else if (isActive) s = "border-violet-500 bg-violet-500/20 text-white shadow-[0_0_12px_rgba(139,92,246,0.3)]";
+              else if (isActive) s = "border-violet-500 bg-violet-500/20 text-white shadow-[0_0_12px_rgba(139,124,246,0.3)]";
 
               return (
                 <button
@@ -418,7 +418,7 @@ const ExerciseEngine = ({ exercises = [], onAllCorrect, onFirstAttempt, isComple
               if (isCorrectMatch) s = "border-state-success bg-state-success/15 text-state-success";
               else if (isWrongMatch) s = "border-state-danger bg-state-danger/15 text-state-danger";
               else if (isMatched && accent) s = accent.tile;
-              else if (isActive) s = "border-sky bg-sky/20 text-white shadow-[0_0_12px_rgba(56,189,248,0.3)]";
+              else if (isActive) s = "border-sky bg-sky/20 text-white shadow-[0_0_12px_rgba(78,197,232,0.3)]";
 
               return (
                 <button
@@ -486,7 +486,7 @@ const ExerciseEngine = ({ exercises = [], onAllCorrect, onFirstAttempt, isComple
       {/* Header */}
       <div className="mb-6 border-b border-white/[0.08] pb-4">
         <h4 className="flex items-center gap-3 text-xl font-extrabold text-ink-hi">
-          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-violet-500 text-white shadow-[0_0_10px_rgba(139,92,246,0.5)]">
+          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-violet-500 text-white shadow-[0_0_10px_rgba(139,124,246,0.5)]">
             <Icon name="edit-3" size={16} />
           </span>
           Module Challenge

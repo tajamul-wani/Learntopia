@@ -64,7 +64,7 @@ const Navbar = () => {
                 end={item.end}
                 className={({ isActive }) =>
                   `nav-li text-sm font-semibold whitespace-nowrap transition-colors duration-200 ${
-                    isActive ? "text-sky drop-shadow-[0_0_12px_rgba(56,189,248,0.4)]" : "text-ink-low hover:text-ink-hi"
+                    isActive ? "text-sky drop-shadow-[0_0_12px_rgba(78,197,232,0.4)]" : "text-ink-low hover:text-ink-hi"
                   }`
                 }
               >

@@ -14,7 +14,7 @@
 const BOT_THEMES = {
   "Robo-Py": {
     bg: "from-sky/25 via-sky/10 to-violet-600/20 border-sky/40",
-    glow: "shadow-[0_0_22px_rgba(56,189,248,0.4)]",
+    glow: "shadow-[0_0_22px_rgba(78,197,232,0.4)]",
     svg: (
       <svg viewBox="0 0 100 100" className="w-full h-full">
         <defs>
@@ -45,7 +45,7 @@ const BOT_THEMES = {
   },
   "Count AI-Cula": {
     bg: "from-violet-500/25 via-violet-400/10 to-violet-700/20 border-violet-500/40",
-    glow: "shadow-[0_0_22px_rgba(168,85,247,0.4)]",
+    glow: "shadow-[0_0_22px_rgba(139,124,246,0.4)]",
     svg: (
       <svg viewBox="0 0 100 100" className="w-full h-full">
         <defs>
@@ -107,7 +107,7 @@ const BOT_THEMES = {
   },
   "PixelBot": {
     bg: "from-sky/25 via-violet-500/10 to-violet-600/20 border-sky/40",
-    glow: "shadow-[0_0_22px_rgba(56,189,248,0.4)]",
+    glow: "shadow-[0_0_22px_rgba(78,197,232,0.4)]",
     svg: (
       <svg viewBox="0 0 100 100" className="w-full h-full">
         <defs>

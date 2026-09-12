@@ -259,7 +259,7 @@ const Admin = () => {
         <div className="flex flex-1 items-center justify-center px-4 py-12">
           <Card className="w-full max-w-md border-violet-500/30 p-6 md:p-8 shadow-2xl">
             <div className="mb-6 flex flex-col items-center text-center">
-              <div className="mb-3 grid h-14 w-14 place-items-center rounded-2xl bg-violet-500/15 text-violet-400 border border-violet-500/30 shadow-[0_0_20px_rgba(139,92,246,0.25)]">
+              <div className="mb-3 grid h-14 w-14 place-items-center rounded-2xl bg-violet-500/15 text-violet-400 border border-violet-500/30 shadow-[0_0_20px_rgba(139,124,246,0.25)]">
                 <Icon name="shield" size={28} />
               </div>
               <span className="inline-block rounded-md border border-violet-500/30 bg-violet-500/10 px-2.5 py-1 text-[11px] font-extrabold uppercase tracking-widest text-violet-300 mb-2">
@@ -403,7 +403,7 @@ const Admin = () => {
                     <p className="text-sm font-bold text-white truncate">
                       {currentUser?.displayName || "Tajamul Wani"}
                     </p>
-                    <div className="mt-1 inline-flex items-center gap-1 rounded-md border border-violet-500/40 bg-violet-500/20 px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-widest text-violet-300 shadow-[0_0_10px_rgba(139,92,246,0.25)]">
+                    <div className="mt-1 inline-flex items-center gap-1 rounded-md border border-violet-500/40 bg-violet-500/20 px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-widest text-violet-300 shadow-[0_0_10px_rgba(139,124,246,0.25)]">
                       <Icon name="shield" size={11} className="text-violet-400" />
                       ADMIN
                     </div>
@@ -575,7 +575,7 @@ const Admin = () => {
                             </td>
                             <td className="px-5 py-3.5 font-mono text-xs text-ink-low">{s.email || "N/A"}</td>
                             <td className="px-5 py-3.5 text-right font-bold tabular-nums text-amber-300">{s.totalPoints || 0}</td>
-                            <td className="px-5 py-3.5 text-right font-semibold tabular-nums text-orange-400">{s.streak || 1}d</td>
+                            <td className="px-5 py-3.5 text-right font-semibold tabular-nums text-amber-400">{s.streak || 1}d</td>
                             <td className="px-5 py-3.5 text-right tabular-nums text-sky">{(s.badges || []).length}</td>
                             <td className="px-5 py-3.5 text-right">
                               <Button size="sm" variant="ghost" onClick={() => setSelectedStudent(s)}>View</Button>
@@ -661,7 +661,7 @@ const Admin = () => {
               <p><span className="text-ink-low">Email:</span> {selectedStudent.email || "N/A"}</p>
               <p><span className="text-ink-low">User ID:</span> <code className="font-mono text-xs text-violet-300">{selectedStudent.uid || selectedStudent.id}</code></p>
               <p><span className="text-ink-low">Total points:</span> <strong className="text-amber-300">{selectedStudent.totalPoints || 0}</strong></p>
-              <p><span className="text-ink-low">Streak:</span> <strong className="text-orange-400">{selectedStudent.streak || 1} days</strong></p>
+              <p><span className="text-ink-low">Streak:</span> <strong className="text-amber-400">{selectedStudent.streak || 1} days</strong></p>
             </div>
             <div>
               <h5 className="mb-2 font-bold text-white">Earned badges</h5>

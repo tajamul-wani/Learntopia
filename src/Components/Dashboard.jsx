@@ -446,8 +446,8 @@ const Dashboard = () => {
   }, [quizScores, completedCourses, levelInfo, gamificationBadges, isChampion, t]);
 
   const ACH_TONE = {
-    violet: "border-violet-500/45 bg-violet-500/[0.12] text-violet-300 shadow-[0_0_14px_rgba(139,99,227,0.16)]",
-    sky: "border-sky/45 bg-sky/[0.12] text-sky shadow-[0_0_14px_rgba(123,191,242,0.16)]",
+    violet: "border-violet-500/45 bg-violet-500/[0.12] text-violet-300 shadow-[0_0_14px_rgba(139,124,246,0.16)]",
+    sky: "border-sky/45 bg-sky/[0.12] text-sky shadow-[0_0_14px_rgba(78,197,232,0.16)]",
     amber: "border-amber-500/45 bg-amber-500/[0.12] text-amber-300 shadow-[0_0_14px_rgba(251,191,36,0.15)]",
   };
 

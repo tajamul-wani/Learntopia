@@ -9,7 +9,7 @@ const VARIANTS = {
   secondary:
     "bg-surface-2 text-ink-hi border-white/10 shadow-clay-btn hover:bg-surface-3",
   ghost:
-    "bg-transparent text-ink border-[rgba(160,140,220,0.18)] hover:bg-surface-2 hover:text-ink-hi",
+    "bg-transparent text-ink border-[rgba(139,124,246,0.18)] hover:bg-surface-2 hover:text-ink-hi",
   danger:
     "bg-state-danger/[0.16] text-state-danger border-state-danger/40 shadow-clay-sm hover:bg-state-danger/25",
 };
