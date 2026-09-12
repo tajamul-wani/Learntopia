@@ -1,5 +1,4 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import { useState } from "react";
 import { toast } from "../context/ToastContext";
 import Icon from "./ui/Icon";
 import Button from "./ui/Button";
@@ -14,7 +13,6 @@ import Avatar from "./Avatar";
 import { parseProfileName } from "../utils/profileUtils";
 
 const Navbar = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
   const { currentUser, logOut } = useAuth();
   const { profile, photoURL, usePhoto } = useGamification();
@@ -36,14 +34,11 @@ const Navbar = () => {
     { to: "/contact", label: t("nav.contact") },
   ];
 
-  const closeMenu = () => setIsMenuOpen(false);
-
   const navItems = NAV_ITEMS.filter((item) => item.to !== "/leaderboard" || currentUser);
 
   const handleLogout = async () => {
     try {
       await logOut();
-      closeMenu();
       toast.logout(t("toasts.loggedOut"));
       navigate("/");
     } catch (err) {
@@ -56,7 +51,7 @@ const Navbar = () => {
     <header className="sticky top-0 z-50 select-none border-b border-white/[0.08] bg-ground-900/95 shadow-[0_4px_30px_rgba(0,0,0,0.35)]">
       <nav className="container-page relative flex items-center justify-between py-3.5">
         {/* Zone 1 (Left): Brand Logo */}
-        <NavLink to="/" onClick={closeMenu} className="flex items-center">
+        <NavLink to="/" className="flex items-center">
           <Logo />
         </NavLink>
 
@@ -162,85 +157,30 @@ const Navbar = () => {
             <Icon name={isMuted ? "volume-x" : "volume-2"} size={17} />
           </button>
 
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-surface-2 shadow-clay-sm text-ink-hi transition-colors hover:bg-surface-3"
-            aria-label="Toggle navigation menu"
-          >
-            <Icon name={isMenuOpen ? "x" : "menu"} size={18} />
-          </button>
+          {/* The profile itself lives in the bottom bar, so the top bar carries
+              the account action: sign out when signed in, sign in when not. */}
+          {currentUser ? (
+            <button
+              type="button"
+              onClick={handleLogout}
+              aria-label={t("nav.logout")}
+              title={t("nav.logout")}
+              className="grid h-9 w-9 place-items-center rounded-full border border-white/10 bg-surface-2 text-ink-low shadow-clay-sm transition-colors hover:border-state-danger/30 hover:bg-state-danger/10 hover:text-state-danger"
+            >
+              <Icon name="logout" size={17} />
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => navigate("/login")}
+              className="h-9 rounded-full border border-white/10 bg-surface-2 px-3.5 text-xs font-bold text-ink-hi shadow-clay-sm transition-colors hover:bg-surface-3"
+            >
+              {t("nav.login")}
+            </button>
+          )}
         </div>
       </nav>
 
-      {/* Mobile drawer */}
-      <div
-        className={`overflow-hidden border-t border-white/[0.08] bg-ground-900 transition-[max-height,opacity] duration-300 ease-out md:hidden ${
-          isMenuOpen ? "max-h-[480px] opacity-100" : "max-h-0 opacity-0"
-        }`}
-      >
-        <ul className="container-page flex flex-col gap-1 py-5">
-          {navItems.map((item) => (
-            <li key={item.to}>
-              <NavLink
-                to={item.to}
-                end={item.end}
-                onClick={closeMenu}
-                className={({ isActive }) =>
-                  `block rounded-xl px-3.5 py-2.5 text-[0.95rem] font-semibold transition-colors ${
-                    isActive ? "bg-white/[0.06] text-sky font-bold" : "text-ink hover:bg-white/[0.04] hover:text-ink-hi"
-                  }`
-                }
-              >
-                {item.label}
-              </NavLink>
-            </li>
-          ))}
-
-          <li className="mt-3">
-            {currentUser ? (
-              <div className="flex flex-col gap-3">
-                <div
-                  onClick={() => { closeMenu(); navigate("/dashboard"); }}
-                  className="group flex items-center justify-between rounded-2xl border border-white/10 bg-surface-2 shadow-clay-sm p-3.5 cursor-pointer transition-all hover:bg-surface-3"
-                >
-                  <div className="flex items-center gap-3">
-                    <Avatar
-                      avatarId={currentAvatarId}
-                      photoURL={usePhoto ? photoURL : null}
-                      size={36}
-                      name={currentDisplayName}
-                    />
-
-                    <div className="flex flex-col leading-tight">
-                      <span className="text-sm font-bold text-ink-hi group-hover:text-sky transition-colors">
-                        {currentDisplayName}
-                      </span>
-                      <span className="text-xs text-ink-low mt-0.5">
-                        {currentUser.email}
-                      </span>
-                    </div>
-                  </div>
-
-                  <Icon name="chevron-right" size={18} className="text-ink-low group-hover:text-sky transition-colors" />
-                </div>
-
-                <Button variant="ghost" fullWidth onClick={handleLogout} className="text-state-danger hover:bg-state-danger/10">
-                  {t("nav.logout")}
-                </Button>
-              </div>
-            ) : (
-              <div className="grid grid-cols-2 gap-3">
-                <Button variant="secondary" fullWidth onClick={() => { closeMenu(); navigate("/login"); }}>
-                  {t("nav.login")}
-                </Button>
-                <Button variant="primary" fullWidth onClick={() => { closeMenu(); navigate("/signUp"); }}>
-                  {t("nav.signUp")}
-                </Button>
-              </div>
-            )}
-          </li>
-        </ul>
-      </div>
     </header>
   );
 };
