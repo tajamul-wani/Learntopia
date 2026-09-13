@@ -220,7 +220,7 @@ const Leaderboard = () => {
   const getRankColor = (rank) => {
     if (rank === 1) return "text-yellow-400";
     if (rank === 2) return "text-slate-300";
-    if (rank === 3) return "text-amber-400";
+    if (rank === 3) return "text-gold-400";
     return "text-ink-faint";
   };
 
@@ -360,7 +360,7 @@ const Leaderboard = () => {
                     className={`border-2 ${
                       rank === 1 ? "border-yellow-400" :
                       rank === 2 ? "border-slate-300" :
-                      rank === 3 ? "border-amber-500" :
+                      rank === 3 ? "border-gold-500" :
                       "border-white/10"
                     }`}
                   />
@@ -461,7 +461,7 @@ const Leaderboard = () => {
                             className={`border-2 ${
                               rank === 1 ? "border-yellow-400" :
                               rank === 2 ? "border-slate-300" :
-                              rank === 3 ? "border-amber-500" :
+                              rank === 3 ? "border-gold-500" :
                               "border-white/10"
                             }`}
                           />

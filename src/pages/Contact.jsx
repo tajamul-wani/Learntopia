@@ -43,8 +43,8 @@ const Contact = () => {
       icon: "shield",
       label: t("contact.privacyTitle"),
       value: t("contact.privacySub"),
-      border: "border-amber-500/20",
-      chip: "bg-amber-500/15 border-amber-500/30 text-amber-400",
+      border: "border-gold-500/20",
+      chip: "bg-gold-500/15 border-gold-500/30 text-gold-400",
     },
   ];
 
@@ -258,7 +258,7 @@ const Contact = () => {
                 </label>
                 <span
                   className={`text-xs tabular-nums ${
-                    formData.message.length >= MAX_MSG * 0.9 ? "text-amber-400" : "text-ink-low"
+                    formData.message.length >= MAX_MSG * 0.9 ? "text-gold-400" : "text-ink-low"
                   }`}
                 >
                   {formData.message.length}/{MAX_MSG}

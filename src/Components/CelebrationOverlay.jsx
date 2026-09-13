@@ -161,8 +161,8 @@ function CelebrationCard({ celebration }) {
         <p className="mx-auto mt-3 max-w-xs text-[15px] leading-relaxed text-ink-low [text-wrap:pretty] sm:max-w-sm sm:text-base">{message}</p>
 
         {celebration.badge && (
-          <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-amber-500/30 bg-amber-500/10 px-4 py-2 text-sm font-bold text-amber-300">
-            <Icon name={celebration.badge.icon || "award"} size="sm" className="text-amber-300" />
+          <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-gold-500/30 bg-gold-500/10 px-4 py-2 text-sm font-bold text-gold-300">
+            <Icon name={celebration.badge.icon || "award"} size="sm" className="text-gold-300" />
             <span>{t("gamification.earnedBadge", { name: localizeBadgeName(celebration.badge.name, t) })}</span>
           </div>
         )}

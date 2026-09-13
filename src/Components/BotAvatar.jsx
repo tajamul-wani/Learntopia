@@ -135,7 +135,7 @@ const BOT_THEMES = {
     ),
   },
   "MarketBot": {
-    bg: "from-state-warning/25 via-state-warning/10 to-amber-500/20 border-state-warning/40",
+    bg: "from-state-warning/25 via-state-warning/10 to-gold-500/20 border-state-warning/40",
     glow: "shadow-[0_0_22px_rgba(246,185,59,0.4)]",
     svg: (
       <svg viewBox="0 0 100 100" className="w-full h-full">

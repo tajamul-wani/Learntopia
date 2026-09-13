@@ -470,7 +470,7 @@ const ExerciseEngine = ({ exercises = [], onAllCorrect, onFirstAttempt, isComple
   const getTypeBadge = (type) => {
     switch (type) {
       case "true-false":
-        return { label: "True or False", icon: "check-circle", color: "text-amber-400 bg-amber-500/15 border-amber-500/30" };
+        return { label: "True or False", icon: "check-circle", color: "text-gold-400 bg-gold-500/15 border-gold-500/30" };
       case "fill-blank":
         return { label: "Fill in the Blank", icon: "edit-3", color: "text-sky bg-sky/15 border-sky/30" };
       case "match":

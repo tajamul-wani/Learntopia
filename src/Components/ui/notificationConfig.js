@@ -19,7 +19,7 @@ export const NOTIFICATION_CONFIG = {
   delete_profile: { tone: "danger",  icon: "warning",  sound: "warningAlert", titleKey: "toasts.titleDelete",   btnKey: "toasts.btnDelete" },
   success:        { tone: "green",   icon: "check",    art: "success", sound: "correct",      titleKey: "toasts.titleSuccess",  btnKey: "toasts.btnGeneric" },
   error:          { tone: "danger",  icon: "warning",  sound: "incorrect",    titleKey: "toasts.titleError",    btnKey: "toasts.btnRetry" },
-  warning:        { tone: "amber",   icon: "warning",  sound: "warningAlert", titleKey: "toasts.titleWarning",  btnKey: "toasts.btnGeneric" },
+  warning:        { tone: "gold",   icon: "warning",  sound: "warningAlert", titleKey: "toasts.titleWarning",  btnKey: "toasts.btnGeneric" },
   info:           { tone: "violet",  icon: "info",     sound: "click",        titleKey: "toasts.titleInfo",     btnKey: "toasts.btnGeneric" },
 };
 
@@ -31,7 +31,7 @@ export const TONE_STYLES = {
   violet:  { chip: "text-violet-400 border-violet-500/40 bg-violet-500/[0.14]",  bar: "bg-violet-500",    accent: "bg-violet-500",     edge: "border-violet-500/30",     wash: "from-violet-500/[0.14]",    glow: "shadow-[0_14px_34px_rgba(0,0,0,0.5),0_0_22px_rgba(139,124,246,0.28)]" },
   green:   { chip: "text-state-success border-state-success/40 bg-state-success/[0.12]", bar: "bg-state-success", accent: "bg-state-success", edge: "border-state-success/30", wash: "from-state-success/[0.14]", glow: "shadow-[0_14px_34px_rgba(0,0,0,0.5),0_0_22px_rgba(52,211,153,0.24)]" },
   danger:  { chip: "text-state-danger border-state-danger/40 bg-state-danger/[0.12]",    bar: "bg-state-danger",  accent: "bg-state-danger",  edge: "border-state-danger/30",  wash: "from-state-danger/[0.14]",  glow: "shadow-[0_14px_34px_rgba(0,0,0,0.5),0_0_22px_rgba(251,113,133,0.26)]" },
-  amber:   { chip: "text-amber-400 border-amber-500/40 bg-amber-500/[0.12]",     bar: "bg-amber-400",     accent: "bg-amber-400",      edge: "border-amber-500/30",      wash: "from-amber-500/[0.14]",     glow: "shadow-[0_14px_34px_rgba(0,0,0,0.5),0_0_22px_rgba(251,191,36,0.24)]" },
+  gold:    { chip: "text-gold-400 border-gold-500/40 bg-gold-500/[0.12]",     bar: "bg-gold-400",     accent: "bg-gold-400",      edge: "border-gold-500/30",      wash: "from-gold-500/[0.14]",     glow: "shadow-[0_14px_34px_rgba(0,0,0,0.5),0_0_22px_rgba(251,191,36,0.24)]" },
   neutral: { chip: "text-ink border-white/10 bg-white/[0.05]",                   bar: "bg-ink-faint",     accent: "bg-white/25",       edge: "border-white/15",          wash: "from-white/[0.06]",         glow: "shadow-[0_14px_34px_rgba(0,0,0,0.5)]" },
 };
 

@@ -303,7 +303,7 @@ const Admin = () => {
   const KPIS = [
     { label: "Students", value: students.length, icon: "users", tint: "text-violet-300", ring: "border-violet-500/25" },
     { label: "Messages", value: contactMessages.length, icon: "mail", tint: "text-sky", ring: "border-sky/25" },
-    { label: "System Logs", value: bugReports.length, icon: "alert-circle", tint: "text-amber-300", ring: "border-amber-500/25" },
+    { label: "System Logs", value: bugReports.length, icon: "alert-circle", tint: "text-gold-300", ring: "border-gold-500/25" },
     { label: "Total Points", value: totalPoints, icon: "trophy", tint: "text-state-success", ring: "border-state-success/25" },
   ];
 
@@ -471,7 +471,7 @@ const Admin = () => {
                   {/* Top students */}
                   <div className="rounded-xl border border-white/10 bg-surface shadow-clay p-5">
                     <div className="mb-4 flex items-center justify-between">
-                      <h3 className="flex items-center gap-2 text-sm font-bold text-white"><Icon name="trophy" size={16} className="text-amber-400" /> Top students</h3>
+                      <h3 className="flex items-center gap-2 text-sm font-bold text-white"><Icon name="trophy" size={16} className="text-gold-400" /> Top students</h3>
                       <button onClick={() => setActiveTab("students")} className="text-xs font-semibold text-violet-400 hover:underline">View all</button>
                     </div>
                     {loading ? (
@@ -485,7 +485,7 @@ const Admin = () => {
                               {s.fullName ? s.fullName.charAt(0).toUpperCase() : "S"}
                             </div>
                             <span className="min-w-0 flex-1 truncate text-sm font-medium text-ink-hi">{s.fullName || "Learner"}</span>
-                            <span className="flex-none text-sm font-bold tabular-nums text-amber-300">{s.totalPoints || 0} pts</span>
+                            <span className="flex-none text-sm font-bold tabular-nums text-gold-300">{s.totalPoints || 0} pts</span>
                           </li>
                         ))}
                       </ul>
@@ -574,8 +574,8 @@ const Admin = () => {
                               </div>
                             </td>
                             <td className="px-5 py-3.5 font-mono text-xs text-ink-low">{s.email || "N/A"}</td>
-                            <td className="px-5 py-3.5 text-right font-bold tabular-nums text-amber-300">{s.totalPoints || 0}</td>
-                            <td className="px-5 py-3.5 text-right font-semibold tabular-nums text-amber-400">{s.streak || 1}d</td>
+                            <td className="px-5 py-3.5 text-right font-bold tabular-nums text-gold-300">{s.totalPoints || 0}</td>
+                            <td className="px-5 py-3.5 text-right font-semibold tabular-nums text-gold-400">{s.streak || 1}d</td>
                             <td className="px-5 py-3.5 text-right tabular-nums text-sky">{(s.badges || []).length}</td>
                             <td className="px-5 py-3.5 text-right">
                               <Button size="sm" variant="ghost" onClick={() => setSelectedStudent(s)}>View</Button>
@@ -638,7 +638,7 @@ const Admin = () => {
                     {bugReports.map((bug) => (
                       <div key={bug.id} className="rounded-xl border border-white/10 bg-surface shadow-clay p-5">
                         <div className="mb-2 flex items-center justify-between">
-                          <span className="text-[11px] font-bold uppercase tracking-wider text-amber-300">{bug.priority || "Medium"} priority</span>
+                          <span className="text-[11px] font-bold uppercase tracking-wider text-gold-300">{bug.priority || "Medium"} priority</span>
                           <span className="rounded-full bg-state-success/15 px-2 py-0.5 text-[10px] font-bold uppercase text-state-success">{bug.status || "Open"}</span>
                         </div>
                         <h4 className="font-bold text-white">{bug.title}</h4>
@@ -660,15 +660,15 @@ const Admin = () => {
             <div className="space-y-2 rounded-xl clay-inset p-4">
               <p><span className="text-ink-low">Email:</span> {selectedStudent.email || "N/A"}</p>
               <p><span className="text-ink-low">User ID:</span> <code className="font-mono text-xs text-violet-300">{selectedStudent.uid || selectedStudent.id}</code></p>
-              <p><span className="text-ink-low">Total points:</span> <strong className="text-amber-300">{selectedStudent.totalPoints || 0}</strong></p>
-              <p><span className="text-ink-low">Streak:</span> <strong className="text-amber-400">{selectedStudent.streak || 1} days</strong></p>
+              <p><span className="text-ink-low">Total points:</span> <strong className="text-gold-300">{selectedStudent.totalPoints || 0}</strong></p>
+              <p><span className="text-ink-low">Streak:</span> <strong className="text-gold-400">{selectedStudent.streak || 1} days</strong></p>
             </div>
             <div>
               <h5 className="mb-2 font-bold text-white">Earned badges</h5>
               <div className="flex flex-wrap gap-2">
                 {selectedStudent.badges && selectedStudent.badges.length > 0 ? (
                   selectedStudent.badges.map((b, i) => (
-                    <span key={i} className="inline-flex items-center gap-1 rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1 text-xs font-bold text-amber-300">
+                    <span key={i} className="inline-flex items-center gap-1 rounded-full border border-gold-500/30 bg-gold-500/10 px-3 py-1 text-xs font-bold text-gold-300">
                       <Icon name={typeof b === "string" ? "award" : (b.icon || "award")} size={14} /> {typeof b === "string" ? b : b.name}
                     </span>
                   ))

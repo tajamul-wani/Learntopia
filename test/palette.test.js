@@ -22,14 +22,14 @@ const SRC = fileURLToPath(new URL("../src/", import.meta.url));
 
 // Tailwind default colour families that are NOT part of the design system.
 const OFF_PALETTE = [
-  "orange", "yellow", "pink", "teal", "emerald", "red", "green", "gray", "grey",
+  "amber", "orange", "yellow", "pink", "teal", "emerald", "red", "green", "gray", "grey",
   "zinc", "neutral", "stone", "lime", "cyan", "indigo", "purple", "fuchsia",
   "rose", "blue", "slate",
 ];
 
-// `amber` is the app's de-facto gold accent (~54 sites across 14 files) but has
-// no token yet. Allowed everywhere until that is tokenised; see LT-66.
-const ALLOWED_EVERYWHERE = ["amber"];
+// Nothing is allowed everywhere. Amber used to be, while the gold accent had no
+// token; it is now `gold` in tailwind.config.js, so raw amber is rejected (LT-79).
+const ALLOWED_EVERYWHERE = [];
 
 // Files whose colours are illustration artwork rather than UI chrome: avatars,
 // icons and badge medallions legitimately use their own hex values.
@@ -123,10 +123,8 @@ const TOKEN_RGB = new Set([
   "251,113,133", // danger    #FB7185
   "0,0,0",
   "255,255,255",
-  // Amber is the de-facto gold accent and is not tokenised yet, so its two
-  // values stay allowed until that decision is made. See LT-66.
-  "245,158,11",  // amber-500
-  "251,191,36",  // amber-400
+  "245,158,11",  // gold-500  #F59E0B
+  "251,191,36",  // gold-400  #FBBF24
 ]);
 
 test("rgba colour values in UI code come from the tokens", () => {
@@ -160,9 +158,10 @@ test("rgba colour values in UI code come from the tokens", () => {
 const DEFINED_SHADES = {
   violet: ["300", "400", "500", "600", "700"],
   ground: ["600", "700", "800", "900"], // plus DEFAULT, which carries no shade
+  gold: ["200", "300", "400", "500", "600"],
 };
 
-const SHADED = /\b(?:text|bg|border|ring|from|to|via|shadow|fill|stroke|divide|placeholder|accent|outline)-(violet|ground)-(\d{2,3})\b/g;
+const SHADED = /\b(?:text|bg|border|ring|from|to|via|shadow|fill|stroke|divide|placeholder|accent|outline)-(violet|ground|gold)-(\d{2,3})\b/g;
 
 test("tokenised colour families only use shades the config defines", () => {
   const offenders = [];
@@ -216,4 +215,32 @@ test("the guard patterns still match known-good colour usage", () => {
 
   assert.ok(shadeHits > 50, `Shade pattern matched ${shadeHits} times; expected many. Pattern is broken.`);
   assert.ok(rgbaHits > 10, `rgba pattern matched ${rgbaHits} times; expected many. Pattern is broken.`);
+});
+
+// --- tone keys -------------------------------------------------------------
+// Notifications pick their colours by looking a tone name up in TONE_STYLES, and
+// ToastStack/NotificationModal fall back to violet when the name is missing. So a
+// tone renamed in one place but not the other breaks nothing loudly: the warning
+// toast just quietly turns violet. That exact mismatch was a live risk when amber
+// became gold, so check every tone a notification asks for actually exists.
+test("every notification tone resolves to a defined tone style", () => {
+  const cfg = readFileSync(new URL("../src/Components/ui/notificationConfig.js", import.meta.url), "utf8");
+
+  const stylesStart = cfg.indexOf("TONE_STYLES");
+  assert.ok(stylesStart > -1, "TONE_STYLES not found in notificationConfig.js");
+  const styles = cfg.slice(stylesStart);
+
+  const defined = new Set([...styles.matchAll(/^\s{2}([a-z]+):\s*\{/gm)].map((m) => m[1]));
+  const requested = [...cfg.slice(0, stylesStart).matchAll(/tone:\s*"([a-z]+)"/g)].map((m) => m[1]);
+
+  assert.ok(defined.size > 0, "Parsed no tone styles; the pattern is broken.");
+  assert.ok(requested.length > 0, "Parsed no requested tones; the pattern is broken.");
+
+  const missing = [...new Set(requested)].filter((tone) => !defined.has(tone));
+  assert.deepEqual(
+    missing,
+    [],
+    "Notification tones with no matching TONE_STYLES entry (these silently fall back to violet): " +
+      missing.join(", ")
+  );
 });

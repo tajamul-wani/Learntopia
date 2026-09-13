@@ -135,7 +135,7 @@ const Login = () => {
       {notFoundEmail && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm animate-fade-in">
           <Card className="w-full max-w-md p-6 border-violet-500/30">
-            <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-500/15 text-amber-400">
+            <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gold-500/15 text-gold-400">
               <Icon name="alert-circle" size={24} />
             </div>
             <h3 className="text-xl font-bold text-ink-hi mb-2">{t("authGuidance.noAccountTitle")}</h3>

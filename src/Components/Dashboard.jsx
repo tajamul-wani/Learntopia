@@ -448,7 +448,7 @@ const Dashboard = () => {
   const ACH_TONE = {
     violet: "border-violet-500/45 bg-violet-500/[0.12] text-violet-300 shadow-[0_0_14px_rgba(139,124,246,0.16)]",
     sky: "border-sky/45 bg-sky/[0.12] text-sky shadow-[0_0_14px_rgba(78,197,232,0.16)]",
-    amber: "border-amber-500/45 bg-amber-500/[0.12] text-amber-300 shadow-[0_0_14px_rgba(251,191,36,0.15)]",
+    gold: "border-gold-500/45 bg-gold-500/[0.12] text-gold-300 shadow-[0_0_14px_rgba(251,191,36,0.15)]",
   };
 
   // Loading Skeleton
@@ -525,8 +525,8 @@ const Dashboard = () => {
       label: t("dashboard.dayStreak"),
       rawValue: streak,
       suffix: ` ${streak === 1 ? t("dashboard.day") : t("dashboard.days")}`,
-      accent: "text-amber-400",
-      iconBg: "bg-amber-500/15 border-amber-500/40 text-amber-300",
+      accent: "text-gold-400",
+      iconBg: "bg-gold-500/15 border-gold-500/40 text-gold-300",
     },
     {
       iconName: "book-open",
@@ -633,20 +633,20 @@ const Dashboard = () => {
 
         {/* ── Incomplete Profile Warning Banner ────────────────────────────── */}
         {(!parsedDisplayName || !parsedAvatarId) && (
-          <div className="animate-fade-up flex flex-col gap-3 rounded-2xl border border-amber-500/30 bg-amber-500/10 p-4 sm:flex-row sm:items-center sm:justify-between shadow-clay-sm">
+          <div className="animate-fade-up flex flex-col gap-3 rounded-2xl border border-gold-500/30 bg-gold-500/10 p-4 sm:flex-row sm:items-center sm:justify-between shadow-clay-sm">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 flex-none items-center justify-center rounded-xl bg-amber-500/20 text-amber-300">
+              <div className="flex h-10 w-10 flex-none items-center justify-center rounded-xl bg-gold-500/20 text-gold-300">
                 <Icon name="sparkles" size={20} />
               </div>
               <div>
-                <p className="text-sm font-bold text-amber-200">{t("profileSetup.setupBannerTitle")}</p>
-                <p className="mt-0.5 text-xs text-amber-200/80">{t("profileSetup.setupBannerDesc")}</p>
+                <p className="text-sm font-bold text-gold-200">{t("profileSetup.setupBannerTitle")}</p>
+                <p className="mt-0.5 text-xs text-gold-200/80">{t("profileSetup.setupBannerDesc")}</p>
               </div>
             </div>
             <Button
               size="sm"
               onClick={() => setEditingProfile(true)}
-              className="flex-none bg-amber-400 text-ground-900 font-bold border-none hover:bg-amber-300"
+              className="flex-none bg-gold-400 text-ground-900 font-bold border-none hover:bg-gold-300"
             >
               {t("profileSetup.setupBannerBtn")}
             </Button>
@@ -903,13 +903,13 @@ const Dashboard = () => {
                 <Card className="h-full border-white/10 p-6 flex flex-col justify-between">
                   <div>
                     <div className="flex items-center justify-between border-b border-white/[0.08] pb-3">
-                      <h2 className="flex items-center gap-2.5 text-sm font-extrabold text-amber-300">
-                        <span className="flex h-10 w-10 items-center justify-center rounded-full border border-amber-500/40 bg-amber-500/[0.12] shadow-[0_0_14px_rgba(251,191,36,0.15)]">
+                      <h2 className="flex items-center gap-2.5 text-sm font-extrabold text-gold-300">
+                        <span className="flex h-10 w-10 items-center justify-center rounded-full border border-gold-500/40 bg-gold-500/[0.12] shadow-[0_0_14px_rgba(251,191,36,0.15)]">
                           <LottieIcon src={streakLottie} size={26} fallbackIcon="flame" />
                         </span>
                         {t("dashboard.streakTitle")}
                       </h2>
-                      <span className="text-xs font-extrabold text-amber-300">
+                      <span className="text-xs font-extrabold text-gold-300">
                         {streak} {streak === 1 ? t("dashboard.day") : t("dashboard.days")}
                       </span>
                     </div>
@@ -928,9 +928,9 @@ const Dashboard = () => {
                               key={idx}
                               className={`flex flex-1 items-center justify-center rounded-xl py-2.5 text-[10px] font-extrabold tracking-tight transition-all ${
                                 isOn
-                                  ? "border border-amber-500/40 bg-amber-500/20 text-amber-300 shadow-clay-sm"
+                                  ? "border border-gold-500/40 bg-gold-500/20 text-gold-300 shadow-clay-sm"
                                   : "border border-white/10 bg-surface-2 text-ink-faint opacity-50"
-                              } ${isToday ? "outline outline-2 outline-amber-400/55 outline-offset-2" : ""}`}
+                              } ${isToday ? "outline outline-2 outline-gold-400/55 outline-offset-2" : ""}`}
                             >
                               {day}
                             </div>
@@ -941,7 +941,7 @@ const Dashboard = () => {
                   </div>
 
                   <p className="mt-4 flex items-start gap-1.5 text-[11px] text-ink-low italic border-t border-white/[0.06] pt-3">
-                    <Icon name="lightbulb" size={13} className="mt-px flex-none text-amber-300/80" />
+                    <Icon name="lightbulb" size={13} className="mt-px flex-none text-gold-300/80" />
                     {t("dashboard.streakTip")}
                   </p>
                 </Card>

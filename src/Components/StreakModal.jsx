@@ -65,27 +65,27 @@ const StreakModal = () => {
       onClick={dismissStreakModal}
     >
       {/* Glow Effects (non-interactive so backdrop clicks still register) */}
-      <div className="pointer-events-none absolute h-96 w-96 rounded-full bg-amber-500/25 blur-[120px] animate-pulse" />
+      <div className="pointer-events-none absolute h-96 w-96 rounded-full bg-gold-500/25 blur-[120px] animate-pulse" />
       <div className="pointer-events-none absolute h-80 w-80 rounded-full bg-orange-500/20 blur-[100px] animate-pulse delay-500" />
 
       {/* Main Glassmorphism Card — clicks inside must NOT close the modal. */}
       <div
-        className="relative w-full max-w-lg overflow-hidden rounded-3xl border border-amber-500/40 bg-surface p-6 text-center shadow-[0_0_60px_rgba(245,158,11,0.3)] animate-scale-up md:p-8"
+        className="relative w-full max-w-lg overflow-hidden rounded-3xl border border-gold-500/40 bg-surface p-6 text-center shadow-[0_0_60px_rgba(245,158,11,0.3)] animate-scale-up md:p-8"
         onClick={(e) => e.stopPropagation()}
         onMouseEnter={() => setPaused(true)}
         onMouseLeave={() => setPaused(false)}
       >
         {/* Decorative Top Banner Pill */}
-        <div className="mx-auto mb-4 inline-flex items-center gap-2 rounded-full border border-amber-500/30 bg-amber-500/10 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-amber-400">
-          <span className="h-2 w-2 rounded-full bg-amber-400 animate-ping" />
+        <div className="mx-auto mb-4 inline-flex items-center gap-2 rounded-full border border-gold-500/30 bg-gold-500/10 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-gold-400">
+          <span className="h-2 w-2 rounded-full bg-gold-400 animate-ping" />
           {t("dashboard.dayStreak") || "Daily Streak"}
         </div>
 
         {/* Hero Flame Avatar */}
         <div className="relative mx-auto mb-5 flex h-28 w-28 items-center justify-center">
-          <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-amber-600/40 via-orange-500/40 to-yellow-400/40 blur-xl animate-pulse" />
-          <div className="relative flex h-24 w-24 items-center justify-center rounded-full border-2 border-amber-500/60 bg-gradient-to-br from-amber-500/20 via-orange-500/20 to-yellow-500/10 shadow-[0_0_35px_rgba(245,158,11,0.5)]">
-            <Icon name="flame" size={64} className="animate-bounce text-amber-400" />
+          <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-gold-600/40 via-orange-500/40 to-yellow-400/40 blur-xl animate-pulse" />
+          <div className="relative flex h-24 w-24 items-center justify-center rounded-full border-2 border-gold-500/60 bg-gradient-to-br from-gold-500/20 via-orange-500/20 to-yellow-500/10 shadow-[0_0_35px_rgba(245,158,11,0.5)]">
+            <Icon name="flame" size={64} className="animate-bounce text-gold-400" />
           </div>
         </div>
 
@@ -110,7 +110,7 @@ const StreakModal = () => {
                   <div
                     className={`flex h-14 w-14 items-center justify-center rounded-2xl text-base font-black transition-all duration-300 ${
                       isActive
-                        ? "scale-110 border-2 border-amber-400 bg-gradient-to-br from-amber-500 to-orange-600 text-white shadow-[0_0_20px_rgba(245,158,11,0.6)]"
+                        ? "scale-110 border-2 border-gold-400 bg-gradient-to-br from-gold-500 to-orange-600 text-white shadow-[0_0_20px_rgba(245,158,11,0.6)]"
                         : isCompleted
                         ? "border border-state-success/50 bg-state-success/20 text-state-success"
                         : isFinal
@@ -144,7 +144,7 @@ const StreakModal = () => {
         {/* Claim CTA — grants the milestone bonus XP (once per day, synced everywhere) */}
         <Button
           onClick={handleClaim}
-          className="w-full justify-center bg-amber-500 py-3.5 text-base font-bold text-white shadow-[0_0_25px_rgba(245,158,11,0.4)] hover:bg-amber-400 hover:shadow-[0_0_35px_rgba(245,158,11,0.6)]"
+          className="w-full justify-center bg-gold-500 py-3.5 text-base font-bold text-white shadow-[0_0_25px_rgba(245,158,11,0.4)] hover:bg-gold-400 hover:shadow-[0_0_35px_rgba(245,158,11,0.6)]"
         >
           {alreadyClaimedStreakToday
             ? t("streakModal.keepGoing")
