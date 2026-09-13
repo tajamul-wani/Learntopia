@@ -12,7 +12,7 @@ import { useAuth } from "../context/AuthContext";
 const TINT = {
   violet: "bg-violet-500/15 border-violet-500/30 text-violet-400",
   sky: "bg-sky/15 border-sky/30 text-sky",
-  gold: "bg-amber-500/15 border-amber-500/30 text-amber-400",
+  gold: "bg-gold-500/15 border-gold-500/30 text-gold-400",
   mint: "bg-state-success/15 border-state-success/30 text-state-success",
 };
 
@@ -98,7 +98,7 @@ const Home = () => {
               <span
                 key={tone}
                 className={`grid h-9 w-9 place-items-center rounded-full border-2 border-ground text-sm font-bold text-white ${
-                  ["bg-violet-600", "bg-sky", "bg-amber-500", "bg-state-success"][i]
+                  ["bg-violet-600", "bg-sky", "bg-gold-500", "bg-state-success"][i]
                 }`}
               >
                 {["K", "A", "M", "J"][i]}
@@ -106,7 +106,7 @@ const Home = () => {
             ))}
           </div>
           <div className="flex items-center gap-2 text-sm font-bold text-ink">
-            <span className="flex items-center gap-1 text-amber-400">
+            <span className="flex items-center gap-1 text-gold-400">
               <Icon name="star" size={15} className="fill-current" /> 4.8
             </span>
             <span className="text-ink-low">·</span>
@@ -140,7 +140,7 @@ const Home = () => {
             <div key={c.id} className="flex flex-col gap-3.5 rounded-2xl border border-white/10 bg-surface p-5 shadow-clay">
               <div className="flex items-center justify-between">
                 <span className="text-[0.64rem] font-extrabold uppercase tracking-[0.11em] text-ink-low">{c.category}</span>
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-surface-2 px-2.5 py-1 text-xs font-extrabold text-amber-400 shadow-clay-sm">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-surface-2 px-2.5 py-1 text-xs font-extrabold text-gold-400 shadow-clay-sm">
                   <Icon name="star" size={13} className="fill-current" /> {c.rating}
                 </span>
               </div>

@@ -34,7 +34,7 @@ const SECTION_LABELS = {
 };
 
 // Section-type styling grouped by meaning onto the brand + semantic palette so
-// the whole app stays coherent: learn = violet, info = sky, tip = amber,
+// the whole app stays coherent: learn = violet, info = sky, tip = gold,
 // activity = emerald, recap = neutral.
 // Solid clay content cards; the section-type identity now comes from the
 // semantic border + icon chip + label/title tints only (no gradient wash), with
@@ -68,12 +68,12 @@ const SECTION_STYLES = {
     glow: "shadow-clay",
   },
   tip: {
-    border: "border-amber-500/30",
+    border: "border-gold-500/30",
     bg: "bg-surface",
-    iconBg: "bg-amber-500/15 border border-amber-500/30 shadow-clay-sm",
-    iconColor: "text-amber-400",
-    labelColor: "text-amber-300",
-    titleColor: "text-amber-200",
+    iconBg: "bg-gold-500/15 border border-gold-500/30 shadow-clay-sm",
+    iconColor: "text-gold-400",
+    labelColor: "text-gold-300",
+    titleColor: "text-gold-200",
     glow: "shadow-clay",
   },
   example: {

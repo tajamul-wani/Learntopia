@@ -25,6 +25,17 @@ export default {
           600: "#7B6AEF",
           700: "#6D5CE0",
         },
+        // Gold: the reward, streak and XP accent. It used to be written as
+        // Tailwind's default amber, so it had no name in the design system and five
+        // shades drifted in with nothing choosing between them. Values mirror
+        // Tailwind v3 amber exactly, so naming it changed nothing on screen.
+        gold: {
+          200: "#FDE68A",
+          300: "#FCD34D",
+          400: "#FBBF24",
+          500: "#F59E0B",
+          600: "#D97706",
+        },
         sky: "#4EC5E8",
         // Themeable via CSS vars (see index.css :root / [data-theme]). Channel
         // syntax keeps Tailwind's alpha modifiers (e.g. text-ink/70) working.

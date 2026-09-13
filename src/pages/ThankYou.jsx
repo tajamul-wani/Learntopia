@@ -79,9 +79,9 @@ const ThankYou = () => {
 
           <Link
             to="/quiz"
-            className="group flex flex-col items-center gap-2 rounded-2xl border border-white/10 bg-surface shadow-clay p-5 transition-all duration-200 hover:border-amber-500/30 hover:bg-surface-2"
+            className="group flex flex-col items-center gap-2 rounded-2xl border border-white/10 bg-surface shadow-clay p-5 transition-all duration-200 hover:border-gold-500/30 hover:bg-surface-2"
           >
-            <div className="grid h-10 w-10 place-items-center rounded-xl border border-amber-500/30 bg-amber-500/15 text-amber-400 shadow-clay-sm transition-transform duration-200 group-hover:scale-110">
+            <div className="grid h-10 w-10 place-items-center rounded-xl border border-gold-500/30 bg-gold-500/15 text-gold-400 shadow-clay-sm transition-transform duration-200 group-hover:scale-110">
               <Icon name="zap" size={18} />
             </div>
             <span className="text-sm font-semibold text-ink-hi">{t("nav.quizzes")}</span>
