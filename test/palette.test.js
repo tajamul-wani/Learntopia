@@ -33,7 +33,7 @@ const ALLOWED_EVERYWHERE = [];
 
 // Files whose colours are illustration artwork rather than UI chrome: avatars,
 // icons and badge medallions legitimately use their own hex values.
-const ART_FILES = ["BotAvatar.jsx", "Icon.jsx", "AwardArt.jsx", "Logo.jsx", "avatarData.js"];
+const ART_FILES = ["BotAvatar.jsx", "Icon.jsx", "AwardArt.jsx", "avatarData.js"];
 
 // Deliberate, reviewed exceptions. Each needs a reason, not just a filename.
 const EXCEPTIONS = {
@@ -134,7 +134,7 @@ test("rgba colour values in UI code come from the tokens", () => {
     const key = relKey(file);
     // Artwork is exempt from hex, but its glow wrappers are still UI chrome, so
     // only the pure-illustration files are skipped here.
-    if (["Icon.jsx", "AwardArt.jsx", "Logo.jsx", "avatarData.js"].some((f) => key.endsWith(f))) continue;
+    if (["Icon.jsx", "AwardArt.jsx", "avatarData.js"].some((f) => key.endsWith(f))) continue;
 
     readFileSync(file, "utf8").split(/\n/).forEach((line, i) => {
       for (const hit of line.matchAll(/rgba\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,/g)) {
@@ -184,6 +184,40 @@ test("tokenised colour families only use shades the config defines", () => {
     "Shades not defined in tailwind.config.js, so they fall back to Tailwind's " +
       "defaults: " + offenders.join(" | ")
   );
+});
+
+// --- brand artwork ---------------------------------------------------------
+// The logo, favicon and OG card are SVG files in public/, outside src/, so the
+// checks above never see them. They are the most visible colours in the app, so
+// hold them to the same rule: every hex must be a token from tailwind.config.js
+// or a theme variable in src/index.css.
+// Black is allowed for the paper-cut drop shadows only.
+const PUBLIC = fileURLToPath(new URL("../public/", import.meta.url));
+const BRAND_SVGS = ["logo.svg", "favicon.svg", "og-image.svg"];
+
+test("brand SVGs only use design-token colours", () => {
+  const config = readFileSync(new URL("../tailwind.config.js", import.meta.url), "utf8");
+  const tokens = new Set([...config.matchAll(/#[0-9a-fA-F]{6}\b/g)].map((m) => m[0].toUpperCase()));
+  // ink and surface are theme variables in index.css, stored as "r g b" triples.
+  const css = readFileSync(new URL("../src/index.css", import.meta.url), "utf8");
+  for (const [, r, g, b] of css.matchAll(/--c-[a-z0-9-]+:\s*(\d+)\s+(\d+)\s+(\d+)\s*;/g)) {
+    tokens.add("#" + [r, g, b].map((v) => Number(v).toString(16).padStart(2, "0")).join("").toUpperCase());
+  }
+  tokens.add("#000000");
+
+  const offenders = [];
+  let hexHits = 0;
+  for (const name of BRAND_SVGS) {
+    const svg = readFileSync(join(PUBLIC, name), "utf8");
+    for (const hit of svg.matchAll(/#[0-9a-fA-F]{3,8}\b/g)) {
+      hexHits += 1;
+      if (!tokens.has(hit[0].toUpperCase())) offenders.push(`public/${name}  ${hit[0]}`);
+    }
+  }
+
+  assert.ok(tokens.size > 20, `Parsed only ${tokens.size} token colours; the token patterns are broken.`);
+  assert.ok(hexHits > 30, `Found only ${hexHits} colours across the brand SVGs; expected many. Pattern is broken.`);
+  assert.deepEqual(offenders, [], "Brand SVG colours that are not design tokens: " + offenders.join(" | "));
 });
 
 // --- self-checks -----------------------------------------------------------

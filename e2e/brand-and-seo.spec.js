@@ -30,6 +30,64 @@ test.describe("brand and SEO metadata", () => {
     );
   });
 
+  // LT-78: the robot mark was replaced by the bulb-and-book logo. Every file the
+  // head and the README point at must exist and be the right type, otherwise a
+  // browser tab, a home-screen icon or a share preview silently shows nothing.
+  test("favicon, logo and share image files are served", async ({ page, request }) => {
+    await page.goto("/", { waitUntil: "domcontentloaded" });
+
+    await expect(page.locator('link[rel="icon"][type="image/svg+xml"]')).toHaveAttribute("href", "/favicon.svg");
+    await expect(page.locator('meta[property="og:image"]')).toHaveAttribute("content", /\/og-image\.png$/);
+    const jsonLd = await page.locator('script[type="application/ld+json"]').textContent();
+    expect(jsonLd).toContain("/logo.png");
+
+    const assets = {
+      "/favicon.svg": /image\/svg\+xml/,
+      "/favicon.png": /image\/png/,
+      "/apple-touch-icon.png": /image\/png/,
+      "/logo.svg": /image\/svg\+xml/,
+      "/logo.png": /image\/png/,
+      "/og-image.png": /image\/png/,
+    };
+    for (const [path, type] of Object.entries(assets)) {
+      const res = await request.get(path);
+      expect(res.status(), `${path} is missing`).toBe(200);
+      expect(res.headers()["content-type"], `${path} has the wrong type`).toMatch(type);
+    }
+  });
+
+  for (const [label, viewport] of [
+    ["desktop", { width: 1280, height: 800 }],
+    ["phone", { width: 390, height: 844 }],
+  ]) {
+    test(`navbar and footer logos render on ${label}`, async ({ page }) => {
+      await page.setViewportSize(viewport);
+      await page.goto("/", { waitUntil: "domcontentloaded" });
+
+      for (const logo of [
+        page.locator('header img[src="/logo.svg"]'),
+        page.locator('footer img[src="/logo.svg"]'),
+      ]) {
+        await logo.scrollIntoViewIfNeeded();
+        await expect(logo).toBeVisible();
+        await expect(logo).toHaveAttribute("alt", "Learntopia");
+        // naturalWidth is 0 when the file failed to load or decode.
+        await expect.poll(() => logo.evaluate((img) => img.complete && img.naturalWidth)).toBeGreaterThan(0);
+        const box = await logo.boundingBox();
+        expect(box.width, "logo is too small to read").toBeGreaterThanOrEqual(40);
+        expect(box.x + box.width, "logo overflows the viewport").toBeLessThanOrEqual(viewport.width);
+      }
+
+      // The footer always shows the "Learntopia" name next to the logo; the
+      // navbar drops it on phones to make room for its controls.
+      const footerWordmark = page.locator("footer").getByText("Learntopia", { exact: true }).first();
+      await expect(footerWordmark).toBeVisible();
+      const headerWordmark = page.locator("header").getByText("Learntopia", { exact: true }).first();
+      if (label === "phone") await expect(headerWordmark).toBeHidden();
+      else await expect(headerWordmark).toBeVisible();
+    });
+  }
+
   test("footer credits link to the owner's GitHub account", async ({ page }) => {
     await page.goto("/", { waitUntil: "domcontentloaded" });
 
