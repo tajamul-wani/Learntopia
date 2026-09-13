@@ -59,7 +59,7 @@ const Home = () => {
         </div>
 
         <h1
-          className="mt-6 animate-fade-up text-balance text-[2.75rem] font-black leading-[1.05] tracking-tight sm:text-6xl md:text-7xl"
+          className="mt-6 animate-fade-up text-balance text-[3.3rem] font-black leading-[1.05] tracking-tight sm:text-6xl md:text-7xl"
           style={{ animationDelay: "0.05s" }}
         >
           <span className="text-ink-hi">{t("hero.titleStart")} </span>

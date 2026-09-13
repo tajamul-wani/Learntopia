@@ -45,7 +45,7 @@ const Footer = () => {
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-[1.6fr_1fr_1fr_1fr_1fr]">
           {/* Brand column */}
           <div>
-            <Logo />
+            <Logo wordmarkOnPhone />
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-ink-low">
               {t("footer.tagline")}
             </p>
