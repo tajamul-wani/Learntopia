@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="public/favicon.png" alt="Learntopia" width="72" height="72" />
+<img src="public/logo.svg" alt="Learntopia" width="112" height="112" />
 
 # Learntopia
 
@@ -62,7 +62,7 @@ The platform is designed to be fast, accessible, and mobile-friendly, with authe
 | **Daily Streaks & Milestone Rewards** | Consecutive daily login counter tracked with `Date.UTC` integer arithmetic (DST-safe), global and real-time across devices. Milestone popups at **7 / 15 / 30 days** grant bonus XP (**+20 / +40 / +80**), shown once per day from server-confirmed data. Resets on a missed day. |
 | **Global Leaderboard** | Public leaderboard ranking all users by total points and quiz scores. Access restricted exclusively to authenticated users. |
 | **Guest Score Preservation** | Guest quiz scores are automatically saved to the user profile when signing in or registering from the results screen. |
-| **Google Gemini AI Tutor** | Interactive slide-out AI assistant powered by Google Gemini (`AIChatDrawer.jsx`). Each course features a persona-driven AI tutor (*Robo-Py, Count AI-Cula, CoinBot, PixelBot, MarketBot, ArtBot*) rendering distinct glowing-orb vector SVG avatars (`BotAvatar.jsx`) — deliberately unlike the robot brand logo, so a course tutor is never mistaken for the app mascot — providing kid-friendly, course-contextual responses and hints in real-time. Calls go through a **Cloudflare Worker proxy** (`worker/`) that holds the Gemini API key server-side, so it never ships in the client bundle; the app only knows the proxy URL. |
+| **Google Gemini AI Tutor** | Interactive slide-out AI assistant powered by Google Gemini (`AIChatDrawer.jsx`). Each course features a persona-driven AI tutor (*Robo-Py, Count AI-Cula, CoinBot, PixelBot, MarketBot, ArtBot*) rendering distinct glowing-orb vector SVG avatars (`BotAvatar.jsx`), kept distinct from the bulb brand logo so a course tutor is never mistaken for the app itself, providing kid-friendly, course-contextual responses and hints in real-time. Calls go through a **Cloudflare Worker proxy** (`worker/`) that holds the Gemini API key server-side, so it never ships in the client bundle; the app only knows the proxy URL. |
 | **Strict Focus Mode** | Route-level navigation blocker prevents accidental loss of quiz or module progress. |
 | **Thumb-Reach Mobile Navigation** | Below `md` the hamburger and its drawer are replaced by a persistent bottom tab bar, so changing route is one thumb tap instead of two into the hardest-to-reach corner. Signed out it carries Home, Courses, Quiz and Contact; signing in swaps Contact (still in the footer) for Leaderboard and a profile tab showing the user's own avatar. It hides while a module or quiz is in progress, so it never invites the navigation Strict Focus Mode exists to block. Desktop navigation is unchanged. |
 | **Journey-Map Course View** | The syllabus renders as a winding path of clay nodes — done / current / locked — ending in a certificate node, with the course's AI tutor as a guide at the finish. Fully responsive: on phones the connecting rail is hidden, node markers shrink, and lesson cards expand to full width. |
@@ -139,6 +139,7 @@ npm run lint       # ESLint check
 npm run test:e2e       # Playwright end-to-end tests (auto-starts the dev server)
 npm run test:e2e:ui    # Playwright interactive UI mode (watch + debug)
 npm run test:rules:ci  # Firestore rules tests in the local emulator (needs Java)
+npm run test:palette   # Palette guard: fails on off-palette colours in src/ and the brand SVGs
 ```
 
 ### Firestore rules tests
@@ -155,6 +156,26 @@ npm run test:rules:ci   # starts the emulator, runs the tests, shuts it down
 
 Running locally requires a Java runtime (the emulator is a Java process); CI
 installs it automatically.
+
+### Brand assets
+
+The logo is a glowing faceted bulb with paper-cut rays, on a transparent
+background. The SVGs in `public/` are the sources:
+
+| File | Used for |
+| --- | --- |
+| `logo.svg` | Navbar, footer and this README |
+| `favicon.svg` | Browser tab and the startup splash (the same bulb, with heavier strokes so it stays crisp at 16px) |
+| `og-image.svg` | Social share card: the bulb lighting an open book, with its text stored as outlines |
+
+Every colour in them is a design token, and `npm run test:palette` fails if one
+is not. After changing an SVG, regenerate the PNGs (`favicon.png`,
+`apple-touch-icon.png`, `logo.png`, `og-image.png`) in WSL:
+
+```bash
+npm i --no-save sharp     # one-off; keeps package.json unchanged
+node scripts/gen-brand.mjs
+```
 
 ---
 
@@ -188,7 +209,9 @@ src/
 └── main.jsx
 
 e2e/                      # Playwright end-to-end specs (one file per feature area)
-test/                     # Firestore security-rules tests (emulator)
+public/                   # Brand SVG sources (logo, favicon, OG card) and generated PNGs
+scripts/gen-brand.mjs     # Rasterises the brand SVGs to PNG
+test/                     # Firestore security-rules tests (emulator) and the palette guard
 worker/                   # Cloudflare Worker — Gemini API proxy (key server-side)
 worker-sentry-linear/     # Cloudflare Worker — files Sentry errors as Linear issues
 ```
