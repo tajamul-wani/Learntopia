@@ -5,7 +5,7 @@ import { test, expect } from '@playwright/test';
 // and the React UI actually mounts (not just static HTML).
 test.describe('home page', () => {
   test('loads and renders the app', async ({ page }) => {
-    // baseURL (from playwright.config.js) + '/'  ->  http://localhost:5173/
+    // baseURL (from playwright.config.js) + '/'  ->  http://localhost:5174/
     // domcontentloaded (not the default 'load') so a slow image/font can't stall
     // the test — the assertions below auto-wait for React to actually render.
     await page.goto('/', { waitUntil: 'domcontentloaded' });

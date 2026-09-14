@@ -4,9 +4,19 @@ import { defineConfig, devices } from '@playwright/test';
 /**
  * Playwright config for Learntopia end-to-end tests.
  * @see https://playwright.dev/docs/test-configuration
+ *
+ * The app under test talks to the local Firebase Auth + Firestore emulators, not
+ * to production: no credentials are needed and no real data is read or written.
+ * Start everything with `npm run test:e2e` (see TESTING.md).
  */
+
+// Its own port, so a normal `npm run dev` (which talks to real Firebase) is never
+// reused for tests by accident.
+const PORT = 5174;
+
 export default defineConfig({
   testDir: './e2e',
+  globalSetup: './e2e/global-setup.js',
   fullyParallel: true,
   // Headroom for slow first paints when the dev server runs from a WSL /mnt/c
   // mount under parallel load. The specs still wait on DOM+mount, not on 'load'.
@@ -23,7 +33,7 @@ export default defineConfig({
   reporter: [['list'], ['html', { open: 'never' }]],
   use: {
     // Tests can use relative URLs like page.goto('/') against this base.
-    baseURL: 'http://localhost:5173',
+    baseURL: `http://localhost:${PORT}`,
     // Capture a debug trace when a test is retried.
     trace: 'on-first-retry',
   },
@@ -33,11 +43,12 @@ export default defineConfig({
     { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
   ],
 
-  // Boot the Vite dev server before tests (or reuse one already running locally),
-  // and wait until it responds. On CI it always starts a fresh server.
+  // Boot the Vite dev server in emulator mode before tests (or reuse one already
+  // running on the test port locally). On CI it always starts a fresh server.
   webServer: {
-    command: 'npm run dev',
-    url: 'http://localhost:5173',
+    command: `npm run dev -- --port ${PORT} --strictPort`,
+    url: `http://localhost:${PORT}`,
+    env: { VITE_USE_EMULATORS: 'true' },
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,
   },
