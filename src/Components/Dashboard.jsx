@@ -1,6 +1,6 @@
 import { db } from "../firebase/firebase";
-import { getDoc, doc, collection, getDocs, deleteDoc, setDoc, query, orderBy, limit } from "firebase/firestore";
-import { deleteUser } from "firebase/auth";
+import { getDoc, doc, collection, getDocs, setDoc, query, orderBy, limit } from "firebase/firestore";
+import { deleteAccountAndData, getReauthMethod, markAccountDeleted } from "../services/accountDeletion";
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "../context/ToastContext";
@@ -208,6 +208,7 @@ const Dashboard = () => {
   // Destructive profile deletion
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const [deletePassword, setDeletePassword] = useState("");
   const [deleteLoading, setDeleteLoading] = useState(false);
 
   // Sync userDetails with profile from GamificationContext
@@ -362,18 +363,25 @@ const Dashboard = () => {
     }
     setDeleteLoading(true);
     try {
-      const uid = currentUser.uid;
-      await Promise.all([
-        deleteDoc(doc(db, "Users", uid)).catch(() => {}),
-        deleteDoc(doc(db, "PublicLeaderboard", uid)).catch(() => {}),
-      ]);
-      await deleteUser(currentUser);
-      toast.accountDeleted(t("toasts.profileDeleted"));
-      navigate("/", { replace: true });
+      await deleteAccountAndData(currentUser, { password: deletePassword });
+      // The offline Firestore cache was cleared, which needs a fresh page load.
+      // The confirmation is shown once the home page has loaded.
+      markAccountDeleted();
+      window.location.replace("/");
     } catch (err) {
       console.error("Profile deletion error:", err);
-      toast.error(err.message || "Failed to delete profile. Please try again.");
-    } finally {
+      if (err.step === "reauth") {
+        const wrongPassword = ["auth/wrong-password", "auth/invalid-credential", "auth/missing-password"];
+        toast.error(
+          wrongPassword.includes(err.code)
+            ? t("toasts.deleteWrongPassword")
+            : err.code === "auth/popup-closed-by-user" || err.code === "auth/cancelled-popup-request"
+              ? t("toasts.deleteReauthCancelled")
+              : t("toasts.deleteReauthFailed")
+        );
+      } else {
+        toast.error(t("toasts.deleteFailed"));
+      }
       setDeleteLoading(false);
     }
   };
@@ -1401,6 +1409,7 @@ const Dashboard = () => {
             if (!deleteLoading) {
               setShowDeleteModal(false);
               setDeleteConfirmText("");
+              setDeletePassword("");
             }
           }}
           title={t("dashboard.deleteModalTitle")}
@@ -1410,7 +1419,10 @@ const Dashboard = () => {
           actionText={t("dashboard.deleteConfirmBtn")}
           actionVariant="danger"
           loading={deleteLoading}
-          actionDisabled={deleteConfirmText.trim().toUpperCase() !== "DELETE"}
+          actionDisabled={
+            deleteConfirmText.trim().toUpperCase() !== "DELETE" ||
+            (getReauthMethod(currentUser) === "password" && !deletePassword)
+          }
         >
           <div className="space-y-4">
             <div className="rounded-xl border border-state-danger/25 bg-state-danger/[0.08] p-4 text-xs leading-relaxed text-state-danger">
@@ -1444,9 +1456,32 @@ const Dashboard = () => {
                 onChange={(e) => setDeleteConfirmText(e.target.value)}
                 placeholder={t("dashboard.deleteConfirmPlaceholder")}
                 disabled={deleteLoading}
+                aria-label={t("dashboard.deleteConfirmPlaceholder")}
                 className="w-full rounded-lg border border-state-danger/25 bg-surface-2 px-3 py-2 text-xs font-mono text-ink-hi placeholder:text-ink-faint focus:border-state-danger focus:outline-none"
               />
             </div>
+
+            {/* Firebase only deletes an account after a recent sign-in, so the
+                user confirms who they are before anything is removed. */}
+            {getReauthMethod(currentUser) === "password" ? (
+              <div>
+                <label htmlFor="delete-password" className="mb-1.5 block text-xs font-semibold text-ink-hi">
+                  {t("dashboard.deletePasswordLabel")}
+                </label>
+                <input
+                  id="delete-password"
+                  type="password"
+                  autoComplete="current-password"
+                  value={deletePassword}
+                  onChange={(e) => setDeletePassword(e.target.value)}
+                  placeholder={t("dashboard.deletePasswordPlaceholder")}
+                  disabled={deleteLoading}
+                  className="w-full rounded-lg border border-state-danger/25 bg-surface-2 px-3 py-2 text-xs text-ink-hi placeholder:text-ink-faint focus:border-state-danger focus:outline-none"
+                />
+              </div>
+            ) : (
+              <p className="text-xs text-ink-low">{t("dashboard.deleteGoogleHint")}</p>
+            )}
           </div>
         </Modal>
       )}

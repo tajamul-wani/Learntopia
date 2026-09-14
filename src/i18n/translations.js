@@ -381,7 +381,10 @@ export const translations = {
       deleteList5: "User Account & profile credentials",
       deleteConfirmLabel: "To confirm, type {keyword} below:",
       deleteConfirmPlaceholder: "Type \"DELETE\" to confirm",
-      deleteConfirmBtn: "Delete Profile Permanently"
+      deleteConfirmBtn: "Delete Profile Permanently",
+      deletePasswordLabel: "Enter your password to confirm it's you:",
+      deletePasswordPlaceholder: "Your password",
+      deleteGoogleHint: "You'll be asked to confirm with Google before anything is deleted."
     },
     profileSetup: {
       title: "Set Up Your Profile",
@@ -1241,7 +1244,10 @@ export const translations = {
       deleteList5: "Cuenta de usuario y credenciales de perfil",
       deleteConfirmLabel: "Para confirmar, escribe {keyword} abajo:",
       deleteConfirmPlaceholder: "Escribe \"DELETE\" para confirmar",
-      deleteConfirmBtn: "Eliminar Perfil Permanentemente"
+      deleteConfirmBtn: "Eliminar Perfil Permanentemente",
+      deletePasswordLabel: "Escribe tu contraseña para confirmar que eres tú:",
+      deletePasswordPlaceholder: "Tu contraseña",
+      deleteGoogleHint: "Te pediremos confirmar con Google antes de eliminar nada."
     },
     profileSetup: {
       title: "Configura Tu Perfil",
