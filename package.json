@@ -5,13 +5,14 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && node scripts/check-dist-no-emulator.mjs",
     "lint": "eslint .",
     "preview": "vite preview",
     "test:palette": "node --test test/palette.test.js",
     "test:rules": "node --test test/firestore.rules.test.js",
     "test:rules:ci": "firebase emulators:exec --only firestore --project demo-learntopia \"node --test test/firestore.rules.test.js\"",
-    "test:e2e": "playwright test",
+    "emulators": "npx --yes firebase-tools@13 emulators:start --only auth,firestore --project demo-learntopia",
+    "test:e2e": "npx --yes firebase-tools@13 emulators:exec --only auth,firestore --project demo-learntopia \"playwright test\"",
     "test:e2e:ui": "playwright test --ui",
     "gen:avatars": "node scripts/gen-avatars.mjs"
   },
