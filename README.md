@@ -97,7 +97,7 @@ The platform is designed to be fast, accessible, and mobile-friendly, with authe
 | Error triage | Sentry → Linear via a Cloudflare Worker webhook (see `worker-sentry-linear/`) |
 | Notifications | Hybrid toasts + centered modal (`ToastContext`) |
 | Animation (icons) | dotLottie player (self-hosted WASM) with SVG fallback |
-| Testing | Playwright (end-to-end) + Firestore rules tests (emulator) + a palette guard (`npm run test:palette`) that fails the build on off-palette colours — all run in CI on every PR |
+| Testing | Playwright (end-to-end, signed-in flows included, against the Firebase Auth + Firestore emulators with no credentials) + Firestore rules tests (emulator) + a palette guard (`npm run test:palette`) that fails the build on off-palette colours. All three run in CI on every PR. |
 
 ---
 
@@ -136,8 +136,9 @@ npm run dev        # Start Vite dev server with HMR
 npm run build      # Production build to /dist
 npm run preview    # Preview production build locally
 npm run lint       # ESLint check
-npm run test:e2e       # Playwright end-to-end tests (auto-starts the dev server)
-npm run test:e2e:ui    # Playwright interactive UI mode (watch + debug)
+npm run test:e2e       # Playwright end-to-end tests against the Firebase emulators (needs Java)
+npm run test:e2e:ui    # Playwright interactive UI mode (run `npm run emulators` first)
+npm run emulators      # Start the local Auth + Firestore emulators
 npm run test:rules:ci  # Firestore rules tests in the local emulator (needs Java)
 npm run test:palette   # Palette guard: fails on off-palette colours in src/ and the brand SVGs
 ```
@@ -156,6 +157,27 @@ npm run test:rules:ci   # starts the emulator, runs the tests, shuts it down
 
 Running locally requires a Java runtime (the emulator is a Java process); CI
 installs it automatically.
+
+### End-to-end tests
+
+The Playwright suite, including the signed-in course specs, runs the app
+against the local Firebase **Auth and Firestore emulators** under the
+emulator-only `demo-learntopia` project. No Firebase account, credentials or
+secrets are needed, and tests never read or write production data. Each
+signed-in test creates a fresh account and signs in through the normal login
+form; the app has no auth bypass or test mode.
+
+```bash
+npm run test:e2e        # starts the emulators, runs the suite, stops them (same as CI)
+
+# while iterating on a spec
+npm run emulators       # terminal 1
+npx playwright test --ui  # terminal 2
+```
+
+The emulator connection in `src/firebase/firebase.js` only exists in dev
+builds. `npm run build` checks the production bundle and fails if any emulator
+code is in it. Java 17+ is required, as for the rules tests.
 
 ### Brand assets
 
