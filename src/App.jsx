@@ -1,4 +1,4 @@
-import { lazy } from "react";
+import { lazy, useEffect } from "react";
 import {
   createBrowserRouter,
   createRoutesFromElements,
@@ -10,13 +10,14 @@ import AdminLayout from "./layout/AdminLayout";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { GamificationProvider } from "./context/GamificationContext";
 import { SoundProvider } from "./context/SoundContext";
-import { LanguageProvider } from "./context/LanguageContext";
+import { LanguageProvider, useLanguage } from "./context/LanguageContext";
 import { NavChromeProvider } from "./context/NavChromeContext";
-import { ToastProvider } from "./context/ToastContext";
+import { ToastProvider, toast } from "./context/ToastContext";
 import NotificationModal from "./Components/ui/NotificationModal";
 import ToastStack from "./Components/ui/ToastStack";
 import CelebrationOverlay from "./Components/CelebrationOverlay";
 import EditProfileView from "./Components/EditProfileView";
+import { consumeAccountDeletedFlag } from "./services/accountDeletedNotice";
 
 // Lazy-load pages so each route ships as its own chunk. While a chunk loads,
 // RootLayout's Suspense boundary shows a PageSkeleton.
@@ -72,6 +73,19 @@ const router = createBrowserRouter(
 // experience is consistent. Admins skip this entirely.
 const AppRoot = () => {
   const { currentUser, needsProfileSetup, isAdmin } = useAuth();
+  const { t } = useLanguage();
+
+  // Confirm an account deletion after the reload that finishes it. Deferred one
+  // tick: the toast provider registers in its own effect, which runs after this
+  // one because it is an ancestor.
+  useEffect(() => {
+    if (!consumeAccountDeletedFlag()) return undefined;
+    const id = setTimeout(() => toast.accountDeleted(t("toasts.profileDeleted")), 0);
+    return () => clearTimeout(id);
+    // Runs once on load; `t` changing later must not re-show the message.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   if (currentUser && !isAdmin && needsProfileSetup) {
     return <EditProfileView required />;
   }

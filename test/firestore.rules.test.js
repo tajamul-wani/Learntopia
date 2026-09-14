@@ -29,6 +29,7 @@ import {
   deleteDoc,
   addDoc,
   collection,
+  writeBatch,
 } from "firebase/firestore";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -177,9 +178,15 @@ describe("Users/{uid} profile", () => {
     );
   });
 
-  test("profiles cannot be deleted from the client", async () => {
+  test("a profile cannot be deleted while its public leaderboard entry remains", async () => {
     await seed("Users/alice", validProfile());
+    await seed("PublicLeaderboard/alice", { uid: "alice", totalPoints: 10 });
     await assertFails(deleteDoc(doc(alice(), "Users/alice")));
+  });
+
+  test("a user cannot delete another user's profile", async () => {
+    await seed("Users/alice", validProfile());
+    await assertFails(deleteDoc(doc(bob(), "Users/alice")));
   });
 });
 
@@ -228,6 +235,7 @@ describe("Users/{uid}/quizAttempts (append-only)", () => {
   });
 
   test("attempts are immutable once written", async () => {
+    await seed("Users/alice", validProfile());
     await seed("Users/alice/quizAttempts/a1", validAttempt());
     await assertFails(
       updateDoc(doc(alice(), "Users/alice/quizAttempts/a1"), { score: 10 })
@@ -472,6 +480,68 @@ describe("BugReports (admin-only)", () => {
     await assertSucceeds(
       setDoc(doc(admin(), "BugReports/b1"), { note: "something to fix" })
     );
+  });
+});
+
+describe("Account deletion (wipes everything the user owns)", () => {
+  // Everything a learner owns, as the app writes it.
+  const seedLearner = async (uid) => {
+    await seed(`Users/${uid}`, { ...validProfile(), email: `${uid}@example.com` });
+    await seed(`PublicLeaderboard/${uid}`, { uid, displayName: uid, totalPoints: 300, xp: 300 });
+    await seed(`Users/${uid}/enrolledCourses/1`, { courseId: 1, completed: false, completedModules: [0], totalModules: 4, xpAwardedModules: [0] });
+    await seed(`Users/${uid}/quizAttempts/a1`, { quizId: "python", quizTitle: "Python", score: 8, totalQuestions: 10, completedAt: new Date() });
+    await seed(`QuizLeaderboards/python/Scores/${uid}`, { uid, score: 8 });
+  };
+  const ownedSubDocs = (uid) => [
+    `Users/${uid}/enrolledCourses/1`,
+    `Users/${uid}/quizAttempts/a1`,
+    `QuizLeaderboards/python/Scores/${uid}`,
+  ];
+
+  test("owner deletes the profile and public entry together in one batch", async () => {
+    await seedLearner("alice");
+    const db = alice();
+    const batch = writeBatch(db);
+    batch.delete(doc(db, "PublicLeaderboard/alice"));
+    batch.delete(doc(db, "Users/alice"));
+    await assertSucceeds(batch.commit());
+  });
+
+  test("the public entry alone cannot be deleted while the profile exists", async () => {
+    await seedLearner("alice");
+    await assertFails(deleteDoc(doc(alice(), "PublicLeaderboard/alice")));
+  });
+
+  test("ANTI-FARMING: enrollments, attempts and quiz scores are not deletable while the profile exists", async () => {
+    await seedLearner("alice");
+    for (const path of ownedSubDocs("alice")) {
+      await assertFails(deleteDoc(doc(alice(), path)));
+    }
+  });
+
+  test("once the profile is gone, the owner can delete every remaining document", async () => {
+    await seedLearner("alice");
+    const db = alice();
+    const batch = writeBatch(db);
+    batch.delete(doc(db, "PublicLeaderboard/alice"));
+    batch.delete(doc(db, "Users/alice"));
+    await batch.commit();
+    for (const path of ownedSubDocs("alice")) {
+      await assertSucceeds(deleteDoc(doc(db, path)));
+    }
+  });
+
+  test("another user can never delete someone's data, even after their profile is gone", async () => {
+    await seedLearner("alice");
+    await testEnv.withSecurityRulesDisabled(async (ctx) => {
+      // One Firestore instance per context: calling ctx.firestore() twice throws.
+      const adminDb = ctx.firestore();
+      await deleteDoc(doc(adminDb, "PublicLeaderboard/alice"));
+      await deleteDoc(doc(adminDb, "Users/alice"));
+    });
+    for (const path of ownedSubDocs("alice")) {
+      await assertFails(deleteDoc(doc(bob(), path)));
+    }
   });
 });
 

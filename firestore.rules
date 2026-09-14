@@ -141,6 +141,20 @@ service cloud.firestore {
           && (currentBadges.size() == 0 || nextBadges.hasAll(currentBadges));
     }
 
+    // --- Account deletion ------------------------------------------------
+    // Deleting an account must remove everything the user owns. The client
+    // deletes in this order (src/services/accountDeletion.js):
+    //   1. the profile and the public leaderboard entry, in one batch
+    //   2. every remaining owned document (enrollments, quiz attempts, quiz
+    //      leaderboard scores, private data)
+    //   3. the Auth account
+    // Step 2 documents are only deletable once the profile is gone. Outside
+    // account deletion they stay non-deletable, so a user cannot delete an
+    // enrollment or attempt to wipe its anti-farming markers and re-earn XP.
+    function profileDeleted(userId) {
+      return !existsAfter(/databases/$(database)/documents/Users/$(userId));
+    }
+
     // --- User profile ----------------------------------------------------
 
     match /Users/{userId} {
@@ -148,23 +162,29 @@ service cloud.firestore {
       allow read:   if isOwner(userId) || isAdmin();
       allow create: if isOwner(userId) && isValidProfile();
       allow update: if isOwner(userId) && isValidProfileUpdate(userId);
-      allow delete: if false; // profiles are not deleted from the client
+      // Only as part of account deletion: the public leaderboard entry must be
+      // gone after the same write, so a real name can't be left behind on it.
+      allow delete: if isOwner(userId)
+          && !existsAfter(/databases/$(database)/documents/PublicLeaderboard/$(userId));
 
       // --- Quiz attempts (append-only history) --------------------------
-      // Owner can read and add attempts (admin may read any); nobody edits or
-      // deletes past ones — this keeps the score record tamper-evident.
+      // Owner can read and add attempts (admin may read any); nobody edits
+      // past ones, which keeps the score record tamper-evident. Deletable by
+      // the owner only during account deletion.
       match /quizAttempts/{attemptId} {
         allow read:   if isOwner(userId) || isAdmin();
         allow create: if isOwner(userId) && isValidAttempt();
-        allow update, delete: if false;
+        allow update: if false;
+        allow delete: if isOwner(userId) && profileDeleted(userId);
       }
 
       // --- Enrolled courses + progress ------------------------------------
       // Owner-only writes (admin may read any). Enroll and per-module progress
       // writes are allowed; flagging completed requires all modules done.
+      // Deletable by the owner only during account deletion.
       match /enrolledCourses/{courseId} {
         allow read:   if isOwner(userId) || isAdmin();
-        allow delete: if isOwner(userId);
+        allow delete: if isOwner(userId) && profileDeleted(userId);
         allow create, update: if isOwner(userId) && isValidEnrollment();
       }
 
@@ -180,19 +200,23 @@ service cloud.firestore {
 
     // --- Quiz Leaderboards -----------------------------------------------
     // Any authenticated user may read quiz leaderboards (needed for the
-    // Leaderboard page). A user may only write their OWN score entry.
+    // Leaderboard page). A user may only write their OWN score entry, and may
+    // delete it only during account deletion.
     match /QuizLeaderboards/{quizId}/Scores/{userId} {
       allow read: if isSignedIn();
-      allow write: if isOwner(userId);
+      allow create, update: if isOwner(userId);
+      allow delete: if isOwner(userId) && profileDeleted(userId);
     }
 
     // --- Public Leaderboard ----------------------------------------------
     // Any authenticated user may read (needed for the Global Leaderboard tab).
     // A user may only write/update their OWN entry, and the shape check ensures
-    // NO email/PII is ever stored in this world-readable collection.
+    // NO email/PII is ever stored in this world-readable collection. Deleted
+    // only together with the profile, during account deletion.
     match /PublicLeaderboard/{userId} {
       allow read: if isSignedIn();
-      allow write: if isOwner(userId) && isValidPublicEntry();
+      allow delete: if isOwner(userId) && profileDeleted(userId);
+      allow create, update: if isOwner(userId) && isValidPublicEntry();
     }
 
     // --- Contact Messages ------------------------------------------------

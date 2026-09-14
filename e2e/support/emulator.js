@@ -43,7 +43,7 @@ function toFirestoreFields(data) {
   return Object.fromEntries(Object.entries(data).map(([k, v]) => [k, encode(v)]));
 }
 
-async function writeDoc(path, data) {
+export async function writeDoc(path, data) {
   const res = await fetch(
     `${FIRESTORE_EMULATOR}/v1/projects/${PROJECT_ID}/databases/(default)/documents/${path}`,
     {
@@ -55,6 +55,30 @@ async function writeDoc(path, data) {
   if (!res.ok) throw new Error(`Firestore emulator write to ${path} failed: ${res.status} ${await res.text()}`);
 }
 
+/** True if the document exists in the Firestore emulator (reads past the rules). */
+export async function docExists(path) {
+  const res = await fetch(
+    `${FIRESTORE_EMULATOR}/v1/projects/${PROJECT_ID}/databases/(default)/documents/${path}`,
+    { headers: { Authorization: "Bearer owner" } }
+  );
+  if (res.status === 404) return false;
+  if (!res.ok) throw new Error(`Firestore emulator read of ${path} failed: ${res.status} ${await res.text()}`);
+  return true;
+}
+
+/** True if the email + password still sign in, i.e. the Auth account exists. */
+export async function canSignIn({ email, password }) {
+  const res = await fetch(
+    `${AUTH_EMULATOR}/identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=demo-api-key`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password, returnSecureToken: true }),
+    }
+  );
+  return res.ok;
+}
+
 function todayString() {
   const d = new Date();
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
@@ -62,8 +86,9 @@ function todayString() {
 
 /**
  * Creates a learner with a finished profile. Returns { uid, email, password, displayName }.
+ * `points` > 0 also gives them a public leaderboard entry with that score.
  */
-export async function createLearner(testInfo) {
+export async function createLearner(testInfo, { points = 0 } = {}) {
   const suffix = `${Date.now()}-${testInfo.workerIndex}-${Math.random().toString(36).slice(2, 8)}`;
   const email = `learner-${suffix}@example.test`;
   const displayName = `Tester${suffix.replace(/\D/g, "").slice(-6)}`;
@@ -74,12 +99,24 @@ export async function createLearner(testInfo) {
     fullName: displayName,
     displayName,
     avatarId: "astro-girl",
-    totalPoints: 0,
-    xp: 0,
+    totalPoints: points,
+    xp: points,
     badges: ["Newcomer"],
     streak: 1,
     lastLoginDate: todayString(),
   });
+
+  if (points > 0) {
+    await writeDoc(`PublicLeaderboard/${uid}`, {
+      uid,
+      displayName,
+      avatarId: "astro-girl",
+      totalPoints: points,
+      xp: points,
+      streak: 1,
+      badges: ["Newcomer"],
+    });
+  }
 
   return { uid, email, password: PASSWORD, displayName };
 }
