@@ -13,16 +13,13 @@ jobs:
     - uses: actions/setup-node@v4
       with:
         node-version: 20
-    # The dev server Playwright starts needs Firebase config to render the app,
-    # same as the build job. Without it the app can't initialize and tests fail.
-    - name: Create .env from secrets
-      run: |
-        echo "VITE_API_KEY=${{ secrets.VITE_API_KEY }}" >> .env
-        echo "VITE_MESSAGING_SENDER_ID=${{ secrets.VITE_MESSAGING_SENDER_ID }}" >> .env
-        echo "VITE_APP_ID=${{ secrets.VITE_APP_ID }}" >> .env
-        # Optional hardening — blank until the secrets are added; features no-op when empty.
-        echo "VITE_SENTRY_DSN=${{ secrets.VITE_SENTRY_DSN }}" >> .env
-        echo "VITE_RECAPTCHA_SITE_KEY=${{ secrets.VITE_RECAPTCHA_SITE_KEY }}" >> .env
+    # No Firebase secrets: the app under test runs against the local Auth and
+    # Firestore emulators with a demo- project id, so it never reaches production.
+    # The emulators are Java processes.
+    - uses: actions/setup-java@v4
+      with:
+        distribution: temurin
+        java-version: 17
     - name: Install dependencies
       run: npm ci
     # Fails the build if an off-palette colour or hardcoded hex creeps into the UI.
@@ -30,12 +27,10 @@ jobs:
       run: npm run test:palette
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
-    # Note: the signed-in course specs (e2e/course-experience.spec.js) skip here.
-    # They need a throwaway Firebase account because /course/:id is auth-gated.
-    # To enable, add E2E_EMAIL / E2E_PASSWORD as repo secrets and pass them to
-    # this step as env vars.
+    # Starts the emulators, runs the whole suite (signed-in specs included), then
+    # shuts them down. The exit code is Playwright's, so a failing test fails CI.
     - name: Run Playwright tests
-      run: npx playwright test
+      run: npm run test:e2e
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
