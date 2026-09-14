@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && node scripts/check-dist-no-emulator.mjs",
     "lint": "eslint .",
     "preview": "vite preview",
     "test:palette": "node --test test/palette.test.js",
