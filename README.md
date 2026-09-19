@@ -89,6 +89,7 @@ The platform is designed to be fast, accessible, and mobile-friendly, with authe
 |---|---|
 | Framework | React 18 (Vite) |
 | Styling | Tailwind CSS + custom design tokens |
+| Fonts | Fredoka and Poppins, bundled with the app via `@fontsource` (no Google Fonts request) |
 | Routing | React Router DOM v7 |
 | Animation | GSAP + @gsap/react |
 | Backend | Firebase Authentication + Cloud Firestore |

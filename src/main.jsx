@@ -1,4 +1,5 @@
 import { createRoot } from 'react-dom/client'
+import './fonts.js'
 import './index.css'
 import App from './App.jsx'
 import { initMonitoring } from './lib/monitoring.js'
