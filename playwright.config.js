@@ -25,7 +25,11 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   // Retry flaky tests on CI only.
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  // Locally, Playwright would default to half the CPU cores (7 on a 14-core
+  // machine). That many browsers loading the dev server's module files at once
+  // stalls random page loads past the timeout, so cap it. Override for one run
+  // with `npx playwright test --workers=N`.
+  workers: process.env.CI ? 1 : 3,
   // 'list' prints each test live in the terminal; the html report is still
   // generated but NOT auto-served (open:'never'), so the run never blocks the
   // terminal waiting on the report server. View it later with:

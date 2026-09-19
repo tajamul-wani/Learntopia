@@ -116,10 +116,13 @@ test.describe("account deletion (LT-84)", () => {
   });
 
   test("when the #1 learner deletes their account, the runner-up becomes #1", async ({ page }, testInfo) => {
-    // Far above anything other specs create, so these three are the top of the board.
-    const first = await createLearner(testInfo, { points: 900000 });
-    const second = await createLearner(testInfo, { points: 800000 });
-    await createLearner(testInfo, { points: 700000 });
+    // Scores are based on the current time, so this run's learners outrank every
+    // other spec's learners and anything an earlier run left behind when the
+    // emulators stay up between runs (`npm run emulators`).
+    const base = Math.floor(Date.now() / 1000) * 10;
+    const first = await createLearner(testInfo, { points: base + 3 });
+    const second = await createLearner(testInfo, { points: base + 2 });
+    await createLearner(testInfo, { points: base + 1 });
 
     await signIn(page, first);
     await openDeleteDialog(page);
