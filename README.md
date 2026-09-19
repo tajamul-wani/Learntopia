@@ -175,6 +175,10 @@ npm run emulators       # terminal 1
 npx playwright test --ui  # terminal 2
 ```
 
+Locally the suite runs 3 tests at a time, which the dev server handles
+reliably; CI runs one at a time. Use `npx playwright test --workers=N` to change
+it for a single run.
+
 The emulator connection in `src/firebase/firebase.js` only exists in dev
 builds. `npm run build` checks the production bundle and fails if any emulator
 code is in it. Java 17+ is required, as for the rules tests.
