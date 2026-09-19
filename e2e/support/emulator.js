@@ -1,4 +1,4 @@
-import { test as base, expect } from "@playwright/test";
+import { test as base, expect } from "./test.js";
 
 // Helpers for specs that need a signed-in learner.
 //

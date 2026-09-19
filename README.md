@@ -89,6 +89,7 @@ The platform is designed to be fast, accessible, and mobile-friendly, with authe
 |---|---|
 | Framework | React 18 (Vite) |
 | Styling | Tailwind CSS + custom design tokens |
+| Fonts | Fredoka and Poppins, bundled with the app via `@fontsource` (no Google Fonts request) |
 | Routing | React Router DOM v7 |
 | Animation | GSAP + @gsap/react |
 | Backend | Firebase Authentication + Cloud Firestore |
@@ -166,6 +167,11 @@ emulator-only `demo-learntopia` project. No Firebase account, credentials or
 secrets are needed, and tests never read or write production data. Each
 signed-in test creates a fresh account and signs in through the normal login
 form; the app has no auth bypass or test mode.
+
+The suite needs no internet connection. Every spec imports `test` from
+`e2e/support/test.js`, which blocks any request to a host other than this
+machine and fails the test with the URL, so a new third-party dependency shows
+up immediately instead of as a random timeout.
 
 ```bash
 npm run test:e2e        # starts the emulators, runs the suite, stops them (same as CI)
