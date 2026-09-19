@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./support/test.js";
 
 // LT-90: Fredoka and Poppins are bundled with the app instead of loaded from
 // Google Fonts, so the page never waits on a third-party server to start.

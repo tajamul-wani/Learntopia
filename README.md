@@ -168,6 +168,11 @@ secrets are needed, and tests never read or write production data. Each
 signed-in test creates a fresh account and signs in through the normal login
 form; the app has no auth bypass or test mode.
 
+The suite needs no internet connection. Every spec imports `test` from
+`e2e/support/test.js`, which blocks any request to a host other than this
+machine and fails the test with the URL, so a new third-party dependency shows
+up immediately instead of as a random timeout.
+
 ```bash
 npm run test:e2e        # starts the emulators, runs the suite, stops them (same as CI)
 

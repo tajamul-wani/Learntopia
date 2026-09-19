@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./support/test.js";
 
 // Guards the ownership/SEO rework:
 //   - The repo moved to the tajamul-wani account, so credit links must point there.

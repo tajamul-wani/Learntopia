@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './support/test.js';
 
 // First end-to-end smoke test — no login needed.
 // It proves three things at once: the app boots, the correct page is served,

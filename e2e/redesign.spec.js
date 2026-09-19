@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./support/test.js";
 
 // Regression net for the V2 clay redesign. Two things it guarantees on the
 // public pages:

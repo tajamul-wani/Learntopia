@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./support/test.js";
 
 // LT-61: the featured-course cards on the Home page gate enrollment behind login.
 // Logged-out only — no account needed here, so this always runs (the signed-in

@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./support/test.js";
 
 // LT-77: below md the hamburger and its drawer are replaced by a persistent
 // bottom tab bar, so a route change is one thumb tap instead of two.
