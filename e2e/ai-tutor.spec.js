@@ -8,6 +8,9 @@ import { test, expect } from "./support/emulator.js";
 // Worker or Gemini.
 
 const COURSE_PATH = "/course/1";
+// playwright.config.js points the app's tutor endpoint here, so these stubs
+// always apply, locally and in CI, and no request leaves the machine.
+const TUTOR_ENDPOINT = "**/__tutor-proxy";
 const INTERNALS = /VITE_|import\.meta|Vite dev server|proxy Worker|Gemini proxy|API key/i;
 
 const openTutor = async (page) => {
@@ -28,11 +31,8 @@ const ask = async (page) => {
 test.describe("AI tutor", () => {
   test("a failing tutor request shows a friendly message, never internals", async ({ page, learner }) => {
     expect(learner.uid).toBeTruthy();
-    // Stand in for the Gemini proxy Worker: page routes win over the shared
-    // block on external hosts, so nothing leaves this machine.
-    await page.route(
-      (url) => !["localhost", "127.0.0.1"].includes(url.hostname),
-      (route) => route.fulfill({ status: 500, contentType: "application/json", body: '{"error":"upstream"}' })
+    await page.route(TUTOR_ENDPOINT, (route) =>
+      route.fulfill({ status: 500, contentType: "application/json", body: '{"error":"upstream"}' })
     );
 
     await openTutor(page);
@@ -46,14 +46,12 @@ test.describe("AI tutor", () => {
 
   test("a successful reply is shown to the learner", async ({ page, learner }) => {
     expect(learner.uid).toBeTruthy();
-    await page.route(
-      (url) => !["localhost", "127.0.0.1"].includes(url.hostname),
-      (route) =>
-        route.fulfill({
-          status: 200,
-          contentType: "application/json",
-          body: JSON.stringify({ candidates: [{ content: { parts: [{ text: "A variable is a labelled box." }] } }] }),
-        })
+    await page.route(TUTOR_ENDPOINT, (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({ candidates: [{ content: { parts: [{ text: "A variable is a labelled box." }] } }] }),
+      })
     );
 
     await openTutor(page);
