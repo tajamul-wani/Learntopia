@@ -4,10 +4,10 @@
 
 # Learntopia
 
-**An interactive e-learning platform for children and teenagers.**  
-Structured courses, timed quizzes, real-time progress tracking, and a global leaderboard — all in one place.
+**A free e-learning platform for children and teenagers, ages 7 to 16.**
+Interactive courses, timed quizzes, XP and badges, and a global leaderboard.
 
-[![Live Demo](https://img.shields.io/badge/Live-learntopia--react.web.app-7c3aed?style=for-the-badge&logo=firebase&logoColor=white)](https://learntopia-react.web.app)
+[![Live](https://img.shields.io/badge/Live-learntopia--react.web.app-7c3aed?style=for-the-badge&logo=firebase&logoColor=white)](https://learntopia-react.web.app)
 [![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://reactjs.org)
 [![Firebase](https://img.shields.io/badge/Firebase-Firestore%20%2B%20Auth-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)](https://firebase.google.com)
 [![Vite](https://img.shields.io/badge/Vite-7-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev)
@@ -17,16 +17,18 @@ Structured courses, timed quizzes, real-time progress tracking, and a global lea
 
 ---
 
-## Table of Contents
+## Contents
 
 - [Overview](#overview)
 - [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Getting Started](#getting-started)
-- [Project Structure](#project-structure)
-- [Environment Variables](#environment-variables)
+- [Tech stack](#tech-stack)
+- [Getting started](#getting-started)
+- [Testing](#testing)
+- [Project structure](#project-structure)
+- [Environment variables](#environment-variables)
 - [Deployment](#deployment)
-- [Security](#security)
+- [Security and privacy](#security-and-privacy)
+- [Brand assets](#brand-assets)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -34,274 +36,347 @@ Structured courses, timed quizzes, real-time progress tracking, and a global lea
 
 ## Overview
 
-Learntopia is a full-stack e-learning web application that allows students to enrol in topic-specific course tracks, complete structured modules, and test their knowledge with randomized timed quizzes. Progress, scores, and streaks are stored securely in Firestore and visualised on a personal dashboard and a public leaderboard.
+Learntopia teaches coding, maths, money and creative skills to learners aged 7
+to 16. Courses are split into short modules with lessons and exercises, quizzes
+are timed and scored, and progress earns XP, levels and badges. Everything is
+free, with no ads.
 
-The platform is designed to be fast, accessible, and mobile-friendly, with authentication via Firebase (email/password and Google OAuth) and continuous deployment to Firebase Hosting.
+Visitors can browse courses and take quizzes as guests. Signing in saves
+progress, unlocks the dashboard and the leaderboard, and lets a learner pick a
+display name and avatar.
+
+The app is a React single-page app on Firebase: Authentication for sign-in,
+Firestore for data, Hosting for delivery, and two Cloudflare Workers for jobs
+that must not run in the browser. It is built to work on phones first and is
+translated into English and Spanish.
 
 ---
 
 ## Features
 
-| Feature | Description |
-|---|---|
-| **Custom Avatars & Profile Photos** | Custom display name and 16 pre-generated static SVG avatars (DiceBear "Adventurer", served as cached files — the library never ships to the client). A Girls/Boys/All filter in the picker, with each avatar's hair pinned long or short so the face matches its tab. Authenticated users can optionally toggle their Google account photo on private surfaces (Dashboard, Navbar) with automatic fallback to the avatar. Real photos are strictly excluded from the public leaderboard for COPPA/child-privacy safety (enforced in code, Firestore rules, and tests). |
-| **Hybrid Notifications** | Zero-dependency, i18n notification system: corner toasts (auto-dismiss, hover-pause, progress bar) for routine feedback, and a centered clay modal for big moments (sign-up welcome, profile deletion). Each carries a tone accent bar and a soft tone-colored glow so it stands out, with a green success animation on positive confirmations (sign-in, sign-out, profile saved). One shared config drives each type's tone, icon, localized copy, and a distinct sound played once per trigger. |
-| **Profile Setup & Editing** | First-time users complete a **required** full-screen profile step (display name + avatar). Editing later opens a **dedicated Edit Profile view** (not a popup) reached from the dashboard — a two-column layout with the account email shown read-only. Both flows share one component. |
-| **Instant Branded Startup Splash** | Fast startup performance with an inline branded splash screen in `index.html` and `AppLoader` that paints on the very first frame to eliminate white/blank screens during initial script loading and auth resolution. |
-| **Multi-Language (i18n)** | Global localization switcher. **English 🇺🇸 and Spanish 🇪🇸 are live and fully translated** (UI, all courses, quizzes, docs, legal pages). Additional languages are staged in the data and stay hidden from the switcher until each is complete end-to-end (a partial translation is worse UX than none). |
-| **Gamified Course Overhaul** | Step-by-step interactive courses designed for kids aged 7-14 with rich learning cards (Story, Concept, Fun Fact, Pro Tip, Example, Activity, Recap). |
-| **Web Audio SFX System** | Native Web Audio API sound synthesizer ($0 cost, 0 dependencies) with a persistent mute toggle. Distinct cues for clicks, correct/incorrect answers, module completion, level-ups, badge unlocks, streak milestones, and account actions (login, logout, profile saved/deleted), each played once per trigger. |
-| **LessonPlayer Engine** | Paginated step-by-step lesson player with visual theme cards, progress dots, and code syntax blocks. |
-| **Multi-Type Exercise Engine** | Comprehension challenges featuring Multiple Choice, True/False, Fill-in-the-Blank, and Tap-to-Connect Matching Pairs. |
-| **XP, Levels & Animated Badges** | Earn XP per module (+50) and course (+100), leveling from Rookie Coder to Grandmaster. Achievements appear as animated badge medallions (dotLottie, each with a detailed SVG fallback): Newcomer (retires at Level 3), First Quiz, Quiz Ace, First Course, Scholar, Rising Star, and Code Wizard, plus stored awards — Champion (leaderboard #1), Streak Master (30-day streak), Perfect Score (100% on a quiz), and Sharp Memory (barely any mistakes across quizzes or a full course). Milestone moments (level-up, badge earned, reaching #1) trigger a global, full-screen celebration that plays the matching animation with a success sound and then auto-fades (click or hover to control it; queued in sequence when several land at once, and honoring reduced-motion); the player's WASM is self-hosted, and every animation degrades to its SVG if it cannot load. |
-| **XP Anti-Farming** | XP is earned once, not repeated. A module grants its XP only on first completion, and a quiz retake awards XP only for beating the previous best; either way the user gets a clear "no new XP" message instead of silent nothing. Firestore rules bound a quiz score by its question count and reject impossible course-accuracy counters, so scores can't be inflated from the client. |
-| **Course Catalog** | Searchable catalog of multi-module course tracks with enrollment, per-module progress, and course completion tracking. |
-| **Timed Quizzes** | 15-second per-question randomized quizzes with instant feedback, score logging, and per-quiz leaderboards. |
-| **Quiz Completion Indicators** | Done badge and best score on completed quiz cards; Start button becomes Retake. Incomplete attempts are never logged. |
-| **Personal Dashboard** | Student hub with a profile header (avatar, level badge, animated achievement medallions, real level-XP progress bar), 4 metric cards (XP, streak, enrolled, completed), 3-tier course cards, sub-navigation views (Overview, Enrolled Courses, Completed, Quiz History, plus an Unenrolled tab that appears when you leave a course), a Continue-Learning spotlight, and a Daily Streak weekly tracker. Restrained core-color design (violet + sky accents, gold for rewards and streaks; status colors only for status) and fully responsive. |
-| **Daily Streaks & Milestone Rewards** | Consecutive daily login counter tracked with `Date.UTC` integer arithmetic (DST-safe), global and real-time across devices. Milestone popups at **7 / 15 / 30 days** grant bonus XP (**+20 / +40 / +80**), shown once per day from server-confirmed data. Resets on a missed day. |
-| **Global Leaderboard** | Public leaderboard ranking all users by total points and quiz scores. Access restricted exclusively to authenticated users. |
-| **Guest Score Preservation** | Guest quiz scores are automatically saved to the user profile when signing in or registering from the results screen. |
-| **Google Gemini AI Tutor** | Interactive slide-out AI assistant powered by Google Gemini (`AIChatDrawer.jsx`). Each course features a persona-driven AI tutor (*Robo-Py, Count AI-Cula, CoinBot, PixelBot, MarketBot, ArtBot*) rendering distinct glowing-orb vector SVG avatars (`BotAvatar.jsx`), kept distinct from the bulb brand logo so a course tutor is never mistaken for the app itself, providing kid-friendly, course-contextual responses and hints in real-time. Calls go through a **Cloudflare Worker proxy** (`worker/`) that holds the Gemini API key server-side, so it never ships in the client bundle; the app only knows the proxy URL. |
-| **Strict Focus Mode** | Route-level navigation blocker prevents accidental loss of quiz or module progress. |
-| **Thumb-Reach Mobile Navigation** | Below `md` the hamburger and its drawer are replaced by a persistent bottom tab bar, so changing route is one thumb tap instead of two into the hardest-to-reach corner. Signed out it carries Home, Courses, Quiz and Contact; signing in swaps Contact (still in the footer) for Leaderboard and a profile tab showing the user's own avatar. It hides while a module or quiz is in progress, so it never invites the navigation Strict Focus Mode exists to block. Desktop navigation is unchanged. |
-| **Journey-Map Course View** | The syllabus renders as a winding path of clay nodes — done / current / locked — ending in a certificate node, with the course's AI tutor as a guide at the finish. Fully responsive: on phones the connecting rail is hidden, node markers shrink, and lesson cards expand to full width. |
-| **Gated Enrollment** | Featured course cards use an **Enroll now** call to action that sends logged-out visitors to login first (carrying a `returnTo`), so after signing in they land on the course they picked and are enrolled on arrival. Logged-in visitors go straight through. |
-| **Course Controls** | Resume or reset courses from the dashboard. Unenrolling is non-destructive — progress and XP are kept and the course moves to an Unenrolled tab, where it (and the catalog, flagged "Rejoin") can restore it anytime. |
-| **Google OAuth** | One-tap sign-in with Google alongside standard email/password authentication. |
-| **Smart Auth Guidance** | Interactive account guidance modals and seamless email pre-filling when transitioning between `/login` and `/signUp`. |
-| **Firestore Security Rules** | Server-side rules enforce per-user data isolation, anti-cheat (monotonic points/XP), and a PII-free public leaderboard. Covered by an automated **rules-test suite** run in the emulator on every PR (the **Firestore Rules Tests** GitHub Action). |
-| **Bot Protection (App Check)** | Firebase App Check with **reCAPTCHA v3** attests that requests come from the real app, blocking bots/scripts that replay the public config against Firestore. Wired in dormant (activates via `VITE_RECAPTCHA_SITE_KEY`); live in production. |
-| **Error Monitoring (Sentry)** | Production crashes are reported to Sentry with stack traces and breadcrumbs. Loaded via dynamic import and gated to production + a DSN, so it no-ops otherwise (activates via `VITE_SENTRY_DSN`). |
-| **Automatic Error Triage (Sentry → Linear)** | A new Sentry issue automatically files a Linear task — **Backlog**, priority **High**, label **Bug** — carrying the error message, level, environment, culprit, top stack frames and browser/OS/URL, plus a link back to Sentry. Handled by a Cloudflare Worker (`worker-sentry-linear/`) that verifies Sentry's webhook signature and de-duplicates on the Sentry issue id, so a recurring error never spams the backlog. |
-| **SEO & Meta** | Canonical links, Open Graph, JSON-LD schema, geographic meta, and custom favicon/meta image on every page. |
-| **Fully Responsive** | Mobile, tablet, and desktop layouts. Dynamic viewport height and custom overscroll colours for native-feel scrolling. |
-| **Contact Form** | Redesigned contact page with Firestore-backed submissions (`ContactMessages` collection). No third-party form services — messages are owned entirely and reviewable in the Firebase Console. |
-| **Thank You Page** | Dedicated `/thank-you` page after contact form submission with personalised greeting, animated check icon, and quick-nav cards to Courses and Quizzes. |
-| **Mobile Docs & Navigation** | Mobile jump pill bar on documentation page (`/doc`), responsive scrollable tables (`overflow-x-auto`), and flex-col layout conversions for seamless small-screen reading. |
-| **Account Deletion** | From the dashboard, after typing "DELETE" and confirming their password (or Google sign-in), a learner can delete their account. It removes the profile, course progress, quiz history, every quiz leaderboard score, the public leaderboard entry and the login account, then clears the browser's cached copy. The next learner on the leaderboard moves up straight away. Firestore rules allow these deletes only as part of account deletion, so progress records can't be deleted on their own to re-earn XP. |
+### Learning
+
+- **Course catalog** with search: multi-module tracks, per-module progress and
+  completion tracking.
+- **Lesson player**: paginated steps with themed cards (story, concept, fun
+  fact, tip, example, activity, recap), progress dots and code blocks.
+- **Exercises**: multiple choice, true/false, fill in the blank, and
+  tap-to-connect matching pairs, with colour-linked pairs that stay in place.
+- **Journey map**: the syllabus as a path of nodes (done, current, locked)
+  ending in a certificate node.
+- **Timed quizzes**: 15 seconds per question, randomised, with instant feedback
+  and per-quiz leaderboards.
+- **AI tutor**: a per-course assistant powered by Google Gemini, with a
+  kid-safe prompt. The API key stays in a Cloudflare Worker, never in the app.
+
+### Progress and motivation
+
+- **XP and levels**: XP per module and per course, from Rookie Coder to
+  Grandmaster.
+- **Badges**: animated medallions for milestones, each with a vector fallback.
+- **Daily streaks**: a UTC-based counter with bonus XP at 7, 15 and 30 days.
+- **Celebrations**: a full-screen moment for a level-up, badge or reaching the
+  top of the leaderboard, queued when several land at once and reduced for
+  users who prefer less motion.
+- **Anti-farming**: a module grants XP once, and a quiz retake only rewards
+  beating your best score. Security rules cap scores by question count.
+- **Dashboard**: profile header, XP, streak and course metrics, course tabs
+  (enrolled, completed, unenrolled), quiz history and a continue-learning
+  spotlight.
+- **Leaderboards**: a global board by total points and one per quiz, both for
+  signed-in users.
+
+### Accounts
+
+- **Sign-in**: email and password, or Google.
+- **Profile setup**: first-time users choose a display name and one of 16
+  built-in avatars. Real profile photos are never shown on the leaderboard.
+- **Account deletion**: after confirming their password (or Google sign-in), a
+  learner's profile, course progress, quiz history, leaderboard entries and
+  login are all deleted, and the local cache is cleared.
+- **Guest scores** taken before signing in are saved to the new account.
+
+### Interface
+
+- **Dark clay design system** built on design tokens. A palette guard fails CI
+  if a colour outside the system appears.
+- **English and Spanish** across the interface, courses, quizzes and legal
+  pages. Only fully translated languages appear in the switcher.
+- **Phone-first navigation**: a bottom tab bar below the `md` breakpoint,
+  which hides during a lesson or quiz so progress is not lost by a stray tap.
+- **Focus mode**: leaving a quiz or module asks for confirmation.
+- **Instant splash**: an inline splash screen paints on the first frame, before
+  the app's JavaScript runs.
+- **Sound effects**: generated in the browser with the Web Audio API, with a
+  persistent mute toggle. No audio files, no dependencies.
+- **Notifications**: corner toasts for routine feedback and a centred modal for
+  big moments, from one shared config.
+
+### Operations
+
+- **Error monitoring**: production crashes go to Sentry, with no reporting in
+  development.
+- **Automatic triage**: a new Sentry issue files a Linear task (Backlog, high
+  priority, Bug) through a Cloudflare Worker that verifies Sentry's signature
+  and de-duplicates by issue id.
+- **SEO**: canonical links, Open Graph and Twitter cards, JSON-LD, and
+  generated social images.
 
 ---
 
-## Tech Stack
+## Tech stack
 
 | Layer | Technology |
 |---|---|
-| Framework | React 18 (Vite) |
-| Styling | Tailwind CSS + custom design tokens |
-| Fonts | Fredoka and Poppins, bundled with the app via `@fontsource` (no Google Fonts request) |
-| Routing | React Router DOM v7 |
-| Animation | GSAP + @gsap/react |
-| Backend | Firebase Authentication + Cloud Firestore |
-| Hosting | Firebase Hosting (CI/CD on push to `main`) |
-| AI Tutor | Google Gemini via a Cloudflare Worker proxy (key server-side — see `worker/`) |
-| Error triage | Sentry → Linear via a Cloudflare Worker webhook (see `worker-sentry-linear/`) |
-| Notifications | Hybrid toasts + centered modal (`ToastContext`) |
-| Animation (icons) | dotLottie player (self-hosted WASM) with SVG fallback |
-| Testing | Playwright (end-to-end, signed-in flows included, against the Firebase Auth + Firestore emulators with no credentials) + Firestore rules tests (emulator) + a palette guard (`npm run test:palette`) that fails the build on off-palette colours. All three run in CI on every PR. |
+| Framework | React 18, Vite 7, React Router 7 |
+| Styling | Tailwind CSS with custom design tokens |
+| Fonts | Fredoka and Poppins, bundled via `@fontsource` |
+| Animation | GSAP, dotLottie player with self-hosted runtime and SVG fallbacks |
+| Backend | Firebase Authentication and Cloud Firestore |
+| Hosting | Firebase Hosting, deployed by GitHub Actions on merge to `main` |
+| AI tutor | Google Gemini behind a Cloudflare Worker proxy (`worker/`) |
+| Error triage | Sentry to Linear through a Cloudflare Worker (`worker-sentry-linear/`) |
+| Testing | Playwright end-to-end, Firestore rules tests, and a palette guard |
 
 ---
 
-## Getting Started
+## Getting started
 
 ### Prerequisites
 
-- Node.js 22 (the version in `.nvmrc`, and what CI runs). With nvm: `nvm use`
-- npm ≥ 9
-- A Java 17+ runtime, only to run the tests: Google ships the Firebase
-  emulators as Java programs. Nothing in this project is written in Java.
-- A Firebase project with Authentication and Firestore enabled
+- **Node.js 22**, the version in `.nvmrc` and in CI. With nvm: `nvm use`.
+- **npm 9 or newer.**
+- **A Java 17 runtime**, only for the tests: Google ships the Firebase
+  emulators as Java programs. No part of this project is written in Java.
+- **A Firebase project** with Authentication and Firestore enabled, if you want
+  to run against your own backend. The tests do not need one.
 
-`npm install` may warn that some packages' install scripts were not run
-(`esbuild`, `protobufjs`). That is deliberate: neither is needed, esbuild's
-binary installs on its own, and leaving them unapproved means less third-party
-code runs on your machine.
+`npm install` warns that two packages' install scripts were not run (`esbuild`,
+`protobufjs`). That is deliberate: neither is needed, and running less
+third-party code during install is safer.
 
-### Installation
+### Install and run
 
 ```bash
-# 1. Clone the repository
 git clone https://github.com/tajamul-wani/Learntopia.git
 cd Learntopia
-
-# 2. Install dependencies
+nvm use                 # Node 22, from .nvmrc
 npm install
 
-# 3. Set up environment variables
-cp .env.example .env
-# Fill in your Firebase config values in .env
-
-# 4. Start the development server
-npm run dev
+cp .env.example .env    # then fill in your Firebase values
+npm run dev             # http://localhost:5173
 ```
 
-The app will be available at `http://localhost:5173`.
-
-### Available Scripts
+### Scripts
 
 ```bash
-npm run dev        # Start Vite dev server with HMR
-npm run build      # Production build to /dist
-npm run preview    # Preview production build locally
-npm run lint       # ESLint check
-npm run test:e2e       # Playwright end-to-end tests against the Firebase emulators (needs Java)
-npm run test:e2e:ui    # Playwright interactive UI mode (run `npm run emulators` first)
-npm run emulators      # Start the local Auth + Firestore emulators
-npm run test:rules:ci  # Firestore rules tests in the local emulator (needs Java)
-npm run test:palette   # Palette guard: fails on off-palette colours in src/ and the brand SVGs
+npm run dev            # dev server with hot reload
+npm run build          # production build into dist/
+npm run preview        # serve the production build locally
+npm run lint           # ESLint
+npm run test:e2e       # Playwright suite against the emulators
+npm run test:e2e:ui    # Playwright watch mode (run npm run emulators first)
+npm run emulators      # Auth + Firestore emulators, for iterating on tests
+npm run test:rules:ci  # Firestore rules tests in the emulator
+npm run test:palette   # fails on colours outside the design system
+npm run gen:avatars    # regenerate the static avatar SVGs
 ```
 
-### Firestore rules tests
+---
 
-The Firestore security rules are covered by an automated test suite
-(`test/firestore.rules.test.js`) that runs against the real `firestore.rules`
-file inside the local Firestore emulator — no Firebase login or secrets needed.
-It verifies the anti-cheat, PII, privacy, and admin-only guarantees, and runs on
-every pull request via the **Firestore Rules Tests** GitHub Action.
+## Testing
 
-```bash
-npm run test:rules:ci   # starts the emulator, runs the tests, shuts it down
-```
+Three layers run in CI on every pull request, and a PR merges only when all of
+them pass.
 
-Running locally requires a Java runtime (the emulator is a Java process); CI
-installs it automatically.
+| Layer | What it covers |
+|---|---|
+| **End-to-end** (`e2e/`, Playwright) | Drives the real app in a browser: public pages, sign-in, courses, account deletion, navigation, brand assets and fonts |
+| **Security rules** (`test/firestore.rules.test.js`) | Runs the real `firestore.rules` in the Firestore emulator: per-user isolation, anti-cheat, account deletion, admin-only data |
+| **Static** (`npm run lint`, `npm run build`, `npm run test:palette`) | Lint errors, build breakage, and colours outside the design system |
 
-### End-to-end tests
-
-The Playwright suite, including the signed-in course specs, runs the app
-against the local Firebase **Auth and Firestore emulators** under the
-emulator-only `demo-learntopia` project. No Firebase account, credentials or
-secrets are needed, and tests never read or write production data. Each
+**No credentials, and no internet.** The app under test talks to the local
+Firebase Auth and Firestore emulators under the emulator-only
+`demo-learntopia` project, so tests never read or write production data. Each
 signed-in test creates a fresh account and signs in through the normal login
-form; the app has no auth bypass or test mode.
-
-The suite needs no internet connection. Every spec imports `test` from
-`e2e/support/test.js`, which blocks any request to a host other than this
-machine and fails the test with the URL, so a new third-party dependency shows
-up immediately instead of as a random timeout.
+form; the app has no test mode or auth bypass. Every spec imports `test` from
+`e2e/support/test.js`, which blocks requests to any host other than the local
+machine and fails the test with the URL, so a new third-party dependency is
+obvious immediately.
 
 ```bash
-npm run test:e2e        # starts the emulators, runs the suite, stops them (same as CI)
+npm run test:e2e        # starts the emulators, runs everything, stops them
 
-# while iterating on a spec
-npm run emulators       # terminal 1
+# iterating on one spec
+npm run emulators         # terminal 1
 npx playwright test --ui  # terminal 2
 ```
 
-Locally the suite runs 3 tests at a time, which the dev server handles
-reliably; CI runs one at a time. Use `npx playwright test --workers=N` to change
-it for a single run.
+Locally the suite runs three tests at a time; CI runs one. Override with
+`npx playwright test --workers=N`. Run one suite at a time: two runs share the
+same ports and will interrupt each other.
 
-The emulator connection in `src/firebase/firebase.js` only exists in dev
-builds. `npm run build` checks the production bundle and fails if any emulator
-code is in it. Java 17+ is required, as for the rules tests.
-
-### Brand assets
-
-The logo is a glowing faceted bulb with paper-cut rays, on a transparent
-background. The SVGs in `public/` are the sources:
-
-| File | Used for |
-| --- | --- |
-| `logo.svg` | Navbar, footer and this README |
-| `favicon.svg` | Browser tab and the startup splash (the same bulb, with heavier strokes so it stays crisp at 16px) |
-| `og-image.svg` | Social share card: the bulb lighting an open book, with its text stored as outlines |
-
-Every colour in them is a design token, and `npm run test:palette` fails if one
-is not. After changing an SVG, regenerate the PNGs (`favicon.png`,
-`apple-touch-icon.png`, `logo.png`, `og-image.png`) in WSL:
-
-```bash
-npm i --no-save sharp     # one-off; keeps package.json unchanged
-node scripts/gen-brand.mjs
-```
+The emulator connection in `src/firebase/firebase.js` exists only in
+development builds, and `npm run build` fails if any of it reaches `dist/`.
 
 ---
 
-## Project Structure
+## Project structure
 
 ```
 src/
-├── Authentication/       # Login and SignUp pages with Firebase auth logic
-├── Components/
-│   ├── Dashboard.jsx     # Personal student dashboard
-│   ├── Footer.jsx
-│   ├── Navbar.jsx
-│   └── ui/               # Reusable design-system components (Button, Card, Icon, Badge, …)
-├── context/
-│   └── AuthContext.jsx   # Global auth state, streak tracking, Firestore profile sync
-├── data/
-│   ├── coursesData.js    # Course and module definitions
-│   └── quizData.js       # Quiz topic and question pools
-├── pages/
-│   ├── Home.jsx
-│   ├── Courses.jsx
-│   ├── CourseDetails.jsx
-│   ├── Quiz.jsx          # Quiz engine with timer, scoring, and leaderboard sync
-│   ├── Leaderboard.jsx   # Global and per-quiz leaderboards
-│   ├── Doc.jsx           # Platform documentation
-│   ├── Privacy.jsx       # Privacy Policy
-│   ├── Terms.jsx         # Terms of Service
-│   ├── Contact.jsx       # Contact form → saves to Firestore ContactMessages
-│   └── ThankYou.jsx      # Post-submission thank you page with animated check icon
-├── App.jsx               # Route definitions
-└── main.jsx
+├── Authentication/     Login and SignUp pages
+├── Components/         App components, plus ui/ design-system primitives
+├── assets/             Images, course art and Lottie animations
+├── context/            Auth, gamification, language, sound, toast, nav chrome
+├── data/               Courses, quizzes and avatar definitions
+├── firebase/           Firebase setup, including the emulator switch
+├── hooks/              Shared React hooks
+├── i18n/               English and Spanish strings, UI and course content
+├── layout/             Root and admin layouts
+├── lib/                Monitoring and DOM guards
+├── pages/              Routed pages (home, courses, quiz, dashboard, docs, legal)
+├── services/           Gemini client, account deletion
+├── utils/              Profile, localisation, badges, sound helpers
+├── App.jsx             Routes
+└── main.jsx            Entry point
 
-e2e/                      # Playwright end-to-end specs (one file per feature area)
-public/                   # Brand SVG sources (logo, favicon, OG card) and generated PNGs
-scripts/gen-brand.mjs     # Rasterises the brand SVGs to PNG
-test/                     # Firestore security-rules tests (emulator) and the palette guard
-worker/                   # Cloudflare Worker — Gemini API proxy (key server-side)
-worker-sentry-linear/     # Cloudflare Worker — files Sentry errors as Linear issues
+e2e/                    Playwright specs, with shared setup in support/
+test/                   Firestore rules tests and the palette guard
+scripts/                Brand and avatar generation, build checks
+public/                 Brand SVG sources and generated PNGs
+worker/                 Cloudflare Worker: Gemini proxy
+worker-sentry-linear/   Cloudflare Worker: Sentry to Linear triage
 ```
 
 ---
 
-## Environment Variables
+## Environment variables
 
-Create a `.env` file in the project root. **Never commit this file** — it is listed in `.gitignore`. An `.env.example` template is provided.
+Create `.env` in the project root. It is listed in `.gitignore` and must never
+be committed. `.env.example` is the template.
 
 ```env
-# Firebase — from Firebase Console → Project settings → SDK setup and configuration.
-# (authDomain, projectId, and storageBucket are non-secret and set in src/firebase/firebase.js.)
+# Firebase: Console > Project settings > SDK setup and configuration
 VITE_API_KEY=
 VITE_MESSAGING_SENDER_ID=
 VITE_APP_ID=
 
-# AI Tutor — URL of the deployed Gemini proxy Worker (see worker/README.md).
-# The Gemini key lives ONLY in the Worker's secret, never in the client.
+# AI tutor: URL of the deployed Gemini proxy Worker (see worker/README.md)
 VITE_GEMINI_PROXY_URL=
 
-# Optional hardening — leave blank to disable. Each feature no-ops when unset,
-# so the app runs identically with or without these.
-VITE_SENTRY_DSN=              # Sentry error monitoring (public-safe DSN)
-VITE_RECAPTCHA_SITE_KEY=      # Firebase App Check reCAPTCHA v3 site key
+# Optional. Each feature stays off while its value is blank.
+VITE_SENTRY_DSN=              # Sentry error monitoring
+VITE_RECAPTCHA_SITE_KEY=      # Firebase App Check (reCAPTCHA v3)
 ```
 
-All variables use the `VITE_` prefix so Vite exposes them to the client build.
+Every `VITE_` value is embedded in the JavaScript that users download, so **no
+real secret may be a `VITE_` variable.** The values above are safe to publish:
+the Firebase web API key identifies the project and is protected by security
+rules and authorised domains, the Sentry DSN can only submit crash reports, the
+reCAPTCHA site key is designed to be public, and the Worker URL is a public
+endpoint.
 
-These values are **public-safe**: the Firebase web API key is protected by Firestore rules and authorized domains (not secrecy); the Sentry DSN can only send crash events; the reCAPTCHA site key is meant to be embedded; and `VITE_GEMINI_PROXY_URL` is just an endpoint. When an optional key is blank the corresponding feature stays dormant.
-
-> ⚠️ **Security note:** any `VITE_`-prefixed value is embedded in the public JavaScript bundle, so **no real secret may be a `VITE_` variable.** The billable **Gemini API key is never shipped to the client** — it lives as a secret in the Gemini proxy Worker (`worker/`), and the app only holds the Worker's public URL. See `worker/README.md` to deploy it.
+Billable and privileged keys live outside the app: the **Gemini API key** and
+the **Linear API key** are stored as Cloudflare Worker secrets, and CI reads
+Firebase values from GitHub Actions secrets.
 
 ---
 
 ## Deployment
 
-Learntopia is deployed to **Firebase Hosting** with automatic continuous deployment triggered on every push to `main`.
+GitHub Actions handles every deploy. No manual step is needed.
+
+| Trigger | What happens |
+|---|---|
+| Pull request | Rules tests, Playwright suite and a preview deploy on its own URL |
+| Merge to `main` | Production deploy to Firebase Hosting, plus `firebase deploy --only firestore:rules` so rule changes go live with the code |
+
+Manual deploy, if ever needed, requires Firebase project access:
 
 ```bash
-# Manual deploy (if needed)
 firebase deploy --only hosting
+firebase deploy --only firestore:rules
 ```
+
+---
+
+## Security and privacy
+
+Learntopia is used by children, so data access is deliberately narrow.
+
+- **Security rules are the boundary.** `firestore.rules` denies everything by
+  default. A signed-in user can read and write only their own profile, course
+  progress and quiz history. Admin access comes from a server-set claim, never
+  from an email address in the client.
+- **Anti-cheat in the database.** XP and points can only increase, badges can
+  only be added one per write, a quiz score cannot exceed its question count,
+  and a course cannot be marked complete before its modules are.
+- **Deleting an account deletes the data**: profile, progress, quiz history,
+  every leaderboard entry and the login itself. Progress records can only be
+  deleted as part of that flow, so they cannot be wiped to re-earn XP.
+- **Photos stay private.** A Google profile photo is shown only to the learner
+  on their own screens, never on the leaderboard.
+- **App Check** (reCAPTCHA v3) is wired in and activates when
+  `VITE_RECAPTCHA_SITE_KEY` is set, so Firebase can tell requests from the real
+  app apart from scripted ones.
+- **Secrets never reach the client.** Billable keys live in Cloudflare Worker
+  secrets; CI injects Firebase config from GitHub Actions secrets; `.env` is
+  git-ignored.
+- **Rules are tested, not assumed.** The rules suite runs on every pull
+  request, so a change that reopens a hole fails before merge.
+
+---
+
+## Brand assets
+
+The logo is a glowing faceted bulb with paper-cut rays on a transparent
+background. The SVGs in `public/` are the sources:
+
+| File | Used for |
+|---|---|
+| `logo.svg` | Navbar, footer and this README |
+| `favicon.svg` | Browser tab and the startup splash, with heavier strokes so it stays clear at 16px |
+| `og-image.svg` | Social share card, with text stored as outlines |
+
+Every colour in them is a design token, and `npm run test:palette` fails
+otherwise. After editing an SVG, regenerate the PNGs:
+
+```bash
+npm i --no-save sharp
+node scripts/gen-brand.mjs
+```
+
 ---
 
 ## Contributing
 
-This project is developed and maintained by **Tajamul Wani**
+The project is maintained by **Tajamul Wani**. Pull requests follow one rule
+above all: a change ships with the tests that prove it.
+
+1. Branch from an up-to-date `main`, named `feat/`, `fix/`, `chore/`,
+   `design/`, `docs/`, `test/` or `ci/` plus a short description.
+2. Keep one concern per branch and per pull request.
+3. Add or update tests in the same branch: a Playwright spec for behaviour,
+   rules tests for anything touching Firestore access.
+4. Update the README in the same branch when the change affects setup, testing
+   or how the app behaves.
+5. Run everything before opening the PR:
+   ```bash
+   npm run lint && npm run build && npm run test:palette
+   npm run test:rules:ci
+   npm run test:e2e
+   ```
+6. Write commits that can be reverted on their own: group by what would be
+   undone together, not by file. Use `type: imperative summary`.
+7. Keep to the design system. New colours need discussion first, and the
+   palette guard enforces the rest.
+8. Every pull request must be green in CI before it merges.
 
 ---
 
 ## License
 
-All rights reserved. The content, code, and design of Learntopia are the intellectual property of the project owner. Unauthorised reproduction or redistribution is prohibited.
+All rights reserved. The content, code and design of Learntopia are the
+intellectual property of the project owner. Reproduction or redistribution
+without permission is prohibited.
