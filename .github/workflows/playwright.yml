@@ -12,7 +12,7 @@ jobs:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
       with:
-        node-version: 20
+        node-version: 22
     # No Firebase secrets: the app under test runs against the local Auth and
     # Firestore emulators with a demo- project id, so it never reaches production.
     # The emulators are Java processes.
