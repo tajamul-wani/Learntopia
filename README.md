@@ -106,9 +106,16 @@ The platform is designed to be fast, accessible, and mobile-friendly, with authe
 
 ### Prerequisites
 
-- Node.js ≥ 20 (Vite 7 requirement)
+- Node.js 22 (the version in `.nvmrc`, and what CI runs). With nvm: `nvm use`
 - npm ≥ 9
+- A Java 17+ runtime, only to run the tests: Google ships the Firebase
+  emulators as Java programs. Nothing in this project is written in Java.
 - A Firebase project with Authentication and Firestore enabled
+
+`npm install` may warn that some packages' install scripts were not run
+(`esbuild`, `protobufjs`). That is deliberate: neither is needed, esbuild's
+binary installs on its own, and leaving them unapproved means less third-party
+code runs on your machine.
 
 ### Installation
 
