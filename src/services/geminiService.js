@@ -54,10 +54,12 @@ RULES (STRICTLY FOLLOW):
 export const sendMessageToGemini = async (chatHistory, userMessage, systemPrompt) => {
   const proxyUrl = getProxyUrl();
   if (!proxyUrl) {
-    console.error("VITE_GEMINI_PROXY_URL is missing in import.meta.env");
-    throw new Error(
-      "AI Tutor is not configured. Set VITE_GEMINI_PROXY_URL to the deployed Gemini proxy Worker URL and restart your Vite dev server."
+    // Detail for developers only. The drawer turns this code into a short,
+    // translated message: learners must never see configuration instructions.
+    console.error(
+      "AI tutor disabled: VITE_GEMINI_PROXY_URL is empty in this build. Set it in .env for local work, or as a GitHub Actions secret for deploys."
     );
+    throw new Error("NOT_CONFIGURED");
   }
 
   // Build the contents array for the Gemini API
