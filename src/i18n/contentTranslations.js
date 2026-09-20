@@ -100,7 +100,7 @@ export const contentTranslations = {
       featuresHeading: "Features",
       gettingStartedHeading: "Getting Started",
       coursesHeading: "Gamified Courses & Modules",
-      coursesIntro: "Each course is designed for learners aged 7-14 with a gamified, step-by-step lesson experience. Modules must be completed sequentially to unlock the next challenge.",
+      coursesIntro: "Each course is designed for learners aged 7-16 with a gamified, step-by-step lesson experience. Modules must be completed sequentially to unlock the next challenge.",
       tableColFeature: "Feature / Component",
       tableColDesc: "Description & Behavior",
       quizzesHeading: "Quizzes",
@@ -361,7 +361,7 @@ export const contentTranslations = {
       featuresHeading: "Funciones",
       gettingStartedHeading: "Primeros Pasos",
       coursesHeading: "Cursos y Módulos Gamificados",
-      coursesIntro: "Cada curso está diseñado para estudiantes de 7 a 14 años con una experiencia de lecciones gamificada y paso a paso. Los módulos deben completarse en orden para desbloquear el siguiente desafío.",
+      coursesIntro: "Cada curso está diseñado para estudiantes de 7 a 16 años con una experiencia de lecciones gamificada y paso a paso. Los módulos deben completarse en orden para desbloquear el siguiente desafío.",
       tableColFeature: "Función / Componente",
       tableColDesc: "Descripción y Comportamiento",
       quizzesHeading: "Cuestionarios",
@@ -680,7 +680,7 @@ export const contentTranslations = {
     courseData: {
       "1": {
         title: "Python para Niños: ¡Crea tu Primer Juego!",
-        desc: "Aprende a programar creando juegos reales. Perfecto para principiantes de 7 a 14 años. ¡Sumérgete en los fundamentos de Python y la mecánica de los juegos!",
+        desc: "Aprende a programar creando juegos reales. Perfecto para principiantes de 7 a 16 años. ¡Sumérgete en los fundamentos de Python y la mecánica de los juegos!",
         category: "Programación",
         difficulty: "Principiante",
         learningObjectives: [
