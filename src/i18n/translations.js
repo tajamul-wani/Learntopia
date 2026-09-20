@@ -26,6 +26,7 @@ export const translations = {
       "thinking": "Thinking...",
       "errorMessage": "Oops! Couldn't reach your AI tutor. Please try again.",
       "rateLimitError": "Your AI tutor is taking a quick break! Please wait a moment.",
+      "unavailable": "Your AI tutor is having a rest right now. Please try again later.",
       "clearChat": "Clear chat history",
       "poweredBy": "Powered by Google Gemini 2.0 Flash • Kid-Safe AI",
       "chatGreeting": "Hi there! I'm {name}, your {subject} buddy! Ask me anything about this course, and let's learn together!"
@@ -889,6 +890,7 @@ export const translations = {
       "thinking": "Pensando...",
       "errorMessage": "¡Ups! No se pudo contactar con tu tutor IA. Inténtalo de nuevo.",
       "rateLimitError": "¡Tu tutor IA está tomando un breve descanso! Espera un momento.",
+      "unavailable": "Tu tutor IA está descansando ahora mismo. Inténtalo más tarde.",
       "clearChat": "Limpiar historial de chat",
       "poweredBy": "Desarrollado por Google Gemini 2.0 Flash • IA Segura para Niños",
       "chatGreeting": "¡Hola! Soy {name}, ¡tu compañero de {subject}! Pregúntame lo que quieras sobre este curso, ¡y aprendamos juntos!"
@@ -1635,6 +1637,7 @@ export const translations = {
       "thinking": "Réflexion...",
       "errorMessage": "Oups ! Impossible de joindre votre tuteur IA. Veuillez réessayer.",
       "rateLimitError": "Votre tuteur IA fait une courte pause ! Veuillez patienter un instant.",
+      "unavailable": "Ton tuteur IA se repose pour le moment. Réessaie plus tard.",
       "clearChat": "Effacer l'historique du chat",
       "poweredBy": "Propulsé par Google Gemini 2.0 Flash • IA Sécurisée pour Enfants",
       "chatGreeting": "Bonjour ! Je suis {name}, votre compagnon de {subject} ! Posez-moi vos questions sur ce cours, et apprenons ensemble !"
@@ -2180,6 +2183,7 @@ export const translations = {
       "thinking": "Überlegt...",
       "errorMessage": "Ups! Dein KI-Tutor konnte nicht erreicht werden. Bitte versuche es erneut.",
       "rateLimitError": "Dein KI-Tutor macht eine kurze Pause! Bitte warte einen Moment.",
+      "unavailable": "Dein KI-Tutor macht gerade eine Pause. Bitte versuche es später.",
       "clearChat": "Chat-Verlauf löschen",
       "poweredBy": "Unterstützt von Google Gemini 2.0 Flash • Kinder-sichere KI",
       "chatGreeting": "Hallo! Ich bin {name}, dein {subject}-Lernpartner! Frage mich alles zu diesem Kurs, und lass uns gemeinsam lernen!"
@@ -2725,6 +2729,7 @@ export const translations = {
       "thinking": "جاري التفكير...",
       "errorMessage": "عذراً! تعذر الاتصال بـ معلمك الذكي. يرجى المحاولة مرة أخرى.",
       "rateLimitError": "معلمك الذكي يأخذ استراحة قصيرة! يرجى الانتظار لحظة.",
+      "unavailable": "مدرّسك بالذكاء الاصطناعي يرتاح الآن. حاول مرة أخرى لاحقاً.",
       "clearChat": "مسح سجل المحادثة",
       "poweredBy": "مدعوم من Google Gemini 2.0 Flash • ذكاء آمن للأطفال",
       "chatGreeting": "مرحباً! أنا {name}، صديقك في مادة {subject}! اسألني أي شيء عن هذه الدورة، ولنتعلم معاً!"

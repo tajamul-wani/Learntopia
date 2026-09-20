@@ -20,6 +20,9 @@ jobs:
           echo "VITE_API_KEY=${{ secrets.VITE_API_KEY }}" >> .env
           echo "VITE_MESSAGING_SENDER_ID=${{ secrets.VITE_MESSAGING_SENDER_ID }}" >> .env
           echo "VITE_APP_ID=${{ secrets.VITE_APP_ID }}" >> .env
+          # The AI tutor calls this Cloudflare Worker; without it the tutor
+          # disables itself in the built app.
+          echo "VITE_GEMINI_PROXY_URL=${{ secrets.VITE_GEMINI_PROXY_URL }}" >> .env
           # Optional hardening — blank until the secrets are added; features no-op when empty.
           echo "VITE_SENTRY_DSN=${{ secrets.VITE_SENTRY_DSN }}" >> .env
           echo "VITE_RECAPTCHA_SITE_KEY=${{ secrets.VITE_RECAPTCHA_SITE_KEY }}" >> .env

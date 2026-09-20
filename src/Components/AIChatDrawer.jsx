@@ -72,12 +72,14 @@ const AIChatDrawer = ({ isOpen, onClose, course, currentModule }) => {
       const response = await sendMessageToGemini(historyForAPI, trimmed, systemPrompt);
       setMessages((prev) => [...prev, { role: "model", text: response }]);
     } catch (err) {
+      // Only ever show a translated message. Raw errors carry API and config
+      // detail that a learner should not see; it goes to the console instead.
       if (err?.message === "RATE_LIMIT") {
         setError(t("aiTutor.rateLimitError"));
-      } else if (err?.message && (err.message.includes("API key") || err.message.includes("403") || err.message.includes("400"))) {
-        setError(err.message);
+      } else if (err?.message === "NOT_CONFIGURED") {
+        setError(t("aiTutor.unavailable"));
       } else {
-        setError(err?.message || t("aiTutor.errorMessage"));
+        setError(t("aiTutor.errorMessage"));
       }
       console.error("AI Tutor error:", err);
     } finally {

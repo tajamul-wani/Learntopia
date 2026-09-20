@@ -52,7 +52,13 @@ export default defineConfig({
   webServer: {
     command: `npm run dev -- --port ${PORT} --strictPort`,
     url: `http://localhost:${PORT}`,
-    env: { VITE_USE_EMULATORS: 'true' },
+    env: {
+      VITE_USE_EMULATORS: 'true',
+      // A fixed, local tutor endpoint so the AI tutor behaves the same on every
+      // machine and in CI, where there is no .env. The specs stub this URL, so
+      // no request ever leaves the machine.
+      VITE_GEMINI_PROXY_URL: `http://localhost:${PORT}/__tutor-proxy`,
+    },
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,
   },
