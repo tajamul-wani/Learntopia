@@ -667,7 +667,7 @@ export const translations = {
     courseData: {
       "1": {
         "title": "Python for Kids: Build Your First Game!",
-        "desc": "Learn to code by building real games. Perfect for beginners aged 7-14. Dive into Python fundamentals and game mechanics!",
+        "desc": "Learn to code by building real games. Perfect for beginners aged 7-16. Dive into Python fundamentals and game mechanics!",
         "category": "Programming",
         "difficulty": "Beginner",
         "modules": [
@@ -1530,7 +1530,7 @@ export const translations = {
     courseData: {
       "1": {
         "title": "Python para Niños: ¡Crea tu Primer Juego!",
-        "desc": "Aprende a programar creando juegos reales. ¡Perfecto para principiantes de 7 a 14 años!",
+        "desc": "Aprende a programar creando juegos reales. ¡Perfecto para principiantes de 7 a 16 años!",
         "category": "Programación",
         "difficulty": "Principiante",
         "modules": [
@@ -2075,7 +2075,7 @@ export const translations = {
     courseData: {
       "1": {
         "title": "Python pour Enfants : Créez Votre Premier Jeu !",
-        "desc": "Apprenez à coder en créant de vrais jeux. Parfait pour les débutants de 7 à 14 ans !",
+        "desc": "Apprenez à coder en créant de vrais jeux. Parfait pour les débutants de 7 à 16 ans !",
         "category": "Programmation",
         "difficulty": "Débutant",
         "modules": [
@@ -2620,7 +2620,7 @@ export const translations = {
     courseData: {
       "1": {
         "title": "Python für Kinder: Baue dein erstes Spiel!",
-        "desc": "Lerne Coden durch das Bauen echter Spiele. Perfekt für Anfänger von 7-14 Jahren!",
+        "desc": "Lerne Coden durch das Bauen echter Spiele. Perfekt für Anfänger von 7-16 Jahren!",
         "category": "Programmierung",
         "difficulty": "Anfänger",
         "modules": [
@@ -3165,7 +3165,7 @@ export const translations = {
     courseData: {
       "1": {
         "title": "بايثون للأطفال: ابني لعبتك الأولى!",
-        "desc": "تعلم البرمجة من خلال بناء ألعاب حقيقية. مثالي للمبتدئين من عمر 7 إلى 14 سنة!",
+        "desc": "تعلم البرمجة من خلال بناء ألعاب حقيقية. مثالي للمبتدئين من عمر 7 إلى 16 سنة!",
         "category": "البرمجة",
         "difficulty": "مبتدئ",
         "modules": [

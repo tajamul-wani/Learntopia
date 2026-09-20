@@ -18,7 +18,7 @@ export const COURSES = [
     rating: "4.9",
     image: python,
     students: "1,200",
-    desc: "Learn to code by building real games. Perfect for beginners aged 7-14. Dive into Python fundamentals and game mechanics!",
+    desc: "Learn to code by building real games. Perfect for beginners aged 7-16. Dive into Python fundamentals and game mechanics!",
     avatars: [one, two, three, four],
     duration: "4 hours",
     difficulty: "Beginner",
