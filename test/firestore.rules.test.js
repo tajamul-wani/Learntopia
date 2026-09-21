@@ -371,6 +371,63 @@ describe("Users/{uid}/enrolledCourses", () => {
   });
 });
 
+describe("QuizLeaderboards/{quizId}/Scores/{uid}", () => {
+  // Display data only, and bounded the same way a quiz attempt is. Before this
+  // was validated, any client could post any score to any board, or write a
+  // real name into a collection every signed-in user can read.
+  const validScore = (over = {}) => ({
+    userId: "alice",
+    displayName: "Tester",
+    avatarId: "astro-girl",
+    score: 80,
+    rawScore: 8,
+    totalQuestions: 10,
+    completedAt: new Date(),
+    ...over,
+  });
+  const scorePath = "QuizLeaderboards/python/Scores/alice";
+
+  test("owner can post a valid score", async () => {
+    await assertSucceeds(setDoc(doc(alice(), scorePath), validScore()));
+  });
+
+  test("any signed-in user can read the board", async () => {
+    await seed(scorePath, validScore());
+    await assertSucceeds(getDoc(doc(bob(), scorePath)));
+  });
+
+  test("an unauthenticated visitor cannot read the board", async () => {
+    await seed(scorePath, validScore());
+    await assertFails(getDoc(doc(anon(), scorePath)));
+  });
+
+  test("ANTI-CHEAT: rejects more correct answers than the quiz has questions", async () => {
+    await assertFails(setDoc(doc(alice(), scorePath), validScore({ rawScore: 99 })));
+  });
+
+  test("ANTI-CHEAT: rejects a negative or impossible score", async () => {
+    await assertFails(setDoc(doc(alice(), scorePath), validScore({ score: -10 })));
+    await assertFails(setDoc(doc(alice(), scorePath), validScore({ totalQuestions: 0 })));
+  });
+
+  test("ANTI-CHEAT: a score may improve but never drop", async () => {
+    await seed(scorePath, validScore());
+    await assertSucceeds(setDoc(doc(alice(), scorePath), validScore({ score: 100, rawScore: 10 })));
+    await assertFails(setDoc(doc(alice(), scorePath), validScore({ score: 10, rawScore: 1 })));
+  });
+
+  test("PRIVACY: cannot write a real name, email or photo onto the board", async () => {
+    for (const extra of [{ userFullName: "Real Name" }, { email: "kid@example.com" }, { photoURL: "https://x/y.jpg" }]) {
+      await assertFails(setDoc(doc(alice(), scorePath), validScore(extra)));
+    }
+  });
+
+  test("cannot claim someone else's row or mislabel the owner", async () => {
+    await assertFails(setDoc(doc(bob(), scorePath), validScore()));
+    await assertFails(setDoc(doc(alice(), scorePath), validScore({ userId: "bob" })));
+  });
+});
+
 describe("PublicLeaderboard/{uid}", () => {
   const validEntry = () => ({
     uid: "alice",

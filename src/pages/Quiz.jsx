@@ -22,7 +22,7 @@ import { Skeleton } from "../Components/ui/Skeleton";
 const Quiz = () => {
   const { playClick, playCorrect, playIncorrect, playLevelUp, playTimerTick, playTimerUrgent } = useSound();
   const { t } = useLanguage();
-  const { addXP, awardPerfectScore, awardSharpMemory } = useGamification();
+  const { addXP, awardPerfectScore, awardSharpMemory, displayName, avatarId } = useGamification();
 
   // Localize quiz metadata + questions/options for the active language.
   const localizedQuizzes = useMemo(() => quizzes.map((q) => getLocalizedQuiz(q, t)), [t]);
@@ -125,14 +125,19 @@ const Quiz = () => {
         await addXP(incrementalXP, t("gamification.celReasonQuiz", { title: activeQuiz.title }));
 
         // Sync to global QuizLeaderboard with the overall best score
+        // Display data only: the chosen name and avatar, never the Google
+        // account name. Written whole, not merged, so a row from an older
+        // version cannot keep a field the rules no longer allow.
         const globalScoreRef = doc(db, "QuizLeaderboards", activeQuiz.id, "Scores", currentUser.uid);
         await setDoc(globalScoreRef, {
+          userId: currentUser.uid,
+          displayName: displayName || "Learner",
+          avatarId: avatarId || "",
           score: newMaxXP,
           rawScore: Math.max(previousBest, finalScore),
-          userFullName: currentUser.displayName || "User",
-          userId: currentUser.uid,
-          completedAt: new Date()
-        }, { merge: true });
+          totalQuestions: totalQ,
+          completedAt: new Date(),
+        });
 
         setHighScores((prev) => ({
           ...prev,
