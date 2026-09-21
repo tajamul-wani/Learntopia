@@ -2,7 +2,7 @@
 import { createContext, useContext, useState, useEffect, useRef } from "react";
 import { useAuth } from "./AuthContext";
 import { db } from "../firebase/firebase";
-import { doc, onSnapshot, setDoc, increment, runTransaction } from "firebase/firestore";
+import { doc, onSnapshot, setDoc, increment, runTransaction, deleteField } from "firebase/firestore";
 
 import { parseProfileName } from "../utils/profileUtils";
 
@@ -184,11 +184,12 @@ export const GamificationProvider = ({ children }) => {
     try {
       const publicFields = {
         uid,
-        // Identity lives in the dedicated displayName/avatarId fields; fullName
-        // just holds the plain display name (no more "name|avatarId" encoding).
-        fullName: displayName,
+        // Display data only. A real name must never reach this collection, and
+        // deleteField clears one written by an older version of the app, so a
+        // row self-heals the first time its owner earns points.
         displayName,
         avatarId,
+        fullName: deleteField(),
         totalPoints: increment(amount),
         xp: increment(amount),
         streak: Number(profile?.streak) || 1,

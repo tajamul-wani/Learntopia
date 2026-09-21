@@ -59,11 +59,14 @@ const Leaderboard = () => {
         if (activeTab === "all") {
           snap.forEach((d) => {
             const data = d.data();
-            const { displayName, avatarId } = parseProfileName(data, "Learner");
+            // Public rows carry displayName only. parseProfileName would fall
+            // back to a legacy fullName, which is exactly the real name this
+            // board must never show, so read the field directly.
+            const { avatarId } = parseProfileName(data, "Learner");
             entries.push({
               id: d.id,
               userId: d.id,
-              userName: displayName,
+              userName: typeof data.displayName === "string" && data.displayName.trim() ? data.displayName : "Learner",
               avatarId: avatarId,
               quizId: "all",
               quizTitle: "Overall Points",

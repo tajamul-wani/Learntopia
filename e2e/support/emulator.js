@@ -18,13 +18,13 @@ export const FIRESTORE_EMULATOR = "http://127.0.0.1:8080";
 
 const PASSWORD = "e2e-password-123";
 
-async function createAccount(email) {
+export async function createAccount(email, { displayName } = {}) {
   const res = await fetch(
     `${AUTH_EMULATOR}/identitytoolkit.googleapis.com/v1/accounts:signUp?key=demo-api-key`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password: PASSWORD, returnSecureToken: true }),
+      body: JSON.stringify({ email, password: PASSWORD, displayName, returnSecureToken: true }),
     }
   );
   if (!res.ok) throw new Error(`Auth emulator sign-up failed: ${res.status} ${await res.text()}`);
@@ -64,6 +64,20 @@ export async function docExists(path) {
   if (res.status === 404) return false;
   if (!res.ok) throw new Error(`Firestore emulator read of ${path} failed: ${res.status} ${await res.text()}`);
   return true;
+}
+
+/** Reads a document straight from the emulator, past the rules. Null if absent. */
+export async function readDoc(path) {
+  const res = await fetch(
+    `${FIRESTORE_EMULATOR}/v1/projects/${PROJECT_ID}/databases/(default)/documents/${path}`,
+    { headers: { Authorization: "Bearer owner" } }
+  );
+  if (res.status === 404) return null;
+  if (!res.ok) throw new Error(`Firestore emulator read of ${path} failed: ${res.status}`);
+  const body = await res.json();
+  return Object.fromEntries(
+    Object.entries(body.fields || {}).map(([k, v]) => [k, Object.values(v)[0]])
+  );
 }
 
 /** True if the email + password still sign in, i.e. the Auth account exists. */
