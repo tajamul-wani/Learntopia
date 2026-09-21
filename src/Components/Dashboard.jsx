@@ -2,7 +2,7 @@ import { db } from "../firebase/firebase";
 import { getDoc, doc, collection, getDocs, setDoc, query, orderBy, limit } from "firebase/firestore";
 import { deleteAccountAndData, getReauthMethod, markAccountDeleted } from "../services/accountDeletion";
 import { useState, useEffect, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "../context/ToastContext";
 import { useAuth } from "../context/AuthContext";
 import { useGamification } from "../context/GamificationContext";
@@ -204,6 +204,17 @@ const Dashboard = () => {
   const [courseToUnenroll, setCourseToUnenroll] = useState(null);
   const [unenrollLoading, setUnenrollLoading] = useState(false);
   const [editingProfile, setEditingProfile] = useState(false);
+
+  // The identity prompt sends a learner here with ?edit=profile, so "Choose
+  // now" lands on the editor itself rather than the dashboard.
+  const [searchParams, setSearchParams] = useSearchParams();
+  useEffect(() => {
+    if (searchParams.get("edit") !== "profile") return;
+    setEditingProfile(true);
+    const next = new URLSearchParams(searchParams);
+    next.delete("edit");
+    setSearchParams(next, { replace: true });
+  }, [searchParams, setSearchParams]);
 
   // Destructive profile deletion
   const [showDeleteModal, setShowDeleteModal] = useState(false);

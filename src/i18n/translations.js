@@ -387,6 +387,13 @@ export const translations = {
       deletePasswordPlaceholder: "Your password",
       deleteGoogleHint: "You'll be asked to confirm with Google before anything is deleted."
     },
+    identityPrompt: {
+      title: "Pick your look",
+      body: "Your avatar and the name on the leaderboard still come from your account. Choose a name and an avatar of your own, or skip and we will give you a Critter. Either way, other learners only ever see your chosen name, never the name on your account.",
+      choose: "Choose mine",
+      skip: "Skip for now",
+      skipped: "You got a Critter. Change it any time from your profile.",
+    },
     profileSetup: {
       title: "Set Up Your Profile",
       editTitle: "Edit Your Profile",
@@ -1257,6 +1264,13 @@ export const translations = {
       deletePasswordLabel: "Escribe tu contraseña para confirmar que eres tú:",
       deletePasswordPlaceholder: "Tu contraseña",
       deleteGoogleHint: "Te pediremos confirmar con Google antes de eliminar nada."
+    },
+    identityPrompt: {
+      title: "Elige tu estilo",
+      body: "Tu avatar y el nombre en la clasificación todavía vienen de tu cuenta. Elige un nombre y un avatar propios, o sáltalo y te daremos una Criatura. En ambos casos, los demás solo ven el nombre que elijas, nunca el de tu cuenta.",
+      choose: "Elegir el mío",
+      skip: "Ahora no",
+      skipped: "Tienes una Criatura. Cámbiala cuando quieras desde tu perfil.",
     },
     profileSetup: {
       title: "Configura Tu Perfil",
