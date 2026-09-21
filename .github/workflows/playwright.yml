@@ -25,6 +25,9 @@ jobs:
     # Fails the build if an off-palette colour or hardcoded hex creeps into the UI.
     - name: Palette guard
       run: npm run test:palette
+    # Pure logic, checked in milliseconds rather than through a browser.
+    - name: Unit tests
+      run: npm run test:unit
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
     # Starts the emulators, runs the whole suite (signed-in specs included), then

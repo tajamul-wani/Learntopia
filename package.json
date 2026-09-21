@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test:palette": "node --test test/palette.test.js",
+    "test:unit": "node --test test/legacy-names.test.js",
     "test:rules": "node --test test/firestore.rules.test.js",
     "test:rules:ci": "firebase emulators:exec --only firestore --project demo-learntopia \"node --test test/firestore.rules.test.js\"",
     "emulators": "npx --yes firebase-tools@13 emulators:start --only auth,firestore --project demo-learntopia",

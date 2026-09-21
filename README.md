@@ -127,6 +127,7 @@ npm run test:e2e:ui    # Playwright watch mode (run npm run emulators first)
 npm run emulators      # Auth + Firestore emulators, for iterating on tests
 npm run test:rules:ci  # Firestore rules tests in the emulator
 npm run test:palette   # fails on colours outside the design system
+npm run test:unit      # unit tests for pure helpers
 npm run gen:avatars    # regenerate the 16 character avatar SVGs
 ```
 
@@ -134,13 +135,14 @@ npm run gen:avatars    # regenerate the 16 character avatar SVGs
 
 ## Testing
 
-Three layers run in CI on every pull request, and a PR merges only when all of
+Four layers run in CI on every pull request, and a PR merges only when all of
 them pass.
 
 | Layer | What it covers |
 |---|---|
 | **End-to-end** (`e2e/`, Playwright) | Drives the real app in a browser: public pages, sign-in, courses, account deletion, navigation, brand assets and fonts |
 | **Security rules** (`test/firestore.rules.test.js`) | Runs the real `firestore.rules` in the Firestore emulator: per-user isolation, anti-cheat, account deletion, admin-only data |
+| **Unit** (`test/*.test.js`, `node --test`) | Pure helpers with no browser or database: currently the decisions behind the legacy-name scrub |
 | **Static** (`npm run lint`, `npm run build`, `npm run test:palette`) | Lint errors, build breakage, and colours outside the design system |
 
 **No credentials, and no internet.** The app under test talks to the local
