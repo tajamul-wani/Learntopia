@@ -1,0 +1,55 @@
+# One-off maintenance, run by hand from the Actions tab.
+#
+# Removes real names left in world-readable documents by versions of the app
+# that copied them from the Google account. It defaults to a read-only report;
+# writing requires choosing "apply" explicitly.
+#
+# The job prints document paths and counts, never a name, because run logs are
+# readable by anyone with access to this repository's Actions.
+name: Maintenance - scrub legacy names
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "report (read only) or apply (writes)"
+        required: true
+        default: report
+        type: choice
+        options:
+          - report
+          - apply
+
+jobs:
+  scrub:
+    runs-on: ubuntu-latest
+    # The job reads Firestore with its own service account; it has no reason to
+    # write anything back to the repository.
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # Installed for this run only: the Admin SDK is a maintenance tool, not a
+      # dependency of the app.
+      - name: Install the Admin SDK
+        run: npm i --no-save firebase-admin
+
+      - name: Scrub
+        env:
+          FIREBASE_SA: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_LEARNTOPIA_REACT }}
+          MODE: ${{ inputs.mode }}
+        run: |
+          # The key file goes away even if the scrub fails: a bare rm on the
+          # last line never runs when the step exits non-zero.
+          trap 'rm -f "$RUNNER_TEMP/gcp-key.json"' EXIT
+          (umask 077 && printf '%s' "$FIREBASE_SA" > "$RUNNER_TEMP/gcp-key.json")
+          export GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/gcp-key.json"
+          if [ "$MODE" = "apply" ]; then
+            node scripts/scrub-legacy-names.mjs --apply
+          else
+            node scripts/scrub-legacy-names.mjs
+          fi
