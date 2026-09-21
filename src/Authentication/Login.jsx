@@ -4,7 +4,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../firebase/firebase";
 import { useAuth } from "../context/AuthContext";
 import { useLanguage } from "../context/LanguageContext";
-import { setDoc, doc, addDoc, collection, updateDoc, increment, getDoc } from "firebase/firestore";
+import { setDoc, doc, addDoc, collection, updateDoc, increment, getDoc, deleteField } from "firebase/firestore";
 import { toast } from "../context/ToastContext";
 import Card from "../Components/ui/Card";
 import Button from "../Components/ui/Button";
@@ -14,6 +14,7 @@ import ImageWithSkeleton from "../Components/ui/ImageWithSkeleton";
 import google from "../assets/Icons/google.png";
 import signIn from "../assets/Icons/signIn.png";
 import signUpImage from "../assets/Icons/auth-image.jpg";
+import { publicNameFor } from "../utils/publicName";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -80,7 +81,9 @@ const Login = () => {
             const publicRef = doc(db, "PublicLeaderboard", user.uid);
             await setDoc(publicRef, {
               uid: user.uid,
-              fullName: uData.fullName || userDisplayName || user.displayName || "Learner",
+              // Never the account name: their chosen name, or a nickname.
+              displayName: publicNameFor(uData),
+              fullName: deleteField(),
               totalPoints: (uData.totalPoints || 0) + pointsEarned,
               updatedAt: new Date()
             }, { merge: true });

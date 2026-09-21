@@ -431,7 +431,7 @@ describe("QuizLeaderboards/{quizId}/Scores/{uid}", () => {
 describe("PublicLeaderboard/{uid}", () => {
   const validEntry = () => ({
     uid: "alice",
-    fullName: "Test Kid",
+    displayName: "Tester",
     totalPoints: 100,
     streak: 3,
     badges: ["first-quiz"],
@@ -448,6 +448,20 @@ describe("PublicLeaderboard/{uid}", () => {
     await assertSucceeds(
       setDoc(doc(alice(), "PublicLeaderboard/alice"), validEntry())
     );
+  });
+
+  test("PRIVACY: cannot write a real name onto the public board", async () => {
+    // fullName carried the account's real name (a child's, for Google sign-ins)
+    // into a collection every signed-in user can read.
+    await assertFails(
+      setDoc(doc(alice(), "PublicLeaderboard/alice"), { ...validEntry(), fullName: "Real Kid Name" })
+    );
+  });
+
+  test("PRIVACY: a legacy real name can be cleared but not kept", async () => {
+    await seed("PublicLeaderboard/alice", { ...validEntry(), fullName: "Real Kid Name" });
+    // Rewriting the row without the field is how the app self-heals.
+    await assertSucceeds(setDoc(doc(alice(), "PublicLeaderboard/alice"), validEntry()));
   });
 
   test("cannot leak email into public entry", async () => {

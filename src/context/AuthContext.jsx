@@ -6,8 +6,9 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
 } from "firebase/auth";
-import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, updateDoc, deleteField } from "firebase/firestore";
 import { parseProfileName } from "../utils/profileUtils";
+import { generatePublicNickname } from "../utils/publicName";
 import AppLoader from "../Components/ui/AppLoader";
 
 /**
@@ -151,9 +152,10 @@ export function AuthProvider({ children }) {
         publicRef,
         {
           uid,
-          fullName: cleanName,
           displayName: cleanName,
           avatarId: avatarId,
+          // Clears a real name written by an older version of the app.
+          fullName: deleteField(),
           totalPoints: existing.totalPoints || 0,
           streak: existing.streak || 1,
           badges: (existing.badges || ["Newcomer"]).map((b) => (typeof b === "string" ? b : b.name || "Badge")),
@@ -168,7 +170,8 @@ export function AuthProvider({ children }) {
           publicRef,
           {
             uid,
-            fullName: cleanName,
+            displayName: cleanName,
+            fullName: deleteField(),
             totalPoints: existing.totalPoints || 0,
             streak: existing.streak || 1,
             badges: (existing.badges || ["Newcomer"]).map((b) => (typeof b === "string" ? b : b.name || "Badge")),
@@ -235,10 +238,13 @@ export function AuthProvider({ children }) {
               lastLoginDate: todayStr,
             });
 
+            // The account name (a real name for Google sign-ins) stays in the
+            // private profile above. The board gets a nickname until the learner
+            // picks a display name of their own.
             const publicRef = doc(db, "PublicLeaderboard", user.uid);
             await setDoc(publicRef, {
               uid: user.uid,
-              fullName: user.displayName || "Learner",
+              displayName: generatePublicNickname(),
               totalPoints: 0,
               streak: 1,
               badges: ["Newcomer"],
