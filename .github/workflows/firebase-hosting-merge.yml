@@ -44,6 +44,9 @@ jobs:
   # this to succeed — grant it in Google Cloud IAM if the deploy is denied.
   deploy_firestore_rules:
     runs-on: ubuntu-latest
+    # Deploys with its own service account; it never writes to the repository.
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -53,7 +56,9 @@ jobs:
         env:
           FIREBASE_SA: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_LEARNTOPIA_REACT }}
         run: |
-          printf '%s' "$FIREBASE_SA" > "$RUNNER_TEMP/gcp-key.json"
+          # The key file goes away even if the deploy fails: a bare rm on the
+          # last line never runs when the step exits non-zero.
+          trap 'rm -f "$RUNNER_TEMP/gcp-key.json"' EXIT
+          (umask 077 && printf '%s' "$FIREBASE_SA" > "$RUNNER_TEMP/gcp-key.json")
           export GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/gcp-key.json"
           npx --yes firebase-tools@13 deploy --only firestore:rules --project learntopia-react --non-interactive
-          rm -f "$RUNNER_TEMP/gcp-key.json"
