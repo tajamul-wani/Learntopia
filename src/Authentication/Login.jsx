@@ -61,14 +61,18 @@ const Login = () => {
             totalPoints: increment(pointsEarned)
           });
 
+          // Display data only, written whole: the quiz board never carries a
+          // real account name, and the rules reject any other shape.
           const globalScoreRef = doc(db, "QuizLeaderboards", quizId, "Scores", user.uid);
           await setDoc(globalScoreRef, {
+            userId: user.uid,
+            displayName: userDisplayName || "Learner",
+            avatarId: "",
             score: pointsEarned,
             rawScore: score,
-            userFullName: userDisplayName || user.displayName || "User",
-            userId: user.uid,
-            completedAt: new Date()
-          }, { merge: true });
+            totalQuestions,
+            completedAt: new Date(),
+          });
 
           const userSnap = await getDoc(doc(db, "Users", user.uid));
           if (userSnap.exists()) {

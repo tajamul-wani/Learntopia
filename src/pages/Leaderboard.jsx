@@ -76,7 +76,7 @@ const Leaderboard = () => {
           const activeQuizDef = quizzes.find((q) => q.id === activeTab);
           snap.forEach((d) => {
             const data = d.data();
-            const { displayName, avatarId } = parseProfileName(data, data.userFullName || "Learner");
+            const { displayName, avatarId } = parseProfileName(data, "Learner");
             entries.push({
               id: `${activeTab}_${d.id}`,
               userId: d.id,

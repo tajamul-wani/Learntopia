@@ -95,6 +95,27 @@ service cloud.firestore {
                   && d.completedModules.size() >= d.totalModules));
     }
 
+    // Per-quiz leaderboard rows carry DISPLAY data only, and are bounded the
+    // same way quiz attempts are. Without this a client could post any score to
+    // any quiz board, or write an email or real name into a collection every
+    // signed-in user can read.
+    function isValidQuizScore(userId) {
+      let d = request.resource.data;
+      return d.keys().hasOnly(['userId', 'displayName', 'avatarId', 'score', 'rawScore',
+                               'totalQuestions', 'completedAt'])
+          && d.userId == userId
+          && d.totalQuestions is number && d.totalQuestions > 0 && d.totalQuestions <= 100
+          && d.rawScore is number && d.rawScore >= 0 && d.rawScore <= d.totalQuestions
+          && d.score is number && d.score >= 0
+          && (!('displayName' in d) || d.displayName is string)
+          && (!('avatarId' in d) || d.avatarId is string)
+          // A board holds a personal best, so a row may only improve. A weaker
+          // retake can never lower someone's standing, and a tampered client
+          // cannot rewrite history downward either.
+          && (resource == null || (d.score >= resource.data.get('score', 0)
+                                   && d.rawScore >= resource.data.get('rawScore', 0)));
+    }
+
     // Public leaderboard entries carry DISPLAY data only — never email/PII.
     // This shape check makes it impossible to write an email into the
     // world-readable PublicLeaderboard collection.
@@ -204,7 +225,7 @@ service cloud.firestore {
     // delete it only during account deletion.
     match /QuizLeaderboards/{quizId}/Scores/{userId} {
       allow read: if isSignedIn();
-      allow create, update: if isOwner(userId);
+      allow create, update: if isOwner(userId) && isValidQuizScore(userId);
       allow delete: if isOwner(userId) && profileDeleted(userId);
     }
 
