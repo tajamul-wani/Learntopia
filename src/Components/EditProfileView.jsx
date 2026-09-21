@@ -1,8 +1,9 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import { toast } from "../context/ToastContext";
 import AvatarGrid from "./AvatarGrid";
+import UnsavedChangesGuard from "./UnsavedChangesGuard";
 import Modal from "./ui/Modal";
 import Avatar from "./Avatar";
 import Button from "./ui/Button";
@@ -47,10 +48,29 @@ const EditProfileView = ({ onBack, required = false, initialName = "", initialAv
   const errorRef = useRef(null);
   const [avatarPickerOpen, setAvatarPickerOpen] = useState(false);
 
+  // Leaving with unsaved edits has to be a decision, not an accident. Any way
+  // out of this page — the navbar, Back, Cancel — is held in `pendingExit`
+  // until the learner saves or discards, and only then does it go through.
+  const [pendingExit, setPendingExit] = useState(null);
+  const initialPhoto = initialUsePhoto && !!googlePhoto;
+  const dirty =
+    displayName !== initialName || avatarId !== initialAvatar || usePhoto !== initialPhoto;
+
   // Save sits at the foot of a long form, so bring the message into view.
   useEffect(() => {
     if (error) errorRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
   }, [error]);
+
+  // Closing the tab or hitting reload is outside the router's reach.
+  useEffect(() => {
+    if (!dirty) return undefined;
+    const warn = (e) => {
+      e.preventDefault();
+      e.returnValue = "";
+    };
+    window.addEventListener("beforeunload", warn);
+    return () => window.removeEventListener("beforeunload", warn);
+  }, [dirty]);
 
   useEffect(() => {
     setDisplayName(initialName);
@@ -90,23 +110,63 @@ const EditProfileView = ({ onBack, required = false, initialName = "", initialAv
     return true;
   };
 
-  const handleSave = async () => {
-    if (!validateFormat()) return;
+  /**
+   * @param {{leave?: boolean}} opts  leave:false keeps the view mounted so the
+   *   caller can send the learner where they were actually headed.
+   * @returns {Promise<boolean>} whether the profile was saved
+   */
+  const handleSave = async ({ leave = true } = {}) => {
+    if (!validateFormat()) return false;
     setSaving(true);
     try {
       if (!(await validateNameUnique(displayName.trim()))) {
-        setSaving(false);
-        return;
+        return false;
       }
       await completeProfileSetup(displayName.trim(), avatarId, { usePhoto: usePhoto && !!googlePhoto });
       toast.profileSaved(required ? t("profileSetup.setupSuccess") : t("profileSetup.editSuccess"));
-      onBack?.();
+      if (leave) onBack?.();
+      return true;
     } catch (err) {
       console.error("Profile update error:", err);
       toast.error(t("profileSetup.saveFailed"));
+      return false;
     } finally {
       setSaving(false);
     }
+  };
+
+  const leaveNow = (exit) => {
+    setPendingExit(null);
+    if (exit?.blocker) exit.blocker.proceed();
+    else onBack?.();
+  };
+
+  /** Back and Cancel: ask first if there is unsaved work. */
+  const requestExit = () => {
+    if (dirty) setPendingExit({ back: true });
+    else onBack?.();
+  };
+
+  const handleBlocked = useCallback((blocker) => setPendingExit({ blocker }), []);
+
+  const saveAndExit = async () => {
+    const exit = pendingExit;
+    if (await handleSave({ leave: false })) leaveNow(exit);
+    // A rejected name keeps the learner here, with the reason at the top.
+    else setPendingExit(null);
+  };
+
+  const discardAndExit = () => {
+    setDisplayName(initialName);
+    setAvatarId(initialAvatar);
+    setUsePhoto(initialPhoto);
+    setError("");
+    leaveNow(pendingExit);
+  };
+
+  const keepEditing = () => {
+    pendingExit?.blocker?.reset();
+    setPendingExit(null);
   };
 
   return (
@@ -117,7 +177,7 @@ const EditProfileView = ({ onBack, required = false, initialName = "", initialAv
         {!required && (
           <button
             type="button"
-            onClick={onBack}
+            onClick={requestExit}
             className="mb-6 inline-flex items-center gap-2 rounded-xl border border-white/10 bg-surface-2 shadow-clay-sm px-3.5 py-2 text-xs font-semibold text-ink-low transition-colors hover:border-violet-700 hover:text-violet-300"
           >
             <Icon name="arrow-left" size={15} />
@@ -265,12 +325,12 @@ const EditProfileView = ({ onBack, required = false, initialName = "", initialAv
             {/* Actions live in this card so Save sits with the fields it saves. */}
             <div className="mt-5 flex items-center justify-end gap-2.5 border-t border-white/[0.08] pt-4">
               {!required && (
-                <Button variant="ghost" size="sm" onClick={onBack} disabled={saving} className="text-xs">
+                <Button variant="ghost" size="sm" onClick={requestExit} disabled={saving} className="text-xs">
                   {t("profileSetup.cancelBtn")}
                 </Button>
               )}
               <Button
-                onClick={handleSave}
+                onClick={() => handleSave()}
                 disabled={saving || !displayName.trim() || !avatarId}
                 size="sm"
                 className="min-w-[140px] justify-center gap-2 font-bold"
@@ -327,6 +387,40 @@ const EditProfileView = ({ onBack, required = false, initialName = "", initialAv
         </div>
       </Modal>
 
+      {/* First-time setup renders this view outside the router, so the blocker
+          only exists on the dashboard's Edit Profile. */}
+      {!required && <UnsavedChangesGuard when={dirty && !!currentUser} onBlocked={handleBlocked} />}
+
+      <Modal
+        isOpen={!!pendingExit}
+        onClose={keepEditing}
+        title={t("profileSetup.unsavedTitle")}
+        icon="alert-triangle"
+        showFooter={false}
+      >
+        <p className="text-sm text-ink">{t("profileSetup.unsavedBody")}</p>
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-end">
+          {/* Phones: the two ways of leaving share a row, and Save — the one we
+              want thumbed — takes the full width below them. sm:contents drops
+              this wrapper so all three sit in one right-aligned row. */}
+          <div className="flex gap-3 sm:contents">
+            <Button variant="secondary" onClick={keepEditing} disabled={saving} className="flex-1 sm:flex-none">
+              {t("profileSetup.unsavedStay")}
+            </Button>
+            <Button
+              variant="danger"
+              onClick={discardAndExit}
+              disabled={saving}
+              className="flex-1 shadow-clay-btn sm:flex-none"
+            >
+              {t("profileSetup.unsavedDiscard")}
+            </Button>
+          </div>
+          <Button onClick={saveAndExit} loading={saving} disabled={saving} className="w-full sm:w-auto">
+            {t("profileSetup.unsavedSave")}
+          </Button>
+        </div>
+      </Modal>
     </div>
   );
 };
