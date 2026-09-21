@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import { toast } from "../context/ToastContext";
 import AvatarGrid from "./AvatarGrid";
+import Modal from "./ui/Modal";
 import Avatar from "./Avatar";
 import Button from "./ui/Button";
 import Icon from "./ui/Icon";
@@ -43,6 +44,13 @@ const EditProfileView = ({ onBack, required = false, initialName = "", initialAv
   const [usePhoto, setUsePhoto] = useState(initialUsePhoto && !!googlePhoto);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const errorRef = useRef(null);
+  const [avatarPickerOpen, setAvatarPickerOpen] = useState(false);
+
+  // Save sits at the foot of a long form, so bring the message into view.
+  useEffect(() => {
+    if (error) errorRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, [error]);
 
   useEffect(() => {
     setDisplayName(initialName);
@@ -125,11 +133,24 @@ const EditProfileView = ({ onBack, required = false, initialName = "", initialAv
           <p className="mt-1 text-sm text-ink-low">
             {required ? t("profileSetup.requiredHint") : t("profileSetup.subtitle")}
           </p>
+
+          {/* Validation lives at the top: at the foot of the form it sat below
+              the avatar grid, off-screen on most phones. */}
+          {error && (
+            <div
+              ref={errorRef}
+              role="alert"
+              className="mt-4 flex items-center gap-2 rounded-lg border border-state-danger/30 bg-state-danger/10 px-3 py-2 text-xs text-state-danger"
+            >
+              <Icon name="alert-circle" size={14} className="flex-none" />
+              {error}
+            </div>
+          )}
         </div>
 
-        <div className="grid items-stretch gap-4 lg:grid-cols-[360px_1fr]">
+        <div className="grid items-start gap-4 lg:grid-cols-[360px_1fr]">
 
-          {/* ── LEFT: identity + fields (below the avatar picker on mobile) ── */}
+          {/* ── LEFT: identity + fields, sized to its content ── */}
           <div className="order-2 lg:order-1 rounded-2xl border border-white/10 bg-surface shadow-clay p-5 sm:p-6">
             <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.1em] text-ink-low">
               {t("profileSetup.identitySection")}
@@ -148,6 +169,18 @@ const EditProfileView = ({ onBack, required = false, initialName = "", initialAv
                 {displayName.trim() || t("profileSetup.previewPlaceholder")}
               </p>
               <p className="text-[11px] text-ink-low">{t("profileSetup.previewHint")}</p>
+
+              {/* Phones open the picker in a dialog: side by side, the grid
+                  pushed this card and the Save button far down the page. */}
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => setAvatarPickerOpen(true)}
+                className="mt-1 gap-2 text-xs lg:hidden"
+              >
+                <Icon name="edit-3" size={14} />
+                {t("profileSetup.changeAvatar")}
+              </Button>
             </div>
 
             {/* Display name */}
@@ -228,26 +261,9 @@ const EditProfileView = ({ onBack, required = false, initialName = "", initialAv
                 </button>
               </label>
             )}
-          </div>
 
-          {/* ── RIGHT: avatar picker (above the identity fields on mobile) ── */}
-          <div className="order-1 lg:order-2 rounded-2xl border border-white/10 bg-surface shadow-clay p-5 sm:p-6">
-            <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.1em] text-ink-low">
-              {t("profileSetup.avatarLabel")}
-            </p>
-
-            <AvatarGrid selectedId={avatarId} onSelect={setAvatarId} />
-          </div>
-
-          {/* ── Actions + error: full-width footer, always last ── */}
-          <div className="order-3 lg:col-span-2">
-            {error && (
-              <div className="mb-4 flex items-center gap-2 rounded-lg border border-state-danger/30 bg-state-danger/10 px-3 py-2 text-xs text-state-danger">
-                <Icon name="alert-circle" size={14} className="flex-none" />
-                {error}
-              </div>
-            )}
-            <div className="flex items-center justify-end gap-2.5 border-t border-white/[0.08] pt-4">
+            {/* Actions live in this card so Save sits with the fields it saves. */}
+            <div className="mt-5 flex items-center justify-end gap-2.5 border-t border-white/[0.08] pt-4">
               {!required && (
                 <Button variant="ghost" size="sm" onClick={onBack} disabled={saving} className="text-xs">
                   {t("profileSetup.cancelBtn")}
@@ -273,8 +289,44 @@ const EditProfileView = ({ onBack, required = false, initialName = "", initialAv
               </Button>
             </div>
           </div>
+
+          {/* ── RIGHT: avatar picker (above the identity fields on mobile) ── */}
+          <div className="order-1 hidden lg:order-2 lg:block rounded-2xl border border-white/10 bg-surface shadow-clay p-5 sm:p-6">
+            <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.1em] text-ink-low">
+              {t("profileSetup.avatarLabel")}
+            </p>
+
+            {/* The grid scrolls inside the card: 26 avatars otherwise push Save
+                far below the fold, especially on a phone. */}
+            <div className="max-h-[52vh] overflow-y-auto overscroll-contain px-1.5 py-2 pr-2.5 lg:max-h-[430px]">
+              <AvatarGrid selectedId={avatarId} onSelect={setAvatarId} />
+            </div>
+          </div>
+
         </div>
       </div>
+
+      {/* Phone-sized avatar picker: the same grid in a dialog, so the identity
+          card and Save stay at the top of the page instead of below 26 tiles. */}
+      <Modal
+        isOpen={avatarPickerOpen}
+        onClose={() => setAvatarPickerOpen(false)}
+        title={t("profileSetup.avatarLabel")}
+        icon="user"
+        actionText={t("profileSetup.avatarDone")}
+        onAction={() => setAvatarPickerOpen(false)}
+      >
+        <div className="max-h-[60vh] overflow-y-auto overscroll-contain px-1.5 py-2 pr-2.5">
+          <AvatarGrid
+            selectedId={avatarId}
+            onSelect={(id) => {
+              setAvatarId(id);
+              if (error) setError("");
+            }}
+          />
+        </div>
+      </Modal>
+
     </div>
   );
 };
