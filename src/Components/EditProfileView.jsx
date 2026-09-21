@@ -1,8 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import { toast } from "../context/ToastContext";
 import AvatarGrid from "./AvatarGrid";
+import UnsavedChangesGuard from "./UnsavedChangesGuard";
+import Modal from "./ui/Modal";
 import Avatar from "./Avatar";
 import Button from "./ui/Button";
 import Icon from "./ui/Icon";
@@ -43,6 +45,32 @@ const EditProfileView = ({ onBack, required = false, initialName = "", initialAv
   const [usePhoto, setUsePhoto] = useState(initialUsePhoto && !!googlePhoto);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const errorRef = useRef(null);
+  const [avatarPickerOpen, setAvatarPickerOpen] = useState(false);
+
+  // Leaving with unsaved edits has to be a decision, not an accident. Any way
+  // out of this page — the navbar, Back, Cancel — is held in `pendingExit`
+  // until the learner saves or discards, and only then does it go through.
+  const [pendingExit, setPendingExit] = useState(null);
+  const initialPhoto = initialUsePhoto && !!googlePhoto;
+  const dirty =
+    displayName !== initialName || avatarId !== initialAvatar || usePhoto !== initialPhoto;
+
+  // Save sits at the foot of a long form, so bring the message into view.
+  useEffect(() => {
+    if (error) errorRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, [error]);
+
+  // Closing the tab or hitting reload is outside the router's reach.
+  useEffect(() => {
+    if (!dirty) return undefined;
+    const warn = (e) => {
+      e.preventDefault();
+      e.returnValue = "";
+    };
+    window.addEventListener("beforeunload", warn);
+    return () => window.removeEventListener("beforeunload", warn);
+  }, [dirty]);
 
   useEffect(() => {
     setDisplayName(initialName);
@@ -82,23 +110,63 @@ const EditProfileView = ({ onBack, required = false, initialName = "", initialAv
     return true;
   };
 
-  const handleSave = async () => {
-    if (!validateFormat()) return;
+  /**
+   * @param {{leave?: boolean}} opts  leave:false keeps the view mounted so the
+   *   caller can send the learner where they were actually headed.
+   * @returns {Promise<boolean>} whether the profile was saved
+   */
+  const handleSave = async ({ leave = true } = {}) => {
+    if (!validateFormat()) return false;
     setSaving(true);
     try {
       if (!(await validateNameUnique(displayName.trim()))) {
-        setSaving(false);
-        return;
+        return false;
       }
       await completeProfileSetup(displayName.trim(), avatarId, { usePhoto: usePhoto && !!googlePhoto });
       toast.profileSaved(required ? t("profileSetup.setupSuccess") : t("profileSetup.editSuccess"));
-      onBack?.();
+      if (leave) onBack?.();
+      return true;
     } catch (err) {
       console.error("Profile update error:", err);
       toast.error(t("profileSetup.saveFailed"));
+      return false;
     } finally {
       setSaving(false);
     }
+  };
+
+  const leaveNow = (exit) => {
+    setPendingExit(null);
+    if (exit?.blocker) exit.blocker.proceed();
+    else onBack?.();
+  };
+
+  /** Back and Cancel: ask first if there is unsaved work. */
+  const requestExit = () => {
+    if (dirty) setPendingExit({ back: true });
+    else onBack?.();
+  };
+
+  const handleBlocked = useCallback((blocker) => setPendingExit({ blocker }), []);
+
+  const saveAndExit = async () => {
+    const exit = pendingExit;
+    if (await handleSave({ leave: false })) leaveNow(exit);
+    // A rejected name keeps the learner here, with the reason at the top.
+    else setPendingExit(null);
+  };
+
+  const discardAndExit = () => {
+    setDisplayName(initialName);
+    setAvatarId(initialAvatar);
+    setUsePhoto(initialPhoto);
+    setError("");
+    leaveNow(pendingExit);
+  };
+
+  const keepEditing = () => {
+    pendingExit?.blocker?.reset();
+    setPendingExit(null);
   };
 
   return (
@@ -109,7 +177,7 @@ const EditProfileView = ({ onBack, required = false, initialName = "", initialAv
         {!required && (
           <button
             type="button"
-            onClick={onBack}
+            onClick={requestExit}
             className="mb-6 inline-flex items-center gap-2 rounded-xl border border-white/10 bg-surface-2 shadow-clay-sm px-3.5 py-2 text-xs font-semibold text-ink-low transition-colors hover:border-violet-700 hover:text-violet-300"
           >
             <Icon name="arrow-left" size={15} />
@@ -125,11 +193,24 @@ const EditProfileView = ({ onBack, required = false, initialName = "", initialAv
           <p className="mt-1 text-sm text-ink-low">
             {required ? t("profileSetup.requiredHint") : t("profileSetup.subtitle")}
           </p>
+
+          {/* Validation lives at the top: at the foot of the form it sat below
+              the avatar grid, off-screen on most phones. */}
+          {error && (
+            <div
+              ref={errorRef}
+              role="alert"
+              className="mt-4 flex items-center gap-2 rounded-lg border border-state-danger/30 bg-state-danger/10 px-3 py-2 text-xs text-state-danger"
+            >
+              <Icon name="alert-circle" size={14} className="flex-none" />
+              {error}
+            </div>
+          )}
         </div>
 
-        <div className="grid items-stretch gap-4 lg:grid-cols-[360px_1fr]">
+        <div className="grid items-start gap-4 lg:grid-cols-[360px_1fr]">
 
-          {/* ── LEFT: identity + fields (below the avatar picker on mobile) ── */}
+          {/* ── LEFT: identity + fields, sized to its content ── */}
           <div className="order-2 lg:order-1 rounded-2xl border border-white/10 bg-surface shadow-clay p-5 sm:p-6">
             <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.1em] text-ink-low">
               {t("profileSetup.identitySection")}
@@ -148,6 +229,18 @@ const EditProfileView = ({ onBack, required = false, initialName = "", initialAv
                 {displayName.trim() || t("profileSetup.previewPlaceholder")}
               </p>
               <p className="text-[11px] text-ink-low">{t("profileSetup.previewHint")}</p>
+
+              {/* Phones open the picker in a dialog: side by side, the grid
+                  pushed this card and the Save button far down the page. */}
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => setAvatarPickerOpen(true)}
+                className="mt-1 gap-2 text-xs lg:hidden"
+              >
+                <Icon name="edit-3" size={14} />
+                {t("profileSetup.changeAvatar")}
+              </Button>
             </div>
 
             {/* Display name */}
@@ -228,33 +321,16 @@ const EditProfileView = ({ onBack, required = false, initialName = "", initialAv
                 </button>
               </label>
             )}
-          </div>
 
-          {/* ── RIGHT: avatar picker (above the identity fields on mobile) ── */}
-          <div className="order-1 lg:order-2 rounded-2xl border border-white/10 bg-surface shadow-clay p-5 sm:p-6">
-            <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.1em] text-ink-low">
-              {t("profileSetup.avatarLabel")}
-            </p>
-
-            <AvatarGrid selectedId={avatarId} onSelect={setAvatarId} />
-          </div>
-
-          {/* ── Actions + error: full-width footer, always last ── */}
-          <div className="order-3 lg:col-span-2">
-            {error && (
-              <div className="mb-4 flex items-center gap-2 rounded-lg border border-state-danger/30 bg-state-danger/10 px-3 py-2 text-xs text-state-danger">
-                <Icon name="alert-circle" size={14} className="flex-none" />
-                {error}
-              </div>
-            )}
-            <div className="flex items-center justify-end gap-2.5 border-t border-white/[0.08] pt-4">
+            {/* Actions live in this card so Save sits with the fields it saves. */}
+            <div className="mt-5 flex items-center justify-end gap-2.5 border-t border-white/[0.08] pt-4">
               {!required && (
-                <Button variant="ghost" size="sm" onClick={onBack} disabled={saving} className="text-xs">
+                <Button variant="ghost" size="sm" onClick={requestExit} disabled={saving} className="text-xs">
                   {t("profileSetup.cancelBtn")}
                 </Button>
               )}
               <Button
-                onClick={handleSave}
+                onClick={() => handleSave()}
                 disabled={saving || !displayName.trim() || !avatarId}
                 size="sm"
                 className="min-w-[140px] justify-center gap-2 font-bold"
@@ -273,8 +349,78 @@ const EditProfileView = ({ onBack, required = false, initialName = "", initialAv
               </Button>
             </div>
           </div>
+
+          {/* ── RIGHT: avatar picker (above the identity fields on mobile) ── */}
+          <div className="order-1 hidden lg:order-2 lg:block rounded-2xl border border-white/10 bg-surface shadow-clay p-5 sm:p-6">
+            <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.1em] text-ink-low">
+              {t("profileSetup.avatarLabel")}
+            </p>
+
+            {/* The grid scrolls inside the card: 26 avatars otherwise push Save
+                far below the fold, especially on a phone. */}
+            <div className="max-h-[52vh] overflow-y-auto overscroll-contain px-1.5 py-2 pr-2.5 lg:max-h-[430px]">
+              <AvatarGrid selectedId={avatarId} onSelect={setAvatarId} />
+            </div>
+          </div>
+
         </div>
       </div>
+
+      {/* Phone-sized avatar picker: the same grid in a dialog, so the identity
+          card and Save stay at the top of the page instead of below 26 tiles. */}
+      <Modal
+        isOpen={avatarPickerOpen}
+        onClose={() => setAvatarPickerOpen(false)}
+        title={t("profileSetup.avatarLabel")}
+        icon="user"
+        actionText={t("profileSetup.avatarDone")}
+        onAction={() => setAvatarPickerOpen(false)}
+      >
+        <div className="max-h-[60vh] overflow-y-auto overscroll-contain px-1.5 py-2 pr-2.5">
+          <AvatarGrid
+            selectedId={avatarId}
+            onSelect={(id) => {
+              setAvatarId(id);
+              if (error) setError("");
+            }}
+          />
+        </div>
+      </Modal>
+
+      {/* First-time setup renders this view outside the router, so the blocker
+          only exists on the dashboard's Edit Profile. */}
+      {!required && <UnsavedChangesGuard when={dirty && !!currentUser} onBlocked={handleBlocked} />}
+
+      <Modal
+        isOpen={!!pendingExit}
+        onClose={keepEditing}
+        title={t("profileSetup.unsavedTitle")}
+        icon="alert-triangle"
+        showFooter={false}
+      >
+        <p className="text-sm text-ink">{t("profileSetup.unsavedBody")}</p>
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-end">
+          {/* Phones: the two ways of leaving share a row, and Save — the one we
+              want thumbed — takes the full width below them. sm:contents drops
+              this wrapper so all three sit in one right-aligned row. */}
+          <div className="flex gap-3 sm:contents">
+            <Button variant="secondary" onClick={keepEditing} disabled={saving} className="flex-1 sm:flex-none">
+              {t("profileSetup.unsavedStay")}
+            </Button>
+            <Button
+              variant="danger"
+              onClick={discardAndExit}
+              disabled={saving}
+              className="flex-1 shadow-clay-btn sm:flex-none"
+            >
+              {t("profileSetup.unsavedDiscard")}
+            </Button>
+          </div>
+          <Button onClick={saveAndExit} loading={saving} disabled={saving} className="w-full sm:w-auto">
+            {t("profileSetup.unsavedSave")}
+          </Button>
+        </div>
+      </Modal>
     </div>
   );
 };

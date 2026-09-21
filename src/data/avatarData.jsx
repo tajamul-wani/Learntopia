@@ -13,7 +13,8 @@
  *
  * Avatar art: "Adventurer" by Lisa Wischofsky, licensed CC BY 4.0 (see README).
  *
- * Categories: "feminine" | "masculine" drive the picker's Girls/Boys filter
+ * Categories: "critters" | "characters" drive the picker's filter tabs. The
+ * old Girls/Boys split is gone: nobody is sorted by gender to pick a face.
  * tabs. The generator (scripts/gen-avatars.mjs) pins the girl set to long hair
  * and the boy set to short hair, so each face clearly matches its tab.
  */
@@ -37,31 +38,53 @@ const build = (id) => {
   return render;
 };
 
-// ── Feminine set ─────────────────────────────────────────────────────────────
+// ── Character set (was the Girls tab) ────────────────────────────────────────
 const feminineAvatars = [
-  { id: "astro-girl",     label: "Space Explorer", category: "feminine", svg: build("astro-girl") },
-  { id: "pixel-princess", label: "Cyber Princess", category: "feminine", svg: build("pixel-princess") },
-  { id: "skater-girl",    label: "Skater Star",    category: "feminine", svg: build("skater-girl") },
-  { id: "wizard-girl",    label: "Spell Caster",   category: "feminine", svg: build("wizard-girl") },
-  { id: "music-girl",     label: "Beat Maker",     category: "feminine", svg: build("music-girl") },
-  { id: "coder-girl",     label: "Code Queen",     category: "feminine", svg: build("coder-girl") },
-  { id: "artist-girl",    label: "Art Star",       category: "feminine", svg: build("artist-girl") },
-  { id: "science-girl",   label: "Lab Genius",     category: "feminine", svg: build("science-girl") },
+  { id: "astro-girl",     label: "Space Explorer", category: "characters", svg: build("astro-girl") },
+  { id: "pixel-princess", label: "Cyber Princess", category: "characters", svg: build("pixel-princess") },
+  { id: "skater-girl",    label: "Skater Star",    category: "characters", svg: build("skater-girl") },
+  { id: "wizard-girl",    label: "Spell Caster",   category: "characters", svg: build("wizard-girl") },
+  { id: "music-girl",     label: "Beat Maker",     category: "characters", svg: build("music-girl") },
+  { id: "coder-girl",     label: "Code Queen",     category: "characters", svg: build("coder-girl") },
+  { id: "artist-girl",    label: "Art Star",       category: "characters", svg: build("artist-girl") },
+  { id: "science-girl",   label: "Lab Genius",     category: "characters", svg: build("science-girl") },
 ];
 
-// ── Masculine set ────────────────────────────────────────────────────────────
+// ── Character set (was the Boys tab) ────────────────────────────────────────────────────────────
 const masculineAvatars = [
-  { id: "ninja-boy",    label: "Cyber Ninja",   category: "masculine", svg: build("ninja-boy") },
-  { id: "gamer-boy",    label: "Pro Gamer",     category: "masculine", svg: build("gamer-boy") },
-  { id: "robot-boy",    label: "Mecha Bot",     category: "masculine", svg: build("robot-boy") },
-  { id: "skater-boy",   label: "Board Rider",   category: "masculine", svg: build("skater-boy") },
-  { id: "explorer-boy", label: "Wild Explorer", category: "masculine", svg: build("explorer-boy") },
-  { id: "rocket-boy",   label: "Rocket Kid",    category: "masculine", svg: build("rocket-boy") },
-  { id: "sport-boy",    label: "All-Star",      category: "masculine", svg: build("sport-boy") },
-  { id: "dino-boy",     label: "Dino Rider",    category: "masculine", svg: build("dino-boy") },
+  { id: "ninja-boy",    label: "Cyber Ninja",   category: "characters", svg: build("ninja-boy") },
+  { id: "gamer-boy",    label: "Pro Gamer",     category: "characters", svg: build("gamer-boy") },
+  { id: "robot-boy",    label: "Mecha Bot",     category: "characters", svg: build("robot-boy") },
+  { id: "skater-boy",   label: "Board Rider",   category: "characters", svg: build("skater-boy") },
+  { id: "explorer-boy", label: "Wild Explorer", category: "characters", svg: build("explorer-boy") },
+  { id: "rocket-boy",   label: "Rocket Kid",    category: "characters", svg: build("rocket-boy") },
+  { id: "sport-boy",    label: "All-Star",      category: "characters", svg: build("sport-boy") },
+  { id: "dino-boy",     label: "Dino Rider",    category: "characters", svg: build("dino-boy") },
 ];
 
-export const AVATARS = [...feminineAvatars, ...masculineAvatars];
+// ── Pets set ─────────────────────────────────────────────────────────────────
+// Gender-neutral animals, drawn for Learntopia as flat SVGs in public/avatars/
+// rather than generated: the DiceBear styles behind the sets above have no
+// animal faces. They share the frame (762x762, pastel ground, face filling most
+// of it) so the picker grid reads evenly. A learner who skips profile setup gets
+// one of these, so nobody is assigned a gendered face by default.
+const petAvatars = [
+  { id: "pet-cat",     label: "Whiskers",     category: "critters", svg: build("pet-cat") },
+  { id: "pet-dog",     label: "Scout",     category: "critters", svg: build("pet-dog") },
+  { id: "pet-fox",     label: "Ember",     category: "critters", svg: build("pet-fox") },
+  { id: "pet-panda",   label: "Bamboo",   category: "critters", svg: build("pet-panda") },
+  { id: "pet-owl",     label: "Hoots",     category: "critters", svg: build("pet-owl") },
+  { id: "pet-penguin", label: "Waddles", category: "critters", svg: build("pet-penguin") },
+  { id: "pet-rabbit",  label: "Nibbles",  category: "critters", svg: build("pet-rabbit") },
+  { id: "pet-bear",    label: "Rumble",    category: "critters", svg: build("pet-bear") },
+  { id: "pet-frog",    label: "Ribbit",    category: "critters", svg: build("pet-frog") },
+  { id: "pet-koala",   label: "Snooze",   category: "critters", svg: build("pet-koala") },
+];
+
+export const AVATARS = [...petAvatars, ...feminineAvatars, ...masculineAvatars];
+
+/** Avatar given to a learner who does not choose one. */
+export const randomPetAvatarId = () => petAvatars[Math.floor(Math.random() * petAvatars.length)].id;
 
 export const getAvatarById = (id) => AVATARS.find((a) => a.id === id) || null;
 

@@ -42,15 +42,16 @@ const Modal = ({
         onClick={!loading ? onClose : undefined}
       />
       
-      <Card className="relative z-10 w-full max-w-lg overflow-hidden p-6 md:p-8 animate-fade-up">
-        <div className="mb-6 flex items-start justify-between gap-4">
-          <div className="flex items-center gap-4">
+      <Card className="relative z-10 w-full max-w-lg overflow-hidden p-5 sm:p-6 md:p-8 animate-fade-up">
+        <div className="mb-5 flex items-start justify-between gap-3 sm:mb-6 sm:gap-4">
+          <div className="flex min-w-0 items-center gap-3 sm:gap-4">
             {icon && (
-              <div className={`grid h-12 w-12 flex-none place-items-center rounded-2xl shadow-clay-sm ${isDestructive ? 'bg-state-danger/15 text-state-danger' : 'bg-sky/15 text-sky'}`}>
-                <Icon name={icon} size={24} />
+              <div className={`grid h-9 w-9 flex-none place-items-center rounded-xl shadow-clay-sm sm:h-12 sm:w-12 sm:rounded-2xl ${isDestructive ? 'bg-state-danger/15 text-state-danger' : 'bg-sky/15 text-sky'}`}>
+                <Icon name={icon} size={18} className="sm:hidden" />
+                <Icon name={icon} size={24} className="hidden sm:block" />
               </div>
             )}
-            <h2 className="text-xl font-extrabold text-ink-hi md:text-2xl">{title}</h2>
+            <h2 className="min-w-0 truncate text-base font-extrabold text-ink-hi sm:text-xl md:text-2xl">{title}</h2>
           </div>
           <button 
             onClick={!loading ? onClose : undefined}
