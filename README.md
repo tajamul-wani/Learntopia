@@ -54,74 +54,21 @@ translated into English and Spanish.
 
 ## Features
 
-### Learning
-
-- **Course catalog** with search: multi-module tracks, per-module progress and
-  completion tracking.
-- **Lesson player**: paginated steps with themed cards (story, concept, fun
-  fact, tip, example, activity, recap), progress dots and code blocks.
-- **Exercises**: multiple choice, true/false, fill in the blank, and
-  tap-to-connect matching pairs, with colour-linked pairs that stay in place.
-- **Journey map**: the syllabus as a path of nodes (done, current, locked)
-  ending in a certificate node.
-- **Timed quizzes**: 15 seconds per question, randomised, with instant feedback
-  and per-quiz leaderboards.
-- **AI tutor**: a per-course assistant powered by Google Gemini, with a
-  kid-safe prompt. The API key stays in a Cloudflare Worker, never in the app.
-
-### Progress and motivation
-
-- **XP and levels**: XP per module and per course, from Rookie Coder to
-  Grandmaster.
-- **Badges**: animated medallions for milestones, each with a vector fallback.
-- **Daily streaks**: a UTC-based counter with bonus XP at 7, 15 and 30 days.
-- **Celebrations**: a full-screen moment for a level-up, badge or reaching the
-  top of the leaderboard, queued when several land at once and reduced for
-  users who prefer less motion.
-- **Anti-farming**: a module grants XP once, and a quiz retake only rewards
-  beating your best score. Security rules cap scores by question count.
-- **Dashboard**: profile header, XP, streak and course metrics, course tabs
-  (enrolled, completed, unenrolled), quiz history and a continue-learning
-  spotlight.
-- **Leaderboards**: a global board by total points and one per quiz, both for
-  signed-in users.
-
-### Accounts
-
-- **Sign-in**: email and password, or Google.
-- **Profile setup**: first-time users choose a display name and one of 26
-  built-in avatars, in two sets: 10 hand-drawn Critters and 16 characters. Real
-  profile photos are never shown on the leaderboard.
-- **Account deletion**: after confirming their password (or Google sign-in), a
-  learner's profile, course progress, quiz history, leaderboard entries and
-  login are all deleted, and the local cache is cleared.
-- **Guest scores** taken before signing in are saved to the new account.
-
-### Interface
-
-- **Dark clay design system** built on design tokens. A palette guard fails CI
-  if a colour outside the system appears.
-- **English and Spanish** across the interface, courses, quizzes and legal
-  pages. Only fully translated languages appear in the switcher.
-- **Phone-first navigation**: a bottom tab bar below the `md` breakpoint,
-  which hides during a lesson or quiz so progress is not lost by a stray tap.
-- **Focus mode**: leaving a quiz or module asks for confirmation.
-- **Instant splash**: an inline splash screen paints on the first frame, before
-  the app's JavaScript runs.
-- **Sound effects**: generated in the browser with the Web Audio API, with a
-  persistent mute toggle. No audio files, no dependencies.
-- **Notifications**: corner toasts for routine feedback and a centred modal for
-  big moments, from one shared config.
-
-### Operations
-
-- **Error monitoring**: production crashes go to Sentry, with no reporting in
-  development.
-- **Automatic triage**: a new Sentry issue files a Linear task (Backlog, high
-  priority, Bug) through a Cloudflare Worker that verifies Sentry's signature
-  and de-duplicates by issue id.
-- **SEO**: canonical links, Open Graph and Twitter cards, JSON-LD, and
-  generated social images.
+- **Courses**: multi-module tracks with lessons, exercises (multiple choice,
+  true/false, fill in the blank, matching pairs) and a syllabus map.
+- **Quizzes**: timed, scored, with a leaderboard per quiz.
+- **AI tutor**: a per-course assistant on Google Gemini, with the key held in a
+  Cloudflare Worker.
+- **Progress**: XP, levels, badges, daily streaks, a global leaderboard, and a
+  dashboard covering courses and quiz history.
+- **Accounts**: email and password or Google sign-in, 26 built-in avatars,
+  guest scores carried into a new account, and full account deletion.
+- **Anti-cheat**: XP is granted once per module, a retake rewards only a better
+  score, and Firestore rules cap what a client can write.
+- **Interface**: dark clay design system built on tokens, English and Spanish,
+  phone-first navigation.
+- **Operations**: Sentry error monitoring, SEO metadata and generated social
+  images.
 
 ---
 
@@ -136,7 +83,7 @@ translated into English and Spanish.
 | Backend | Firebase Authentication and Cloud Firestore |
 | Hosting | Firebase Hosting, deployed by GitHub Actions on merge to `main` |
 | AI tutor | Google Gemini behind a Cloudflare Worker proxy (`worker/`) |
-| Error triage | Sentry to Linear through a Cloudflare Worker (`worker-sentry-linear/`) |
+| Error triage | Sentry, with a Cloudflare Worker for issue routing (`worker-sentry-linear/`) |
 | Testing | Playwright end-to-end, Firestore rules tests, and a palette guard |
 
 ---
@@ -247,7 +194,7 @@ test/                   Firestore rules tests and the palette guard
 scripts/                Brand and avatar generation, build checks
 public/                 Brand SVG sources and generated PNGs
 worker/                 Cloudflare Worker: Gemini proxy
-worker-sentry-linear/   Cloudflare Worker: Sentry to Linear triage
+worker-sentry-linear/   Cloudflare Worker: Sentry error triage
 ```
 
 ---
@@ -286,7 +233,7 @@ Firebase values from GitHub Actions secrets.
 
 ## Deployment
 
-GitHub Actions handles every deploy. No manual step is needed.
+GitHub Actions handles every deploy.
 
 | Trigger | What happens |
 |---|---|
@@ -372,7 +319,6 @@ above all: a change ships with the tests that prove it.
    undone together, not by file. Use `type: imperative summary`.
 7. Keep to the design system. New colours need discussion first, and the
    palette guard enforces the rest.
-8. Every pull request must be green in CI before it merges.
 
 ---
 
