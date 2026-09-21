@@ -89,8 +89,9 @@ translated into English and Spanish.
 ### Accounts
 
 - **Sign-in**: email and password, or Google.
-- **Profile setup**: first-time users choose a display name and one of 16
-  built-in avatars. Real profile photos are never shown on the leaderboard.
+- **Profile setup**: first-time users choose a display name and one of 26
+  built-in avatars, in two sets: 10 hand-drawn Critters and 16 characters. Real
+  profile photos are never shown on the leaderboard.
 - **Account deletion**: after confirming their password (or Google sign-in), a
   learner's profile, course progress, quiz history, leaderboard entries and
   login are all deleted, and the local cache is cleared.
@@ -179,7 +180,7 @@ npm run test:e2e:ui    # Playwright watch mode (run npm run emulators first)
 npm run emulators      # Auth + Firestore emulators, for iterating on tests
 npm run test:rules:ci  # Firestore rules tests in the emulator
 npm run test:palette   # fails on colours outside the design system
-npm run gen:avatars    # regenerate the static avatar SVGs
+npm run gen:avatars    # regenerate the 16 character avatar SVGs
 ```
 
 ---

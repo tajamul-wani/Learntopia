@@ -8,6 +8,9 @@
  * Run after changing the avatar STYLE, seeds, or backgrounds:
  *   npm run gen:avatars
  *
+ * It only writes the 16 character avatars. The 10 Critters (pet-*.svg) are
+ * hand-drawn and checked in; this script never touches or removes them.
+ *
  * DiceBear stays a devDependency (used only here, never imported by src/).
  */
 import { createAvatar } from "@dicebear/core";
