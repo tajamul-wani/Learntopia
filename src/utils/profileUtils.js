@@ -33,3 +33,19 @@ export const parseProfileName = (docData, fallbackName = "Learner") => {
 
   return { displayName, avatarId };
 };
+
+/**
+ * Whether the learner has ever chosen their own name and avatar.
+ *
+ * Reads the raw fields on purpose: parseProfileName falls back to `fullName`,
+ * which for a Google sign-in is the account holder's real name, so a profile
+ * that never chose anything would look like it had.
+ *
+ * @param {object|null} docData  the private profile document
+ */
+export const hasChosenIdentity = (docData) => {
+  if (!docData) return false;
+  if (docData.identityConfirmedAt) return true;
+  const chosenName = typeof docData.displayName === "string" ? docData.displayName.trim() : "";
+  return Boolean(chosenName) && Boolean(docData.avatarId);
+};

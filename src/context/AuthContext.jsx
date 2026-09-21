@@ -7,8 +7,9 @@ import {
   GoogleAuthProvider,
 } from "firebase/auth";
 import { doc, getDoc, setDoc, updateDoc, deleteField } from "firebase/firestore";
-import { parseProfileName } from "../utils/profileUtils";
-import { generatePublicNickname } from "../utils/publicName";
+import { parseProfileName, hasChosenIdentity } from "../utils/profileUtils";
+import { generatePublicNickname, publicNameFor } from "../utils/publicName";
+import { randomPetAvatarId } from "../data/avatarData";
 import AppLoader from "../Components/ui/AppLoader";
 
 /**
@@ -31,6 +32,11 @@ export function AuthProvider({ children }) {
   // True when a signed-in student has NO custom displayName or avatarId yet.
   // App reads this to gate first-time users into the required EditProfileView.
   const [needsProfileSetup, setNeedsProfileSetup] = useState(false);
+
+  // True for a learner who has never chosen a name and avatar of their own:
+  // their identity still comes from the Google account, or from a version of
+  // the app that never asked. They are prompted once, then never again.
+  const [needsIdentityChoice, setNeedsIdentityChoice] = useState(false);
 
   /**
    * Google Sign In flow.
@@ -68,6 +74,7 @@ export function AuthProvider({ children }) {
         const data = userSnap.data();
         const { displayName, avatarId } = parseProfileName(data);
         setNeedsProfileSetup(!displayName || !avatarId);
+        setNeedsIdentityChoice(!hasChosenIdentity(data));
       }
       return user;
     } catch (error) {
@@ -124,6 +131,7 @@ export function AuthProvider({ children }) {
       streak: existing.streak || 1,
       badges: existing.badges || ["Newcomer"],
       usePhoto,
+      identityConfirmedAt: new Date(),
       updatedAt: new Date(),
     };
     if (photo) profileWrite.photoURL = photo;
@@ -185,6 +193,58 @@ export function AuthProvider({ children }) {
     }
 
     setNeedsProfileSetup(false);
+    setNeedsIdentityChoice(false);
+  };
+
+  /**
+   * The learner declined to choose. Their account name stays private, the
+   * public row gets a generated nickname rather than anything from Google, and
+   * the avatar becomes a gender-neutral Critter so no child is left wearing a
+   * gendered face they never picked.
+   */
+  const skipIdentityChoice = async () => {
+    if (!currentUser) return;
+    const uid = currentUser.uid;
+    const avatarId = randomPetAvatarId();
+
+    const userRef = doc(db, "Users", uid);
+    let existing = {};
+    try {
+      const snap = await getDoc(userRef);
+      if (snap.exists()) existing = snap.data();
+    } catch (e) {
+      console.warn("Error reading profile before skip:", e);
+    }
+
+    try {
+      await updateDoc(userRef, {
+        avatarId,
+        identityConfirmedAt: new Date(),
+        updatedAt: new Date(),
+      });
+    } catch (e) {
+      console.warn("Identity skip write notice:", e);
+      return;
+    }
+
+    try {
+      await setDoc(
+        doc(db, "PublicLeaderboard", uid),
+        {
+          uid,
+          displayName: publicNameFor(existing),
+          avatarId,
+          // Clears a real name written by an older version of the app.
+          fullName: deleteField(),
+          updatedAt: new Date(),
+        },
+        { merge: true }
+      );
+    } catch (e) {
+      console.warn("Leaderboard mirror notice:", e);
+    }
+
+    setNeedsIdentityChoice(false);
   };
 
   const logOut = () => {
@@ -198,6 +258,7 @@ export function AuthProvider({ children }) {
       if (!user) {
         setIsAdmin(false);
         setNeedsProfileSetup(false);
+        setNeedsIdentityChoice(false);
         setLoading(false);
         return;
       }
@@ -253,11 +314,13 @@ export function AuthProvider({ children }) {
 
             // New profile → needs setup
             setNeedsProfileSetup(true);
+            setNeedsIdentityChoice(false);
           } else {
             const data = userSnap.data();
 
             const { displayName: parsedName, avatarId: parsedAvatar } = parseProfileName(data);
             setNeedsProfileSetup(!parsedName || !parsedAvatar);
+            setNeedsIdentityChoice(!hasChosenIdentity(data));
 
             const lastDateStr = data.lastLoginDate;
 
@@ -301,9 +364,11 @@ export function AuthProvider({ children }) {
     isAdmin,
     loading,
     needsProfileSetup,
+    needsIdentityChoice,
     googleSignIn,
     logOut,
     completeProfileSetup,
+    skipIdentityChoice,
   };
 
   return (

@@ -115,6 +115,28 @@ describe("Users/{uid} profile", () => {
     );
   });
 
+  // LT-81 part C: the one-time identity prompt records that the learner was
+  // asked, so it never comes back. The rules have to admit that field, and
+  // only as a timestamp.
+  test("owner can record identityConfirmedAt on the private profile", async () => {
+    await assertSucceeds(
+      setDoc(doc(alice(), "Users/alice"), {
+        ...validProfile(),
+        avatarId: "pet-fox",
+        identityConfirmedAt: new Date(),
+      })
+    );
+  });
+
+  test("rejects a non-timestamp identityConfirmedAt", async () => {
+    await assertFails(
+      setDoc(doc(alice(), "Users/alice"), {
+        ...validProfile(),
+        identityConfirmedAt: "2026-09-21",
+      })
+    );
+  });
+
   test("cannot create a profile for someone else", async () => {
     await assertFails(setDoc(doc(alice(), "Users/bob"), validProfile()));
   });

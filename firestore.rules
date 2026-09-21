@@ -34,7 +34,8 @@ service cloud.firestore {
       return d.keys().hasOnly(['email', 'fullName', 'displayName', 'avatarId', 'photoURL', 'usePhoto',
                                'totalPoints', 'streak', 'lastLoginDate',
                                'badges', 'xp', 'quizPoints', 'updatedAt',
-                               'lastStreakClaimDate', 'lastStreakPopupDate'])
+                               'lastStreakClaimDate', 'lastStreakPopupDate',
+                               'identityConfirmedAt'])
           && d.email is string
           && d.fullName is string
           && (!('displayName' in d) || d.displayName is string)
@@ -43,7 +44,10 @@ service cloud.firestore {
           // profile — it is deliberately NOT allowed in isValidPublicEntry, so a
           // child's real face can never be written to the world-readable board.
           && (!('photoURL' in d) || d.photoURL is string)
-          && (!('usePhoto' in d) || d.usePhoto is bool);
+          && (!('usePhoto' in d) || d.usePhoto is bool)
+          // Set once, when the learner picks or skips their identity, so the
+          // prompt never comes back.
+          && (!('identityConfirmedAt' in d) || d.identityConfirmedAt is timestamp);
     }
 
     // Quiz attempts are validated so a client can't write garbage or an
