@@ -1,6 +1,12 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { planPublicEntry, planQuizScore, isQuizScorePath } from "../scripts/lib/legacy-names.mjs";
+import {
+  planPublicEntry,
+  planQuizScore,
+  isQuizScorePath,
+  isOrphan,
+  orphanGuard,
+} from "../scripts/lib/legacy-names.mjs";
 
 // LT-81 part D: the scrub deletes fields from live, world-readable documents.
 // These cover the decision itself — what gets removed and what is left alone —
@@ -85,4 +91,28 @@ test("rejects a Scores collection somewhere else", () => {
   assert.equal(isQuizScorePath("QuizLeaderboards/python/Attempts/uid123"), false);
   assert.equal(isQuizScorePath("QuizLeaderboards/python/Scores/uid123/extra/doc"), false);
   assert.equal(isQuizScorePath(""), false);
+});
+
+// Deleting a whole document is a different risk from clearing a field, so the
+// owner test is deliberately conservative and the count is capped.
+
+test("a row is an orphan only when the profile AND the public row are gone", () => {
+  assert.equal(isOrphan({ userExists: false, publicExists: false }), true);
+  assert.equal(isOrphan({ userExists: true, publicExists: false }), false);
+  assert.equal(isOrphan({ userExists: false, publicExists: true }), false);
+  assert.equal(isOrphan({ userExists: true, publicExists: true }), false);
+});
+
+test("a plausible number of orphans is allowed through", () => {
+  assert.equal(orphanGuard(1, 20).abort, false);
+  assert.equal(orphanGuard(5, 20).abort, false);
+});
+
+test("an implausible number of orphans stops the run", () => {
+  assert.equal(orphanGuard(6, 20).abort, true);
+  assert.equal(orphanGuard(20, 20).abort, true);
+});
+
+test("an empty collection never triggers the brake", () => {
+  assert.deepEqual(orphanGuard(0, 0), { abort: false, ratio: 0 });
 });

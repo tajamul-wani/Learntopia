@@ -22,7 +22,14 @@
 import { initializeApp, cert, applicationDefault } from "firebase-admin/app";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
 import { readFileSync } from "node:fs";
-import { planPublicEntry, planQuizScore, isQuizScorePath } from "./lib/legacy-names.mjs";
+import {
+  planPublicEntry,
+  planQuizScore,
+  isQuizScorePath,
+  isOrphan,
+  orphanGuard,
+  ORPHAN_ABORT_RATIO,
+} from "./lib/legacy-names.mjs";
 
 const APPLY = process.argv.includes("--apply");
 const PROJECT_ID = process.env.FIREBASE_PROJECT_ID || "learntopia-react";
@@ -99,11 +106,22 @@ async function scrubQuizScores(db, pending) {
   // is why the first run of this job reported zero rows while the boards
   // visibly had entries.
   const scores = await db.collectionGroup("Scores").get();
-  const findings = { bannedField: [], skipped: [] };
+  const findings = { bannedField: [], orphan: [], skipped: [] };
 
   for (const score of scores.docs) {
     if (!isQuizScorePath(score.ref.path)) {
       findings.skipped.push(score.ref.path);
+      continue;
+    }
+
+    const uid = score.id;
+    const [profile, publicRow] = await Promise.all([
+      db.collection("Users").doc(uid).get(),
+      db.collection("PublicLeaderboard").doc(uid).get(),
+    ]);
+
+    if (isOrphan({ userExists: profile.exists, publicExists: publicRow.exists })) {
+      findings.orphan.push(score.ref.path);
       continue;
     }
 
@@ -115,7 +133,15 @@ async function scrubQuizScores(db, pending) {
     if (APPLY) await pending.update(score.ref, patch);
   }
 
-  return { scanned: scores.size - findings.skipped.length, ...findings };
+  // Deleting whole documents deserves a brake that a field edit does not: at
+  // this rate the query is likelier to be wrong than the data.
+  const scanned = scores.size - findings.skipped.length;
+  const guard = orphanGuard(findings.orphan.length, scanned);
+  if (APPLY && !guard.abort) {
+    for (const path of findings.orphan) await pending.delete(db.doc(path));
+  }
+
+  return { scanned, guard, ...findings };
 }
 
 async function main() {
@@ -139,12 +165,26 @@ async function main() {
   console.log(`\nQuiz scores: ${scores.scanned} rows scanned`);
   console.log(`  rows carrying a banned field: ${scores.bannedField.length}`);
   scores.bannedField.forEach((path) => console.log(`    ${path}`));
+  console.log(`  rows whose owner no longer exists: ${scores.orphan.length}`);
+  scores.orphan.forEach((path) => console.log(`    ${path}`));
   if (scores.skipped.length > 0) {
     console.log(`  paths outside QuizLeaderboards, left alone: ${scores.skipped.length}`);
     scores.skipped.forEach((path) => console.log(`    ${path}`));
   }
 
-  const total = board.bannedField.length + board.accountName.length + scores.bannedField.length;
+  if (scores.guard.abort) {
+    console.log(
+      `\nSTOPPED: ${Math.round(scores.guard.ratio * 100)}% of quiz score rows look ownerless, ` +
+        `above the ${Math.round(ORPHAN_ABORT_RATIO * 100)}% limit. Nothing was deleted — ` +
+        `at that rate the query is likelier to be wrong than the data. Check the paths above first.`
+    );
+  }
+
+  const total =
+    board.bannedField.length +
+    board.accountName.length +
+    scores.bannedField.length +
+    (scores.guard.abort ? 0 : scores.orphan.length);
   console.log(`\n${total} document(s) need cleaning. ${APPLY ? `${written} written.` : "Nothing was written."}`);
   if (!APPLY && total > 0) console.log("Re-run the workflow with mode: apply to clean them.");
 }
