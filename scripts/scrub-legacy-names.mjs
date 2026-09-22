@@ -22,7 +22,14 @@
 import { initializeApp, cert, applicationDefault } from "firebase-admin/app";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
 import { readFileSync } from "node:fs";
-import { planPublicEntry, planQuizScore } from "./lib/legacy-names.mjs";
+import {
+  planPublicEntry,
+  planQuizScore,
+  isQuizScorePath,
+  isOrphan,
+  orphanGuard,
+  ORPHAN_ABORT_RATIO,
+} from "./lib/legacy-names.mjs";
 
 const APPLY = process.argv.includes("--apply");
 const PROJECT_ID = process.env.FIREBASE_PROJECT_ID || "learntopia-react";
@@ -47,6 +54,13 @@ function writer(db) {
   return {
     async update(ref, data) {
       batch.update(ref, data);
+      await this.tick();
+    },
+    async delete(ref) {
+      batch.delete(ref);
+      await this.tick();
+    },
+    async tick() {
       queued += 1;
       written += 1;
       if (queued >= BATCH_LIMIT) {
@@ -86,23 +100,48 @@ async function scrubPublicLeaderboard(db, pending) {
 }
 
 async function scrubQuizScores(db, pending) {
-  const boards = await db.collection("QuizLeaderboards").get();
-  const findings = { bannedField: [] };
-  let scanned = 0;
+  // A collection-group query, NOT a walk from QuizLeaderboards: `Quiz.jsx`
+  // writes straight into the Scores subcollection, so the parent documents do
+  // not exist and `collection("QuizLeaderboards").get()` returns nothing. That
+  // is why the first run of this job reported zero rows while the boards
+  // visibly had entries.
+  const scores = await db.collectionGroup("Scores").get();
+  const findings = { bannedField: [], orphan: [], skipped: [] };
 
-  for (const board of boards.docs) {
-    const scores = await board.ref.collection("Scores").get();
-    scanned += scores.size;
-    for (const score of scores.docs) {
-      const banned = planQuizScore(score.data());
-      if (banned.length === 0) continue;
-      const patch = {};
-      for (const field of banned) patch[field] = FieldValue.delete();
-      findings.bannedField.push(`${board.id}/${score.id}`);
-      if (APPLY) await pending.update(score.ref, patch);
+  for (const score of scores.docs) {
+    if (!isQuizScorePath(score.ref.path)) {
+      findings.skipped.push(score.ref.path);
+      continue;
     }
+
+    const uid = score.id;
+    const [profile, publicRow] = await Promise.all([
+      db.collection("Users").doc(uid).get(),
+      db.collection("PublicLeaderboard").doc(uid).get(),
+    ]);
+
+    if (isOrphan({ userExists: profile.exists, publicExists: publicRow.exists })) {
+      findings.orphan.push(score.ref.path);
+      continue;
+    }
+
+    const banned = planQuizScore(score.data());
+    if (banned.length === 0) continue;
+    const patch = {};
+    for (const field of banned) patch[field] = FieldValue.delete();
+    findings.bannedField.push(score.ref.path);
+    if (APPLY) await pending.update(score.ref, patch);
   }
-  return { scanned, ...findings };
+
+  // Deleting whole documents deserves a brake that a field edit does not: at
+  // this rate the query is likelier to be wrong than the data.
+  const scanned = scores.size - findings.skipped.length;
+  const guard = orphanGuard(findings.orphan.length, scanned);
+  if (APPLY && !guard.abort) {
+    for (const path of findings.orphan) await pending.delete(db.doc(path));
+  }
+
+  return { scanned, guard, ...findings };
 }
 
 async function main() {
@@ -125,9 +164,27 @@ async function main() {
 
   console.log(`\nQuiz scores: ${scores.scanned} rows scanned`);
   console.log(`  rows carrying a banned field: ${scores.bannedField.length}`);
-  scores.bannedField.forEach((path) => console.log(`    QuizLeaderboards/${path}/Scores`));
+  scores.bannedField.forEach((path) => console.log(`    ${path}`));
+  console.log(`  rows whose owner no longer exists: ${scores.orphan.length}`);
+  scores.orphan.forEach((path) => console.log(`    ${path}`));
+  if (scores.skipped.length > 0) {
+    console.log(`  paths outside QuizLeaderboards, left alone: ${scores.skipped.length}`);
+    scores.skipped.forEach((path) => console.log(`    ${path}`));
+  }
 
-  const total = board.bannedField.length + board.accountName.length + scores.bannedField.length;
+  if (scores.guard.abort) {
+    console.log(
+      `\nSTOPPED: ${Math.round(scores.guard.ratio * 100)}% of quiz score rows look ownerless, ` +
+        `above the ${Math.round(ORPHAN_ABORT_RATIO * 100)}% limit. Nothing was deleted — ` +
+        `at that rate the query is likelier to be wrong than the data. Check the paths above first.`
+    );
+  }
+
+  const total =
+    board.bannedField.length +
+    board.accountName.length +
+    scores.bannedField.length +
+    (scores.guard.abort ? 0 : scores.orphan.length);
   console.log(`\n${total} document(s) need cleaning. ${APPLY ? `${written} written.` : "Nothing was written."}`);
   if (!APPLY && total > 0) console.log("Re-run the workflow with mode: apply to clean them.");
 }

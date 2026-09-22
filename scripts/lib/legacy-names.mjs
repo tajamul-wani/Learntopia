@@ -39,3 +39,39 @@ export function planPublicEntry(entry = {}, profile = {}, newName = nickname) {
 export function planQuizScore(score = {}) {
   return SCORE_BANNED.filter((field) => field in score);
 }
+
+/**
+ * A quiz score lives at QuizLeaderboards/{quizId}/Scores/{uid}. The walk uses a
+ * collection-group query, which matches any collection called "Scores"
+ * anywhere, so every path is checked before anything is touched.
+ */
+export function isQuizScorePath(path = "") {
+  const parts = path.split("/").filter(Boolean);
+  return parts.length === 4 && parts[0] === "QuizLeaderboards" && parts[2] === "Scores";
+}
+
+/**
+ * Whether a row belongs to nobody.
+ *
+ * Deliberately conservative: BOTH the private profile and the public row must
+ * be missing. Firestore writes them together at first sign-in and account
+ * deletion removes them together, so both absent means the learner is gone.
+ * One absent is a half-finished write, and that row is left alone.
+ */
+export function isOrphan({ userExists, publicExists }) {
+  return userExists === false && publicExists === false;
+}
+
+/** Above this share of rows, the query is likelier wrong than the data. */
+export const ORPHAN_ABORT_RATIO = 0.25;
+
+/**
+ * Refuse to delete when the orphan count is implausible — a permissions problem
+ * or a bad path would otherwise look like "everything is an orphan".
+ * @returns {{abort: boolean, ratio: number}}
+ */
+export function orphanGuard(orphans, scanned) {
+  if (scanned <= 0) return { abort: false, ratio: 0 };
+  const ratio = orphans / scanned;
+  return { abort: ratio > ORPHAN_ABORT_RATIO, ratio };
+}
