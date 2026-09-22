@@ -45,7 +45,7 @@ const localDayKey = (d = new Date()) =>
   `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 
 export const GamificationProvider = ({ children }) => {
-  const { currentUser } = useAuth();
+  const { currentUser, isAdmin } = useAuth();
   const [profile, setProfile] = useState(null);
   const [xp, setXp] = useState(0);
   const [badges, setBadges] = useState([]);
@@ -67,7 +67,12 @@ export const GamificationProvider = ({ children }) => {
 
   // Subscribe by uid (not the whole user object) so we re-subscribe only when
   // the signed-in user actually changes — not on every auth token refresh.
-  const uid = currentUser?.uid;
+  //
+  // An administrator is not a learner. AuthContext already refuses to create a
+  // profile or a public row for one; this layer has to refuse too, or the admin
+  // account picks up XP, a streak, celebration popups and — through
+  // awardPoints — a row on the world-readable leaderboard.
+  const uid = isAdmin ? null : currentUser?.uid;
 
   // ── Single source of truth: a LIVE subscription to the canonical Users doc.
   // Because every device reads the same doc via onSnapshot, XP / points / streak
@@ -169,6 +174,7 @@ export const GamificationProvider = ({ children }) => {
   // Uses increment() so concurrent writes from multiple devices are race-safe,
   // and the onSnapshot listeners reflect the new value everywhere immediately.
   const awardPoints = async (amount, extraProfileFields = {}) => {
+    if (isAdmin) return;
     if (!currentUser || !amount || amount <= 0) return;
     const uid = currentUser.uid;
     try {
@@ -212,6 +218,7 @@ export const GamificationProvider = ({ children }) => {
   // the same action never stacks two overlays. A level-up still surfaces because
   // it is a milestone in its own right.
   const addXP = async (amount, reason = "", { silent = false } = {}) => {
+    if (isAdmin) return;
     const oldLevel = getLevelInfo(xp);
     const newLevel = getLevelInfo(xp + amount);
     await awardPoints(amount);
@@ -242,7 +249,7 @@ export const GamificationProvider = ({ children }) => {
   // write, silently dropping a badge. The transaction reads the freshest badges
   // from the server each attempt and appends exactly one, so both persist.
   const awardBadge = async (badge, { silent = false } = {}) => {
-    if (!currentUser) return;
+    if (!currentUser || isAdmin) return;
     const ref = doc(db, "Users", currentUser.uid);
     let added = false;
     try {
@@ -314,7 +321,7 @@ export const GamificationProvider = ({ children }) => {
   const claimStreakBonus = async () => {
     const todayKey = localDayKey();
     const amount = streakRewardFor(streak);
-    if (!currentUser || amount <= 0 || profile?.lastStreakClaimDate === todayKey) {
+    if (!currentUser || isAdmin || amount <= 0 || profile?.lastStreakClaimDate === todayKey) {
       setShowStreakModal(false);
       return false;
     }
@@ -348,7 +355,12 @@ export const GamificationProvider = ({ children }) => {
   // auto-fading overlay calls it when a moment finishes, revealing the next.
   const enqueueCelebration = (obj) =>
     setCelebrationQueue((q) => [...q, { ...obj, id: (celIdRef.current += 1) }]);
-  const triggerCelebration = (obj) => enqueueCelebration(obj);
+  // Admins see no learner moments: the overlay is a learner reward, and an
+  // administrator looking at the app is not earning anything.
+  const triggerCelebration = (obj) => {
+    if (isAdmin) return;
+    enqueueCelebration(obj);
+  };
   const closeCelebration = () => setCelebrationQueue((q) => q.slice(1));
 
   return (
