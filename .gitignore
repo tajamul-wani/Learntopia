@@ -35,6 +35,20 @@ dist-ssr
 # Agent instruction and configuration files
 .agents
 .agents/
+.claude/
+skills-lock.json
+
+# Local-only control documents and session history. COLLAB_PROTOCOL.md and
+# claude-session/ live in the parent folder, outside this repo; these entries
+# exist so a stray copy can never be committed.
+COLLAB_PROTOCOL.md
+claude-session/
+
+# Wrangler build output (the Cloudflare Workers in worker/ and worker-sentry-linear/)
+.wrangler/
+
+# Editor and tooling backups
+*.bak
 
 # Private Product Roadmap & Suggestions Tracking
 PRODUCT_ROADMAP_SUGGESTIONS.md
