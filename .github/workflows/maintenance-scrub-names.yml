@@ -6,6 +6,11 @@
 #
 # The job prints document paths and counts, never a name, because run logs are
 # readable by anyone with access to this repository's Actions.
+#
+# NOTE: the service account must hold the "Cloud Datastore User" role — grant it
+# in Google Cloud IAM, and remove it again once the cleanup is finished. The
+# Admin SDK bypasses Firestore security rules but not IAM, so without that role
+# the job fails on its first read with PERMISSION_DENIED.
 name: Maintenance - scrub legacy names
 
 on:
@@ -28,8 +33,8 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
 
