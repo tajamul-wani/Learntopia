@@ -43,6 +43,11 @@ export function AuthProvider({ children }) {
    */
   const googleSignIn = async () => {
     const provider = new GoogleAuthProvider();
+    // Always offer the account picker. Google's default is to reuse whichever
+    // account is already signed in on this browser, and signing out of the app
+    // cannot sign anyone out of Google — so without this, someone with two
+    // accounts (an admin one and a learner one) can never reach the second.
+    provider.setCustomParameters({ prompt: "select_account" });
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;

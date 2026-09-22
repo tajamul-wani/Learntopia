@@ -32,6 +32,24 @@ export async function createAccount(email, { displayName } = {}) {
   return localId;
 }
 
+/**
+ * An account carrying the admin custom claim, as the real project sets it
+ * server-side. The emulator accepts the owner bearer token for this.
+ */
+export async function createAdminAccount(email) {
+  const uid = await createAccount(email);
+  const res = await fetch(
+    `${AUTH_EMULATOR}/identitytoolkit.googleapis.com/v1/projects/demo-learntopia/accounts:update`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: "Bearer owner" },
+      body: JSON.stringify({ localId: uid, customAttributes: JSON.stringify({ admin: true }) }),
+    }
+  );
+  if (!res.ok) throw new Error(`Setting the admin claim failed: ${res.status} ${await res.text()}`);
+  return uid;
+}
+
 // Firestore REST wants typed values: { stringValue }, { integerValue }, ...
 function toFirestoreFields(data) {
   const encode = (v) => {

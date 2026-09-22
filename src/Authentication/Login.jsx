@@ -19,10 +19,13 @@ import { publicNameFor } from "../utils/publicName";
 const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { googleSignIn, currentUser } = useAuth();
+  const { googleSignIn, currentUser, isAdmin } = useAuth();
   const { t } = useLanguage();
 
-  const returnTo = location.state?.returnTo || "/dashboard";
+  // An administrator belongs in the admin shell, not the learner dashboard.
+  // Without this they land on /dashboard and are bounced to /admin a moment
+  // later, flashing a learner screen they are not a learner on.
+  const returnTo = isAdmin ? "/admin" : location.state?.returnTo || "/dashboard";
 
   useEffect(() => {
     if (currentUser) {
