@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { collection, query, orderBy, limit, getDocs, doc, getDoc, onSnapshot } from "firebase/firestore";
+import { collection, query, orderBy, limit, getDocs, doc, getDoc, onSnapshot, where, documentId } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import { quizzes } from "../data/quizData";
 import Card from "../Components/ui/Card";
@@ -28,6 +28,16 @@ const Leaderboard = () => {
   const [activeTab, setActiveTab] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
 
+  // uid -> the learner's CURRENT name and avatar, read from the public board.
+  // A quiz score row stores the name the learner had when they took the quiz,
+  // so someone who had not chosen one yet is frozen as "Learner" and a later
+  // rename never reaches that row. Names come from here on every tab, so one
+  // learner reads the same everywhere.
+  const [identities, setIdentities] = useState({});
+  // Cache across tab switches, and the guard that stops the fetch below from
+  // re-running on its own result.
+  const identitiesRef = useRef({});
+
   const TABS = useMemo(() => [
     { id: "all", label: t("leaderboard.allQuizzes") },
     ...quizzes.map((q) => ({ id: q.id, label: getLocalizedQuiz(q, t)?.title || q.title })),
@@ -38,6 +48,50 @@ const Leaderboard = () => {
       navigate("/login", { state: { returnTo: "/leaderboard" }, replace: true });
     }
   }, [currentUser, navigate]);
+
+  // ── Current identities for exactly the learners on this board. ──
+  // Fetched by uid rather than read from a top-50 slice of the public board:
+  // a learner ranked below that slice would otherwise fall back to the name
+  // frozen into their score row, which is the bug this fixes. Firestore allows
+  // ten ids per `in` query, so the uids are fetched in chunks.
+  useEffect(() => {
+    if (!currentUser || allEntries.length === 0) return undefined;
+    const missing = [...new Set(allEntries.map((e) => e.userId))].filter(
+      (uid) => uid && !identitiesRef.current[uid]
+    );
+    if (missing.length === 0) return undefined;
+
+    let cancelled = false;
+    (async () => {
+      const found = {};
+      for (let i = 0; i < missing.length; i += 10) {
+        const chunk = missing.slice(i, i + 10);
+        const snap = await getDocs(
+          query(collection(db, "PublicLeaderboard"), where(documentId(), "in", chunk))
+        );
+        snap.forEach((d) => {
+          const data = d.data();
+          found[d.id] = {
+            displayName: typeof data.displayName === "string" ? data.displayName.trim() : "",
+            avatarId: data.avatarId || "",
+          };
+        });
+      }
+      if (cancelled) return;
+      // A uid with no public row is left out on purpose: its score row keeps
+      // whatever it stored. Rows belonging to a deleted account are removed by
+      // the maintenance job, not hidden here, so a real learner can never be
+      // made invisible by a lookup that happened to miss.
+      identitiesRef.current = { ...identitiesRef.current, ...found };
+      setIdentities(identitiesRef.current);
+    })().catch(() => {
+      // The join is an enhancement; without it rows fall back to stored names.
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [allEntries, currentUser]);
 
   // ── Live leaderboard subscription. Uses onSnapshot so every viewer sees rank
   // and point changes in real time (no refresh), and every device shows the
@@ -79,6 +133,8 @@ const Leaderboard = () => {
           const activeQuizDef = quizzes.find((q) => q.id === activeTab);
           snap.forEach((d) => {
             const data = d.data();
+            // Whatever the row stored is kept as the fallback; the current
+            // name is joined in at render time, below.
             const { displayName, avatarId } = parseProfileName(data, "Learner");
             entries.push({
               id: `${activeTab}_${d.id}`,
@@ -181,7 +237,18 @@ const Leaderboard = () => {
 
   // ── Filter by search query and sort ──
   const filteredEntries = useMemo(() => {
-    let data = allEntries;
+    // The learner's current name and avatar win over whatever a score row
+    // froze at submit time, so one learner reads the same on every tab and a
+    // rename shows up here without touching any stored row.
+    let data = allEntries.map((entry) => {
+      const current = identities[entry.userId];
+      if (!current) return entry;
+      return {
+        ...entry,
+        userName: current.displayName || entry.userName,
+        avatarId: current.avatarId || entry.avatarId,
+      };
+    });
 
     // Search filter
     const q = searchQuery.toLowerCase().trim();
@@ -195,7 +262,7 @@ const Leaderboard = () => {
 
     // Sort descending by score, limit to top 10
     return [...data].sort((a, b) => b.score - a.score).slice(0, 10);
-  }, [allEntries, searchQuery]);
+  }, [allEntries, identities, searchQuery]);
 
   // ── Animate rows on change ──
   useGSAP(() => {
