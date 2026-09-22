@@ -477,9 +477,12 @@ const Dashboard = () => {
         <Card className="p-6 md:p-8">
           <div className="flex items-center gap-5">
             <Skeleton className="h-20 w-20 flex-none rounded-full" />
-            <div className="flex-1 space-y-3">
-              <Skeleton className="h-6 w-48" />
-              <Skeleton className="h-4 w-72" />
+            {/* min-w-0 lets this column shrink inside the flex row, and the
+                bars are capped rather than fixed: a fixed w-72 pushed the page
+                39px sideways at 390px for as long as the skeleton was up. */}
+            <div className="min-w-0 flex-1 space-y-3">
+              <Skeleton className="h-6 w-full max-w-48" />
+              <Skeleton className="h-4 w-full max-w-72" />
               <Skeleton className="mt-2 h-2.5 w-full max-w-sm" />
             </div>
           </div>
