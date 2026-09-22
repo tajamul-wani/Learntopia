@@ -1,4 +1,4 @@
-import { test, expect, createAdminAccount, signIn, docExists } from "./support/emulator.js";
+import { test, expect, createAdminAccount, createLearner, signIn, docExists } from "./support/emulator.js";
 
 // LT-99: the owner keeps two Google accounts, one admin and one learner. An
 // administrator is not a learner: no XP, no streak popup, no celebration, and
@@ -6,6 +6,24 @@ import { test, expect, createAdminAccount, signIn, docExists } from "./support/e
 // wraps the whole app and had no admin check, so all of that was reachable.
 
 test.describe("admin and learner accounts stay separate", () => {
+  // LT-101: signing in at the admin door with a learner account used to sign
+  // the person out and drop them on a red error. The portal still refuses to
+  // open, but the learner keeps their session and lands in the learner app.
+  test("a learner account at the admin door is sent to the learner app", async ({ page }, testInfo) => {
+    const learner = await createLearner(testInfo, { points: 10 });
+    await signIn(page, learner);
+
+    await page.goto("/admin", { waitUntil: "domcontentloaded" });
+    // The portal shows its own sign-in screen rather than any admin data.
+    await expect(page.getByText(/admin/i).first()).toBeVisible({ timeout: 20000 });
+    await expect(page.getByText(/contact messages|bug reports/i)).toBeHidden();
+
+    // The learner's own session survives: the learner app is still theirs.
+    await page.goto("/dashboard", { waitUntil: "domcontentloaded" });
+    await expect(page.getByLabel("Loading page")).toBeHidden({ timeout: 20000 });
+    await expect(page).toHaveURL(/\/dashboard/);
+  });
+
   test("an admin lands in the admin shell with no learner surfaces", async ({ page }, testInfo) => {
     const suffix = `${Date.now()}-${testInfo.workerIndex}`;
     const email = `admin-${suffix}@example.test`;
