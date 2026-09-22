@@ -265,17 +265,25 @@ const Leaderboard = () => {
   }, [allEntries, identities, searchQuery]);
 
   // ── Animate rows on change ──
+  // fromTo, not from: the board is live, so a snapshot can re-render the rows
+  // mid-tween. gsap.from applies its start values immediately and a killed
+  // tween then leaves that row stuck part-way transparent, which reads as a
+  // cut-off list. clearProps hands the final state back to CSS every time.
   useGSAP(() => {
-    if (!loading && filteredEntries.length > 0) {
-      gsap.from(".lb-row", {
-        y: 12,
-        opacity: 0,
+    if (loading || filteredEntries.length === 0) return;
+    gsap.fromTo(
+      ".lb-row",
+      { y: 12, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
         duration: 0.25,
         stagger: 0.04,
         ease: "power2.out",
-      });
-    }
-  }, [loading, activeTab, searchQuery]);
+        clearProps: "opacity,transform",
+      }
+    );
+  }, [loading, activeTab, searchQuery, filteredEntries.length]);
 
   // ── Rank medal helpers ──
   const getMedal = (rank) => {
