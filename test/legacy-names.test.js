@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { planPublicEntry, planQuizScore } from "../scripts/lib/legacy-names.mjs";
+import { planPublicEntry, planQuizScore, isQuizScorePath } from "../scripts/lib/legacy-names.mjs";
 
 // LT-81 part D: the scrub deletes fields from live, world-readable documents.
 // These cover the decision itself — what gets removed and what is left alone —
@@ -69,4 +69,20 @@ test("deletes a legacy name from a quiz score", () => {
 
 test("leaves a clean quiz score untouched", () => {
   assert.deepEqual(planQuizScore({ userId: "u1", displayName: "PixelPilot", score: 8 }), []);
+});
+
+// LT-98: the first run of this job reported zero quiz score rows because
+// QuizLeaderboards/{quizId} documents do not exist — the app writes straight
+// into the Scores subcollection. The walk is a collection-group query now,
+// which matches any collection called "Scores", so paths are checked.
+
+test("accepts a real quiz score path", () => {
+  assert.equal(isQuizScorePath("QuizLeaderboards/python/Scores/uid123"), true);
+});
+
+test("rejects a Scores collection somewhere else", () => {
+  assert.equal(isQuizScorePath("SomethingElse/abc/Scores/uid123"), false);
+  assert.equal(isQuizScorePath("QuizLeaderboards/python/Attempts/uid123"), false);
+  assert.equal(isQuizScorePath("QuizLeaderboards/python/Scores/uid123/extra/doc"), false);
+  assert.equal(isQuizScorePath(""), false);
 });

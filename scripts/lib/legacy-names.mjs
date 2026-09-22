@@ -39,3 +39,13 @@ export function planPublicEntry(entry = {}, profile = {}, newName = nickname) {
 export function planQuizScore(score = {}) {
   return SCORE_BANNED.filter((field) => field in score);
 }
+
+/**
+ * A quiz score lives at QuizLeaderboards/{quizId}/Scores/{uid}. The walk uses a
+ * collection-group query, which matches any collection called "Scores"
+ * anywhere, so every path is checked before anything is touched.
+ */
+export function isQuizScorePath(path = "") {
+  const parts = path.split("/").filter(Boolean);
+  return parts.length === 4 && parts[0] === "QuizLeaderboards" && parts[2] === "Scores";
+}
