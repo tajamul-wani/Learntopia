@@ -63,6 +63,15 @@ const Admin = () => {
       // Authority is the server-set admin claim only — no email compared client-side.
       const tokenResult = user && (await user.getIdTokenResult());
       if (!tokenResult || tokenResult.claims.admin !== true) {
+        // Wrong door, not a wrong person: the account simply is not an admin.
+        // The portal still refuses to open, which is the part that matters, but
+        // a valid learner keeps their session and lands in the learner app
+        // rather than being signed out and dropped on a red error.
+        if (user) {
+          toast.info(t("toasts.notAnAdminSignedIn"), { autoClose: 4000 });
+          navigate("/dashboard", { replace: true });
+          return;
+        }
         await logOut();
         toast.error(t("toasts.accessDenied"), { autoClose: 4000 });
         navigate("/login");
