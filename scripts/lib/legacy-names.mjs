@@ -51,15 +51,21 @@ export function isQuizScorePath(path = "") {
 }
 
 /**
- * Whether a row belongs to nobody.
+ * Whether a uid belongs to an account that no longer exists.
  *
- * Deliberately conservative: BOTH the private profile and the public row must
- * be missing. Firestore writes them together at first sign-in and account
- * deletion removes them together, so both absent means the learner is gone.
- * One absent is a half-finished write, and that row is left alone.
+ * Firebase Auth is the source of truth: a login either exists or it does not.
+ * The earlier version inferred it from two missing documents, which is a guess.
+ *
+ * **Fails closed.** `authKnown` says whether the lookup actually answered. If
+ * it did not — a permission the service account lacks, a network error — the
+ * uid is treated as alive. The alternative is deleting a real learner's data
+ * because a lookup failed, which is not a trade worth making.
+ *
+ * @param {{authKnown: boolean, authExists: boolean}} lookup
  */
-export function isOrphan({ userExists, publicExists }) {
-  return userExists === false && publicExists === false;
+export function isDeadAccount({ authKnown, authExists }) {
+  if (authKnown !== true) return false;
+  return authExists === false;
 }
 
 /** Above this share of rows, the query is likelier wrong than the data. */

@@ -21,12 +21,13 @@
  */
 import { initializeApp, cert, applicationDefault } from "firebase-admin/app";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
+import { getAuth } from "firebase-admin/auth";
 import { readFileSync } from "node:fs";
 import {
   planPublicEntry,
   planQuizScore,
   isQuizScorePath,
-  isOrphan,
+  isDeadAccount,
   orphanGuard,
   ORPHAN_ABORT_RATIO,
 } from "./lib/legacy-names.mjs";
@@ -44,6 +45,50 @@ function init() {
     return initializeApp({ credential: cert(credentials), projectId: PROJECT_ID });
   }
   return initializeApp({ credential: applicationDefault(), projectId: PROJECT_ID });
+}
+
+/**
+ * Asks Firebase Auth whether each uid still has a login, in batches of 100.
+ *
+ * Returns `{ known }` false for every uid in a batch the lookup could not
+ * answer — a missing IAM role, for instance. Callers must treat "not known" as
+ * alive: a failed lookup must never read as "this account is gone".
+ */
+function accountLookup() {
+  const cache = new Map();
+  let reportedFailure = false;
+
+  return {
+    async load(uids) {
+      const missing = uids.filter((uid) => !cache.has(uid));
+      for (let i = 0; i < missing.length; i += 100) {
+        const chunk = missing.slice(i, i + 100);
+        try {
+          const res = await getAuth().getUsers(chunk.map((uid) => ({ uid })));
+          const found = new Set(res.users.map((u) => u.uid));
+          for (const uid of chunk) cache.set(uid, { known: true, exists: found.has(uid) });
+        } catch (err) {
+          if (!reportedFailure) {
+            console.log(
+              `\nCould not read Firebase Auth: ${err.message}\n` +
+                "Every account is being treated as alive, so nothing will be removed for a " +
+                "missing login. Grant the service account the Firebase Authentication Admin " +
+                "role and run again if you want that pass to work."
+            );
+            reportedFailure = true;
+          }
+          for (const uid of chunk) cache.set(uid, { known: false, exists: false });
+        }
+      }
+    },
+    get(uid) {
+      const hit = cache.get(uid) || { known: false, exists: false };
+      return { authKnown: hit.known, authExists: hit.exists };
+    },
+    get failed() {
+      return reportedFailure;
+    },
+  };
 }
 
 /** Queue of pending writes, flushed in batches. */
@@ -99,6 +144,23 @@ async function scrubPublicLeaderboard(db, pending) {
   return { scanned: snap.size, ...findings };
 }
 
+/**
+ * Everything a dead account leaves behind, removed as a whole: the profile and
+ * its subcollections, the public row, and every quiz score. Nothing is removed
+ * unless Firebase Auth confirmed the login is gone.
+ */
+async function removeDeadAccount(db, uid, scorePaths, { apply }) {
+  const paths = [`Users/${uid}`, `PublicLeaderboard/${uid}`, ...scorePaths];
+  if (!apply) return paths;
+
+  // recursiveDelete takes the profile's subcollections (enrolledCourses,
+  // quizAttempts) with it; a plain delete would leave them stranded.
+  await db.recursiveDelete(db.collection("Users").doc(uid));
+  await db.collection("PublicLeaderboard").doc(uid).delete();
+  for (const path of scorePaths) await db.doc(path).delete();
+  return paths;
+}
+
 async function scrubQuizScores(db, pending) {
   // A collection-group query, NOT a walk from QuizLeaderboards: `Quiz.jsx`
   // writes straight into the Scores subcollection, so the parent documents do
@@ -106,22 +168,23 @@ async function scrubQuizScores(db, pending) {
   // is why the first run of this job reported zero rows while the boards
   // visibly had entries.
   const scores = await db.collectionGroup("Scores").get();
-  const findings = { bannedField: [], orphan: [], skipped: [] };
+  const findings = { bannedField: [], skipped: [], deadAccounts: [], removed: [] };
 
-  for (const score of scores.docs) {
-    if (!isQuizScorePath(score.ref.path)) {
-      findings.skipped.push(score.ref.path);
-      continue;
-    }
+  const rows = scores.docs.filter((d) => {
+    if (isQuizScorePath(d.ref.path)) return true;
+    findings.skipped.push(d.ref.path);
+    return false;
+  });
 
+  // One Auth round trip for the whole board, not one per row.
+  const accounts = accountLookup();
+  await accounts.load([...new Set(rows.map((d) => d.id))]);
+
+  const byDeadUid = new Map();
+  for (const score of rows) {
     const uid = score.id;
-    const [profile, publicRow] = await Promise.all([
-      db.collection("Users").doc(uid).get(),
-      db.collection("PublicLeaderboard").doc(uid).get(),
-    ]);
-
-    if (isOrphan({ userExists: profile.exists, publicExists: publicRow.exists })) {
-      findings.orphan.push(score.ref.path);
+    if (isDeadAccount(accounts.get(uid))) {
+      byDeadUid.set(uid, [...(byDeadUid.get(uid) || []), score.ref.path]);
       continue;
     }
 
@@ -133,15 +196,17 @@ async function scrubQuizScores(db, pending) {
     if (APPLY) await pending.update(score.ref, patch);
   }
 
-  // Deleting whole documents deserves a brake that a field edit does not: at
-  // this rate the query is likelier to be wrong than the data.
-  const scanned = scores.size - findings.skipped.length;
-  const guard = orphanGuard(findings.orphan.length, scanned);
-  if (APPLY && !guard.abort) {
-    for (const path of findings.orphan) await pending.delete(db.doc(path));
+  // Removing everything an account owned deserves a brake that clearing a
+  // field does not: at this rate the lookup is likelier wrong than the data.
+  const scanned = rows.length;
+  const guard = orphanGuard(byDeadUid.size, new Set(rows.map((d) => d.id)).size);
+  for (const [uid, paths] of byDeadUid) {
+    const removable = await removeDeadAccount(db, uid, paths, { apply: APPLY && !guard.abort });
+    findings.deadAccounts.push(uid);
+    findings.removed.push(...removable);
   }
 
-  return { scanned, guard, ...findings };
+  return { scanned, guard, authUnavailable: accounts.failed, ...findings };
 }
 
 async function main() {
@@ -165,8 +230,12 @@ async function main() {
   console.log(`\nQuiz scores: ${scores.scanned} rows scanned`);
   console.log(`  rows carrying a banned field: ${scores.bannedField.length}`);
   scores.bannedField.forEach((path) => console.log(`    ${path}`));
-  console.log(`  rows whose owner no longer exists: ${scores.orphan.length}`);
-  scores.orphan.forEach((path) => console.log(`    ${path}`));
+  console.log(`  accounts with no login left: ${scores.deadAccounts.length}`);
+  if (scores.removed.length > 0) {
+    console.log(`  documents that belong to them: ${scores.removed.length}`);
+    scores.removed.forEach((path) => console.log(`    ${path}`));
+    console.log("    (a profile also takes its enrolledCourses and quizAttempts with it)");
+  }
   if (scores.skipped.length > 0) {
     console.log(`  paths outside QuizLeaderboards, left alone: ${scores.skipped.length}`);
     scores.skipped.forEach((path) => console.log(`    ${path}`));
@@ -174,9 +243,10 @@ async function main() {
 
   if (scores.guard.abort) {
     console.log(
-      `\nSTOPPED: ${Math.round(scores.guard.ratio * 100)}% of quiz score rows look ownerless, ` +
-        `above the ${Math.round(ORPHAN_ABORT_RATIO * 100)}% limit. Nothing was deleted — ` +
-        `at that rate the query is likelier to be wrong than the data. Check the paths above first.`
+      `\nSTOPPED: ${Math.round(scores.guard.ratio * 100)}% of the learners on these boards have ` +
+        `no login left, above the ${Math.round(ORPHAN_ABORT_RATIO * 100)}% limit. Nothing was ` +
+        `removed — at that rate the lookup is likelier to be wrong than the data. Check the ` +
+        `paths above first.`
     );
   }
 
@@ -184,7 +254,7 @@ async function main() {
     board.bannedField.length +
     board.accountName.length +
     scores.bannedField.length +
-    (scores.guard.abort ? 0 : scores.orphan.length);
+    (scores.guard.abort ? 0 : scores.removed.length);
   console.log(`\n${total} document(s) need cleaning. ${APPLY ? `${written} written.` : "Nothing was written."}`);
   if (!APPLY && total > 0) console.log("Re-run the workflow with mode: apply to clean them.");
 }
