@@ -94,8 +94,27 @@ export async function readDoc(path) {
   if (!res.ok) throw new Error(`Firestore emulator read of ${path} failed: ${res.status}`);
   const body = await res.json();
   return Object.fromEntries(
-    Object.entries(body.fields || {}).map(([k, v]) => [k, Object.values(v)[0]])
+    Object.entries(body.fields || {}).map(([k, v]) => [k, decodeValue(v)])
   );
+}
+
+/**
+ * Firestore's REST shape back into plain JavaScript. Numbers matter: REST sends
+ * integerValue as a STRING, so a test comparing a score to 30 was failing
+ * against "30" while the app had written a perfectly good number.
+ */
+function decodeValue(value = {}) {
+  if ("integerValue" in value) return Number(value.integerValue);
+  if ("doubleValue" in value) return Number(value.doubleValue);
+  if ("booleanValue" in value) return value.booleanValue;
+  if ("nullValue" in value) return null;
+  if ("mapValue" in value) {
+    return Object.fromEntries(
+      Object.entries(value.mapValue.fields || {}).map(([k, v]) => [k, decodeValue(v)])
+    );
+  }
+  if ("arrayValue" in value) return (value.arrayValue.values || []).map(decodeValue);
+  return Object.values(value)[0];
 }
 
 /** True if the email + password still sign in, i.e. the Auth account exists. */

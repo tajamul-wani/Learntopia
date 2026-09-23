@@ -4,7 +4,7 @@ import {
   planPublicEntry,
   planQuizScore,
   isQuizScorePath,
-  isOrphan,
+  isDeadAccount,
   orphanGuard,
 } from "../scripts/lib/legacy-names.mjs";
 
@@ -96,19 +96,26 @@ test("rejects a Scores collection somewhere else", () => {
 // Deleting a whole document is a different risk from clearing a field, so the
 // owner test is deliberately conservative and the count is capped.
 
-test("a row is an orphan only when the profile AND the public row are gone", () => {
-  assert.equal(isOrphan({ userExists: false, publicExists: false }), true);
-  assert.equal(isOrphan({ userExists: true, publicExists: false }), false);
-  assert.equal(isOrphan({ userExists: false, publicExists: true }), false);
-  assert.equal(isOrphan({ userExists: true, publicExists: true }), false);
+test("an account is dead only when Auth says the login is gone", () => {
+  assert.equal(isDeadAccount({ authKnown: true, authExists: false }), true);
+  assert.equal(isDeadAccount({ authKnown: true, authExists: true }), false);
 });
 
-test("a plausible number of orphans is allowed through", () => {
+// The lookup decides whether someone's data is destroyed, so a lookup that
+// could not answer must never read as "this account is gone".
+test("a lookup that could not answer leaves the account alone", () => {
+  assert.equal(isDeadAccount({ authKnown: false, authExists: false }), false);
+  assert.equal(isDeadAccount({ authKnown: false, authExists: true }), false);
+  assert.equal(isDeadAccount({}), false);
+  assert.equal(isDeadAccount({ authKnown: undefined, authExists: false }), false);
+});
+
+test("a plausible number of dead accounts is allowed through", () => {
   assert.equal(orphanGuard(1, 20).abort, false);
   assert.equal(orphanGuard(5, 20).abort, false);
 });
 
-test("an implausible number of orphans stops the run", () => {
+test("an implausible number of dead accounts stops the run", () => {
   assert.equal(orphanGuard(6, 20).abort, true);
   assert.equal(orphanGuard(20, 20).abort, true);
 });

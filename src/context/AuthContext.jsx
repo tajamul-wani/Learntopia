@@ -327,6 +327,34 @@ export function AuthProvider({ children }) {
             setNeedsProfileSetup(!parsedName || !parsedAvatar);
             setNeedsIdentityChoice(!hasChosenIdentity(data));
 
+            // A learner with no public row is invisible: absent from the
+            // leaderboard, and shown on quiz boards under whatever name their
+            // score row froze. The row is only written at first sign-in, so a
+            // write that failed once left them off the board for good. Put it
+            // back, carrying their chosen name when they have one and a
+            // generated nickname when they do not — never the account name,
+            // and never overwriting a name they picked.
+            try {
+              const publicRef = doc(db, "PublicLeaderboard", user.uid);
+              const publicSnap = await getDoc(publicRef);
+              if (!publicSnap.exists()) {
+                await setDoc(publicRef, {
+                  uid: user.uid,
+                  displayName: publicNameFor(data),
+                  ...(data.avatarId ? { avatarId: data.avatarId } : {}),
+                  totalPoints: Number(data.totalPoints) || 0,
+                  xp: Number(data.xp) || 0,
+                  streak: Number(data.streak) || 1,
+                  badges: (Array.isArray(data.badges) ? data.badges : ["Newcomer"]).map((b) =>
+                    typeof b === "string" ? b : b.name || "Badge"
+                  ),
+                  updatedAt: new Date(),
+                });
+              }
+            } catch (e) {
+              console.warn("Leaderboard row check notice:", e);
+            }
+
             const lastDateStr = data.lastLoginDate;
 
             // Only update if the user hasn't been credited for today yet
