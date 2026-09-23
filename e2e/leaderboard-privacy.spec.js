@@ -1,4 +1,4 @@
-import { test, expect, createAccount, createLearner, signIn, writeDoc, readDoc } from "./support/emulator.js";
+import { test, expect, createAccount, createLearner, signIn, writeDoc, readDoc, docExists } from "./support/emulator.js";
 
 // LT-81: the public leaderboard must never carry an account's real name. A
 // Google sign-in hands the app the account holder's name, and it used to be
@@ -30,6 +30,37 @@ test.describe("leaderboard privacy", () => {
     // The private profile is where the account name is allowed to live.
     const profile = await readDoc(`Users/${uid}`);
     expect(profile.fullName).toBe(REAL_NAME);
+  });
+
+  // LT-102: the public row is written at first sign-in only. A learner whose
+  // row went missing was invisible — absent from the board, and shown on quiz
+  // boards under whatever name their score row froze. Signing in puts it back.
+  test("a learner with no public row gets one back on sign-in", async ({ page }, testInfo) => {
+    const suffix = `${Date.now()}-${testInfo.workerIndex}`;
+    const email = `noRow-${suffix}@example.test`;
+    const uid = await createAccount(email, { displayName: REAL_NAME });
+    // A profile with a chosen identity, but nothing on the public board.
+    await writeDoc(`Users/${uid}`, {
+      email,
+      fullName: REAL_NAME,
+      displayName: "PixelPilot",
+      avatarId: "pet-owl",
+      totalPoints: 30,
+      badges: ["Newcomer"],
+      streak: 1,
+    });
+    expect(await docExists(`PublicLeaderboard/${uid}`)).toBe(false);
+
+    await signIn(page, { email, password: "e2e-password-123" });
+
+    await expect
+      .poll(async () => (await readDoc(`PublicLeaderboard/${uid}`))?.displayName, { timeout: 20000 })
+      .toBe("PixelPilot");
+
+    const entry = await readDoc(`PublicLeaderboard/${uid}`);
+    expect(entry.avatarId, "the restored row lost the learner's avatar").toBe("pet-owl");
+    expect(entry.totalPoints, "the restored row lost their points").toBe(30);
+    expect(JSON.stringify(entry), "the account name reached the public board").not.toContain(REAL_NAME);
   });
 
   test("the board renders a nickname for a row with no chosen name", async ({ page }, testInfo) => {
