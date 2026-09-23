@@ -22,11 +22,10 @@ jobs:
         java-version: 17
     - name: Install dependencies
       run: npm ci
-    # Fails the build if an off-palette colour or hardcoded hex creeps into the UI.
-    - name: Palette guard
-      run: npm run test:palette
-    # Pure logic, checked in milliseconds rather than through a browser.
-    - name: Unit tests
+    # Vitest: logic, components, and the palette guard that fails the build when
+    # an off-palette colour or a hardcoded hex creeps into the UI. Seconds, and
+    # it runs before the browsers are installed so an obvious break fails fast.
+    - name: Unit and component tests
       run: npm run test:unit
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
