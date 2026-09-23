@@ -12,8 +12,7 @@
 //
 // Run: npm run test:palette
 
-import { test } from "node:test";
-import assert from "node:assert/strict";
+import { test, expect } from "vitest";
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -77,12 +76,9 @@ test("no off-palette Tailwind colour classes in UI code", () => {
     });
   }
 
-  assert.deepEqual(
-    offenders,
-    [],
+  expect(offenders).toEqual([],
     "Off-palette colours found. Use a design token, or add a reviewed exception " +
-      "to EXCEPTIONS in this file with a reason:\n  " + offenders.join("\n  ")
-  );
+      "to EXCEPTIONS in this file with a reason:\n  " + offenders.join("\n  "));
 });
 
 test("no hardcoded hex colours in UI code", () => {
@@ -101,11 +97,8 @@ test("no hardcoded hex colours in UI code", () => {
     });
   }
 
-  assert.deepEqual(
-    offenders,
-    [],
-    "Hardcoded hex colours found. Use a design token instead:\n  " + offenders.join("\n  ")
-  );
+  expect(offenders).toEqual([],
+    "Hardcoded hex colours found. Use a design token instead:\n  " + offenders.join("\n  "));
 });
 
 // Token colours as "r,g,b", for values written inside arbitrary Tailwind values
@@ -144,11 +137,8 @@ test("rgba colour values in UI code come from the tokens", () => {
     });
   }
 
-  assert.deepEqual(
-    offenders,
-    [],
-    "rgba() values that are not design tokens: " + offenders.join(" | ")
-  );
+  expect(offenders).toEqual([],
+    "rgba() values that are not design tokens: " + offenders.join(" | "));
 });
 
 // Shades that tailwind.config.js actually declares. A shade outside this list
@@ -178,12 +168,9 @@ test("tokenised colour families only use shades the config defines", () => {
     });
   }
 
-  assert.deepEqual(
-    offenders,
-    [],
+  expect(offenders).toEqual([],
     "Shades not defined in tailwind.config.js, so they fall back to Tailwind's " +
-      "defaults: " + offenders.join(" | ")
-  );
+      "defaults: " + offenders.join(" | "));
 });
 
 // --- brand artwork ---------------------------------------------------------
@@ -215,9 +202,9 @@ test("brand SVGs only use design-token colours", () => {
     }
   }
 
-  assert.ok(tokens.size > 20, `Parsed only ${tokens.size} token colours; the token patterns are broken.`);
-  assert.ok(hexHits > 30, `Found only ${hexHits} colours across the brand SVGs; expected many. Pattern is broken.`);
-  assert.deepEqual(offenders, [], "Brand SVG colours that are not design tokens: " + offenders.join(" | "));
+  expect(tokens.size > 20, `Parsed only ${tokens.size} token colours; the token patterns are broken.`).toBeTruthy();
+  expect(hexHits > 30, `Found only ${hexHits} colours across the brand SVGs; expected many. Pattern is broken.`).toBeTruthy();
+  expect(offenders).toEqual([], "Brand SVG colours that are not design tokens: " + offenders.join(" | "));
 });
 
 // --- self-checks -----------------------------------------------------------
@@ -228,11 +215,9 @@ test("brand SVGs only use design-token colours", () => {
 
 test("the guard actually scans the source tree", () => {
   const files = walk(SRC);
-  assert.ok(
-    files.length > 20,
+  expect(files.length > 20,
     `Expected to walk the source tree, found only ${files.length} files. ` +
-      "SRC is probably resolving to the wrong path."
-  );
+      "SRC is probably resolving to the wrong path.").toBeTruthy();
 });
 
 test("the guard patterns still match known-good colour usage", () => {
@@ -247,8 +232,8 @@ test("the guard patterns still match known-good colour usage", () => {
     rgbaHits += (text.match(/rgba\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,/g) || []).length;
   }
 
-  assert.ok(shadeHits > 50, `Shade pattern matched ${shadeHits} times; expected many. Pattern is broken.`);
-  assert.ok(rgbaHits > 10, `rgba pattern matched ${rgbaHits} times; expected many. Pattern is broken.`);
+  expect(shadeHits > 50, `Shade pattern matched ${shadeHits} times; expected many. Pattern is broken.`).toBeTruthy();
+  expect(rgbaHits > 10, `rgba pattern matched ${rgbaHits} times; expected many. Pattern is broken.`).toBeTruthy();
 });
 
 // --- tone keys -------------------------------------------------------------
@@ -261,20 +246,17 @@ test("every notification tone resolves to a defined tone style", () => {
   const cfg = readFileSync(new URL("../src/Components/ui/notificationConfig.js", import.meta.url), "utf8");
 
   const stylesStart = cfg.indexOf("TONE_STYLES");
-  assert.ok(stylesStart > -1, "TONE_STYLES not found in notificationConfig.js");
+  expect(stylesStart > -1, "TONE_STYLES not found in notificationConfig.js").toBeTruthy();
   const styles = cfg.slice(stylesStart);
 
   const defined = new Set([...styles.matchAll(/^\s{2}([a-z]+):\s*\{/gm)].map((m) => m[1]));
   const requested = [...cfg.slice(0, stylesStart).matchAll(/tone:\s*"([a-z]+)"/g)].map((m) => m[1]);
 
-  assert.ok(defined.size > 0, "Parsed no tone styles; the pattern is broken.");
-  assert.ok(requested.length > 0, "Parsed no requested tones; the pattern is broken.");
+  expect(defined.size > 0, "Parsed no tone styles; the pattern is broken.").toBeTruthy();
+  expect(requested.length > 0, "Parsed no requested tones; the pattern is broken.").toBeTruthy();
 
   const missing = [...new Set(requested)].filter((tone) => !defined.has(tone));
-  assert.deepEqual(
-    missing,
-    [],
+  expect(missing).toEqual([],
     "Notification tones with no matching TONE_STYLES entry (these silently fall back to violet): " +
-      missing.join(", ")
-  );
+      missing.join(", "));
 });
