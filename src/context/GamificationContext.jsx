@@ -5,34 +5,16 @@ import { db } from "../firebase/firebase";
 import { doc, onSnapshot, setDoc, increment, runTransaction, deleteField } from "firebase/firestore";
 
 import { parseProfileName } from "../utils/profileUtils";
+import { getLevelInfo } from "../utils/levels";
 
 const GamificationContext = createContext();
 
 export const useGamification = () => useContext(GamificationContext);
 
-export const LEVEL_THRESHOLDS = [
-  { level: 1, name: "Rookie Coder", minXP: 0, icon: "sparkles" },
-  { level: 2, name: "Code Explorer", minXP: 100, icon: "search" },
-  { level: 3, name: "Byte Master", minXP: 250, icon: "zap" },
-  { level: 4, name: "Logic Legend", minXP: 500, icon: "crown" },
-  { level: 5, name: "Grandmaster", minXP: 1000, icon: "trophy" },
-];
-
-export const getLevelInfo = (xp) => {
-  let currentLevel = LEVEL_THRESHOLDS[0];
-  for (let i = LEVEL_THRESHOLDS.length - 1; i >= 0; i--) {
-    if (xp >= LEVEL_THRESHOLDS[i].minXP) {
-      currentLevel = LEVEL_THRESHOLDS[i];
-      break;
-    }
-  }
-  const nextLevel = LEVEL_THRESHOLDS.find((l) => l.level === currentLevel.level + 1);
-  const xpInLevel = xp - currentLevel.minXP;
-  const xpNeeded = nextLevel ? nextLevel.minXP - currentLevel.minXP : 100;
-  const progressPct = Math.min(100, Math.round((xpInLevel / xpNeeded) * 100));
-
-  return { ...currentLevel, nextLevel, xpInLevel, xpNeeded, progressPct };
-};
+// Levels live in utils/levels.js so their maths can be tested without booting
+// Firebase; re-exported here because the rest of the app imports them from the
+// context.
+export { LEVEL_THRESHOLDS, getLevelInfo } from "../utils/levels";
 
 // Streak reward milestones: the popup appears ONLY on the day the streak reaches
 // one of these day counts, and the Claim button grants the matching XP. There
