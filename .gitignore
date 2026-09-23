@@ -53,6 +53,10 @@ claude-session/
 # Private Product Roadmap & Suggestions Tracking
 PRODUCT_ROADMAP_SUGGESTIONS.md
 
+# Test output
+coverage/
+.vitest/
+
 # Playwright
 /test-results/
 /playwright-report/

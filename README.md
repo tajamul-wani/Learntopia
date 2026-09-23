@@ -11,6 +11,7 @@ Interactive courses, timed quizzes, XP and badges, and a global leaderboard.
 [![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://reactjs.org)
 [![Firebase](https://img.shields.io/badge/Firebase-Firestore%20%2B%20Auth-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)](https://firebase.google.com)
 [![Vite](https://img.shields.io/badge/Vite-7-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev)
+[![Vitest](https://img.shields.io/badge/Tested_with-Vitest-6E9F18?style=for-the-badge&logo=vitest&logoColor=white)](https://vitest.dev)
 [![Playwright](https://img.shields.io/badge/Tested_with-Playwright-2EAD33?style=for-the-badge&logo=playwright&logoColor=white)](https://playwright.dev)
 
 </div>
@@ -84,7 +85,7 @@ translated into English and Spanish.
 | Hosting | Firebase Hosting, deployed by GitHub Actions on merge to `main` |
 | AI tutor | Google Gemini behind a Cloudflare Worker proxy (`worker/`) |
 | Error triage | Sentry, with a Cloudflare Worker for issue routing (`worker-sentry-linear/`) |
-| Testing | Playwright end-to-end, Firestore rules tests, and a palette guard |
+| Testing | Vitest for logic and components, Playwright end-to-end, Firestore rules tests, and a palette guard |
 
 ---
 
@@ -127,7 +128,8 @@ npm run test:e2e:ui    # Playwright watch mode (run npm run emulators first)
 npm run emulators      # Auth + Firestore emulators, for iterating on tests
 npm run test:rules:ci  # Firestore rules tests in the emulator
 npm run test:palette   # fails on colours outside the design system
-npm run test:unit      # unit tests for pure helpers
+npm run test:unit      # Vitest: logic and component tests
+npm run test:watch     # Vitest in watch mode
 npm run gen:avatars    # regenerate the 16 character avatar SVGs
 ```
 
@@ -142,7 +144,7 @@ them pass.
 |---|---|
 | **End-to-end** (`e2e/`, Playwright) | Drives the real app in a browser: public pages, sign-in, courses, account deletion, navigation, brand assets and fonts |
 | **Security rules** (`test/firestore.rules.test.js`) | Runs the real `firestore.rules` in the Firestore emulator: per-user isolation, anti-cheat, account deletion, admin-only data |
-| **Unit** (`test/*.test.js`, `node --test`) | Pure helpers with no browser or database: currently the decisions behind the legacy-name scrub |
+| **Unit and component** (`npm run test:unit`, Vitest) | Pure helpers and React components with no browser or database: identity and name rules, level maths, the legacy-name scrub's decisions, and component behaviour through Testing Library |
 | **Static** (`npm run lint`, `npm run build`, `npm run test:palette`) | Lint errors, build breakage, and colours outside the design system |
 
 **No credentials, and no internet.** The app under test talks to the local

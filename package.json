@@ -8,8 +8,9 @@
     "build": "node scripts/check-build-env.mjs && vite build && node scripts/check-dist-no-emulator.mjs",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test:palette": "node --test test/palette.test.js",
-    "test:unit": "node --test test/legacy-names.test.js",
+    "test:palette": "vitest run test/palette.test.js",
+    "test:unit": "vitest run",
+    "test:watch": "vitest",
     "test:rules": "node --test test/firestore.rules.test.js",
     "test:rules:ci": "firebase emulators:exec --only firestore --project demo-learntopia \"node --test test/firestore.rules.test.js\"",
     "emulators": "npx --yes firebase-tools@13 emulators:start --only auth,firestore --project demo-learntopia",
@@ -40,6 +41,9 @@
     "@eslint/js": "^9.13.0",
     "@firebase/rules-unit-testing": "^4.0.1",
     "@playwright/test": "^1.62.1",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.7",
     "@types/node": "^26.4.0",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
@@ -50,10 +54,12 @@
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.14",
     "globals": "^15.11.0",
+    "jsdom": "^30.1.1",
     "postcss": "^8.4.49",
     "prettier": "^3.3.3",
     "prettier-plugin-tailwindcss": "^0.6.9",
     "tailwindcss": "^3.4.15",
-    "vite": "^7.3.6"
+    "vite": "^7.3.6",
+    "vitest": "^5.0.1"
   }
 }

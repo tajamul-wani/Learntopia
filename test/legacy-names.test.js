@@ -1,5 +1,4 @@
-import test from "node:test";
-import assert from "node:assert/strict";
+import { test, expect } from "vitest";
 import {
   planPublicEntry,
   planQuizScore,
@@ -17,7 +16,7 @@ const NICK = () => "Learner 4821";
 
 test("deletes a legacy real name from a public row", () => {
   const plan = planPublicEntry({ uid: "u1", fullName: "Real Name", totalPoints: 10 }, {}, NICK);
-  assert.deepEqual(plan.delete, ["fullName"]);
+  expect(plan.delete).toEqual(["fullName"]);
 });
 
 test("deletes an email or photo that reached a public row", () => {
@@ -26,7 +25,7 @@ test("deletes an email or photo that reached a public row", () => {
     {},
     NICK
   );
-  assert.deepEqual(plan.delete, ["email", "photoURL"]);
+  expect(plan.delete).toEqual(["email", "photoURL"]);
 });
 
 test("replaces a public name that is really the account name", () => {
@@ -35,7 +34,7 @@ test("replaces a public name that is really the account name", () => {
     { fullName: "Real Name" },
     NICK
   );
-  assert.equal(plan.displayName, "Learner 4821");
+  expect(plan.displayName).toBe("Learner 4821");
 });
 
 test("keeps a name the learner chose, even when it matches their account name", () => {
@@ -44,7 +43,7 @@ test("keeps a name the learner chose, even when it matches their account name", 
     { fullName: "Real Name", displayName: "Real Name" },
     NICK
   );
-  assert.equal(plan.displayName, undefined);
+  expect(plan.displayName).toBe(undefined);
 });
 
 test("leaves a chosen nickname alone", () => {
@@ -53,8 +52,8 @@ test("leaves a chosen nickname alone", () => {
     { fullName: "Real Name", displayName: "PixelPilot" },
     NICK
   );
-  assert.deepEqual(plan.delete, []);
-  assert.equal(plan.displayName, undefined);
+  expect(plan.delete).toEqual([]);
+  expect(plan.displayName).toBe(undefined);
 });
 
 test("leaves a clean row untouched", () => {
@@ -63,18 +62,18 @@ test("leaves a clean row untouched", () => {
     { fullName: "Real Name" },
     NICK
   );
-  assert.deepEqual(plan.delete, []);
-  assert.equal(plan.displayName, undefined);
+  expect(plan.delete).toEqual([]);
+  expect(plan.displayName).toBe(undefined);
 });
 
 test("deletes a legacy name from a quiz score", () => {
-  assert.deepEqual(planQuizScore({ userId: "u1", userFullName: "Real Name", score: 8 }), [
+  expect(planQuizScore({ userId: "u1", userFullName: "Real Name", score: 8 })).toEqual([
     "userFullName",
   ]);
 });
 
 test("leaves a clean quiz score untouched", () => {
-  assert.deepEqual(planQuizScore({ userId: "u1", displayName: "PixelPilot", score: 8 }), []);
+  expect(planQuizScore({ userId: "u1", displayName: "PixelPilot", score: 8 })).toEqual([]);
 });
 
 // LT-98: the first run of this job reported zero quiz score rows because
@@ -83,43 +82,43 @@ test("leaves a clean quiz score untouched", () => {
 // which matches any collection called "Scores", so paths are checked.
 
 test("accepts a real quiz score path", () => {
-  assert.equal(isQuizScorePath("QuizLeaderboards/python/Scores/uid123"), true);
+  expect(isQuizScorePath("QuizLeaderboards/python/Scores/uid123")).toBe(true);
 });
 
 test("rejects a Scores collection somewhere else", () => {
-  assert.equal(isQuizScorePath("SomethingElse/abc/Scores/uid123"), false);
-  assert.equal(isQuizScorePath("QuizLeaderboards/python/Attempts/uid123"), false);
-  assert.equal(isQuizScorePath("QuizLeaderboards/python/Scores/uid123/extra/doc"), false);
-  assert.equal(isQuizScorePath(""), false);
+  expect(isQuizScorePath("SomethingElse/abc/Scores/uid123")).toBe(false);
+  expect(isQuizScorePath("QuizLeaderboards/python/Attempts/uid123")).toBe(false);
+  expect(isQuizScorePath("QuizLeaderboards/python/Scores/uid123/extra/doc")).toBe(false);
+  expect(isQuizScorePath("")).toBe(false);
 });
 
 // Deleting a whole document is a different risk from clearing a field, so the
 // owner test is deliberately conservative and the count is capped.
 
 test("an account is dead only when Auth says the login is gone", () => {
-  assert.equal(isDeadAccount({ authKnown: true, authExists: false }), true);
-  assert.equal(isDeadAccount({ authKnown: true, authExists: true }), false);
+  expect(isDeadAccount({ authKnown: true, authExists: false })).toBe(true);
+  expect(isDeadAccount({ authKnown: true, authExists: true })).toBe(false);
 });
 
 // The lookup decides whether someone's data is destroyed, so a lookup that
 // could not answer must never read as "this account is gone".
 test("a lookup that could not answer leaves the account alone", () => {
-  assert.equal(isDeadAccount({ authKnown: false, authExists: false }), false);
-  assert.equal(isDeadAccount({ authKnown: false, authExists: true }), false);
-  assert.equal(isDeadAccount({}), false);
-  assert.equal(isDeadAccount({ authKnown: undefined, authExists: false }), false);
+  expect(isDeadAccount({ authKnown: false, authExists: false })).toBe(false);
+  expect(isDeadAccount({ authKnown: false, authExists: true })).toBe(false);
+  expect(isDeadAccount({})).toBe(false);
+  expect(isDeadAccount({ authKnown: undefined, authExists: false })).toBe(false);
 });
 
 test("a plausible number of dead accounts is allowed through", () => {
-  assert.equal(orphanGuard(1, 20).abort, false);
-  assert.equal(orphanGuard(5, 20).abort, false);
+  expect(orphanGuard(1, 20).abort).toBe(false);
+  expect(orphanGuard(5, 20).abort).toBe(false);
 });
 
 test("an implausible number of dead accounts stops the run", () => {
-  assert.equal(orphanGuard(6, 20).abort, true);
-  assert.equal(orphanGuard(20, 20).abort, true);
+  expect(orphanGuard(6, 20).abort).toBe(true);
+  expect(orphanGuard(20, 20).abort).toBe(true);
 });
 
 test("an empty collection never triggers the brake", () => {
-  assert.deepEqual(orphanGuard(0, 0), { abort: false, ratio: 0 });
+  expect(orphanGuard(0, 0)).toEqual({ abort: false, ratio: 0 });
 });

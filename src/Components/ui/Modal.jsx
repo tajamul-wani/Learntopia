@@ -56,6 +56,7 @@ const Modal = ({
           <button 
             onClick={!loading ? onClose : undefined}
             disabled={loading}
+            aria-label={t("common.close")}
             className="rounded-xl p-2 text-ink-low transition-colors hover:bg-surface-2 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Icon name="x" size={20} />
