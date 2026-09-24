@@ -2,10 +2,20 @@
 import { createContext, useContext, useState, useEffect, useRef } from "react";
 import { useAuth } from "./AuthContext";
 import { db } from "../firebase/firebase";
-import { doc, onSnapshot, setDoc, increment, runTransaction, deleteField } from "firebase/firestore";
+import {
+  doc,
+  onSnapshot,
+  setDoc,
+  getDoc,
+  increment,
+  runTransaction,
+  deleteField,
+  writeBatch,
+} from "firebase/firestore";
 
 import { parseProfileName } from "../utils/profileUtils";
 import { getLevelInfo } from "../utils/levels";
+import { courseGrant, streakGrant } from "../utils/xpGrants";
 
 const GamificationContext = createContext();
 
@@ -152,21 +162,70 @@ export const GamificationProvider = ({ children }) => {
 
   const { displayName, avatarId } = parseProfileName(profile, currentUser?.displayName || "Learner");
 
-  // Atomically add points to the profile AND mirror to the public leaderboard.
-  // Uses increment() so concurrent writes from multiple devices are race-safe,
-  // and the onSnapshot listeners reflect the new value everywhere immediately.
-  const awardPoints = async (amount, extraProfileFields = {}) => {
-    if (isAdmin) return;
-    if (!currentUser || !amount || amount <= 0) return;
+  /**
+   * Claim a grant: the ledger entry and the XP it pays for, in one batch.
+   *
+   * The security rules only accept an xp increase when this write also creates
+   * the named ledger entry and it did not exist before, so a grant pays exactly
+   * once no matter how the learner gets back to it — replaying a module,
+   * resetting a course, deleting an enrolment, or calling Firestore directly.
+   *
+   * @param {{key: string, type: string, amount: number}} grant
+   * @returns {Promise<boolean>} false when the grant was already claimed
+   */
+  const claimGrant = async (grant, extraProfileFields = {}) => {
+    if (isAdmin || !currentUser || !grant?.key) return false;
     const uid = currentUser.uid;
+    const ledgerRef = doc(db, "Users", uid, "xpLedger", grant.key);
+
     try {
-      await setDoc(
-        doc(db, "Users", uid),
-        { xp: increment(amount), totalPoints: increment(amount), updatedAt: new Date(), ...extraProfileFields },
-        { merge: true }
-      );
+      if ((await getDoc(ledgerRef)).exists()) return false;
+    } catch (e) {
+      console.warn("Ledger check notice:", e);
+    }
+
+    const batch = writeBatch(db);
+    batch.set(ledgerRef, { type: grant.type, amount: grant.amount, grantedAt: new Date() });
+    batch.set(
+      doc(db, "Users", uid),
+      {
+        xp: increment(grant.amount),
+        totalPoints: increment(grant.amount),
+        lastGrantKey: grant.key,
+        updatedAt: new Date(),
+        ...extraProfileFields,
+      },
+      { merge: true }
+    );
+
+    try {
+      await batch.commit();
     } catch (err) {
-      console.error("Error awarding points to profile:", err);
+      // A rejected batch means the grant was already claimed, which is the
+      // system working: the learner keeps their progress and earns nothing new.
+      console.warn("Grant not applied:", grant.key, err?.code || err);
+      return false;
+    }
+
+    await mirrorToPublicBoard(uid);
+    return true;
+  };
+
+  /**
+   * Mirrors the profile onto the public board.
+   *
+   * The board must equal the profile exactly, so this writes the profile's own
+   * total rather than incrementing. Incrementing would keep any historical
+   * drift between the two forever, and every later write would be refused.
+   */
+  const mirrorToPublicBoard = async (uid) => {
+    let total = 0;
+    try {
+      const snap = await getDoc(doc(db, "Users", uid));
+      total = Number(snap.data()?.xp) || 0;
+    } catch (e) {
+      console.warn("Profile read before mirror notice:", e);
+      return;
     }
     // Public leaderboard mirror (display data only — never email/PII).
     try {
@@ -178,8 +237,8 @@ export const GamificationProvider = ({ children }) => {
         displayName,
         avatarId,
         fullName: deleteField(),
-        totalPoints: increment(amount),
-        xp: increment(amount),
+        totalPoints: total,
+        xp: total,
         streak: Number(profile?.streak) || 1,
         badges: (badges || []).map((b) => (typeof b === "string" ? b : b.name || "Badge")),
         updatedAt: new Date(),
@@ -199,11 +258,18 @@ export const GamificationProvider = ({ children }) => {
   // Used when a bigger moment (e.g. course completion) owns the celebration, so
   // the same action never stacks two overlays. A level-up still surfaces because
   // it is a milestone in its own right.
-  const addXP = async (amount, reason = "", { silent = false } = {}) => {
-    if (isAdmin) return;
+  /**
+   * Claim a grant and celebrate it. Replaces the old addXP(amount): XP no
+   * longer comes from a number a caller chose, but from a named grant the
+   * rules can verify.
+   */
+  const grantXp = async (grant, reason = "", { silent = false } = {}) => {
+    if (isAdmin || !grant) return false;
     const oldLevel = getLevelInfo(xp);
-    const newLevel = getLevelInfo(xp + amount);
-    await awardPoints(amount);
+    const newLevel = getLevelInfo(xp + grant.amount);
+    const claimed = await claimGrant(grant);
+    if (!claimed) return false;
+    const amount = grant.amount;
 
     if (newLevel.level > oldLevel.level) {
       setTimeout(() => {
@@ -219,6 +285,7 @@ export const GamificationProvider = ({ children }) => {
       // `reason` is already localized by the caller (it has the language context).
       enqueueCelebration({ type: "xp", art: "xp", kind: "xp", params: { amount }, message: reason, xpEarned: amount });
     }
+    return true;
   };
 
   // `silent` persists the badge without its own popup, letting the caller own the
@@ -277,7 +344,7 @@ export const GamificationProvider = ({ children }) => {
   // then persist the course badge and XP quietly. The celebration is enqueued
   // FIRST so the moment always fires even if a background award write fails. Any
   // level-up from the XP still surfaces on its own (addXP handles that).
-  const awardCourseCompletion = async (course, { grantXp = true } = {}) => {
+  const awardCourseCompletion = async (course, { withXp = true } = {}) => {
     enqueueCelebration({
       type: "course",
       art: "trophy",
@@ -286,8 +353,11 @@ export const GamificationProvider = ({ children }) => {
       params: { course: course?.title || "", courseId: course?.id },
     });
     if (course?.badge) await awardBadge(course.badge, { silent: true });
-    // Skip the bonus on a replay (the caller gates this via courseXpAwarded).
-    if (grantXp) await addXP(100, "", { silent: true });
+    // The completion bonus is a grant like any other: claimed once per course,
+    // ever. A replay re-runs this and the ledger simply refuses to pay again.
+    if (withXp && course?.id != null) {
+      await grantXp(courseGrant(course.id), "", { silent: true });
+    }
   };
 
   // Anti-farming / accuracy awards. Both go through awardBadge, so they are
@@ -307,7 +377,14 @@ export const GamificationProvider = ({ children }) => {
       setShowStreakModal(false);
       return false;
     }
-    await awardPoints(amount, { lastStreakClaimDate: todayKey, lastStreakPopupDate: todayKey });
+    const claimed = await claimGrant(streakGrant(streak, todayKey), {
+      lastStreakClaimDate: todayKey,
+      lastStreakPopupDate: todayKey,
+    });
+    if (!claimed) {
+      setShowStreakModal(false);
+      return false;
+    }
     enqueueCelebration({
       type: "xp",
       art: "streak",
@@ -367,7 +444,7 @@ export const GamificationProvider = ({ children }) => {
         alreadyClaimedStreakToday: profile?.lastStreakClaimDate === localDayKey(),
         claimStreakBonus,
         dismissStreakModal,
-        addXP,
+        grantXp,
         awardBadge,
         awardCourseCompletion,
         awardPerfectScore,

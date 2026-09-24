@@ -79,6 +79,126 @@ const seed = (path, data) =>
     await setDoc(doc(ctx.firestore(), path), data);
   });
 
+describe("XP ledger (LT-83)", () => {
+  // XP used to be whatever a client wrote, checked only for never decreasing.
+  // A learner could open the console on the live site and type any number. XP
+  // now rises only alongside a ledger entry created in the same write, so these
+  // tests are the actual protection: if they pass, the score means something.
+
+  const grant = (type = "module", amount = 50) => ({ type, amount, grantedAt: new Date() });
+
+  /** The legitimate shape: the entry and the increase, together. */
+  const claim = async (db, uid, key, amount, type = "module") => {
+    const batch = writeBatch(db);
+    batch.set(doc(db, `Users/${uid}/xpLedger/${key}`), grant(type, amount));
+    batch.set(
+      doc(db, `Users/${uid}`),
+      { ...validProfile(), xp: amount, totalPoints: amount, lastGrantKey: key },
+      { merge: true }
+    );
+    return batch.commit();
+  };
+
+  beforeEach(async () => {
+    await seed("Users/alice", validProfile());
+  });
+
+  test("a grant and the XP it pays for go through together", async () => {
+    await assertSucceeds(claim(alice(), "alice", "course-1-module-0", 50));
+  });
+
+  test("XP cannot rise without a grant", async () => {
+    await assertFails(
+      updateDoc(doc(alice(), "Users/alice"), { xp: 500, totalPoints: 500 })
+    );
+  });
+
+  test("XP cannot rise by more than the grant is worth", async () => {
+    const db = alice();
+    const batch = writeBatch(db);
+    batch.set(doc(db, "Users/alice/xpLedger/course-1-module-0"), grant("module", 50));
+    batch.set(
+      doc(db, "Users/alice"),
+      { ...validProfile(), xp: 5000, totalPoints: 5000, lastGrantKey: "course-1-module-0" },
+      { merge: true }
+    );
+    await assertFails(batch.commit());
+  });
+
+  test("a grant cannot be worth more than its type allows", async () => {
+    await assertFails(
+      setDoc(doc(alice(), "Users/alice/xpLedger/course-1-module-0"), grant("module", 5000))
+    );
+  });
+
+  test("an unknown grant type is refused", async () => {
+    await assertFails(
+      setDoc(doc(alice(), "Users/alice/xpLedger/whatever"), grant("jackpot", 50))
+    );
+  });
+
+  // The heart of it: the same work can never pay twice, however the learner
+  // gets back to it — replaying a module, resetting a course, deleting the
+  // enrolment and rejoining.
+  test("the same grant cannot be claimed twice", async () => {
+    await claim(alice(), "alice", "course-1-module-0", 50);
+    await assertFails(claim(alice(), "alice", "course-1-module-0", 50));
+  });
+
+  test("a ledger entry cannot be edited", async () => {
+    await claim(alice(), "alice", "course-1-module-0", 50);
+    await assertFails(
+      updateDoc(doc(alice(), "Users/alice/xpLedger/course-1-module-0"), { amount: 9999 })
+    );
+  });
+
+  test("a ledger entry cannot be deleted while the profile exists", async () => {
+    await claim(alice(), "alice", "course-1-module-0", 50);
+    await assertFails(deleteDoc(doc(alice(), "Users/alice/xpLedger/course-1-module-0")));
+  });
+
+  test("nobody can claim a grant for someone else", async () => {
+    await seed("Users/bob", validProfile());
+    await assertFails(claim(alice(), "bob", "course-1-module-0", 50));
+  });
+
+  test("a quiz level is worth ten, and only ten", async () => {
+    await assertSucceeds(claim(alice(), "alice", "quiz-python-score-3", 10, "quiz"));
+    await seed("Users/carol", validProfile());
+    await assertFails(claim(testEnv.authenticatedContext("carol").firestore(), "carol", "quiz-python-score-4", 40, "quiz"));
+  });
+
+  test("the public board cannot hold more than the profile", async () => {
+    await seed("Users/alice", { ...validProfile(), xp: 50, totalPoints: 50 });
+    await assertFails(
+      setDoc(doc(alice(), "PublicLeaderboard/alice"), {
+        uid: "alice",
+        displayName: "Alice",
+        totalPoints: 99999,
+        xp: 99999,
+        streak: 1,
+        badges: [],
+        updatedAt: new Date(),
+      })
+    );
+  });
+
+  test("the public board may mirror the profile exactly", async () => {
+    await seed("Users/alice", { ...validProfile(), xp: 50, totalPoints: 50 });
+    await assertSucceeds(
+      setDoc(doc(alice(), "PublicLeaderboard/alice"), {
+        uid: "alice",
+        displayName: "Alice",
+        totalPoints: 50,
+        xp: 50,
+        streak: 1,
+        badges: [],
+        updatedAt: new Date(),
+      })
+    );
+  });
+});
+
 describe("Users/{uid} profile", () => {
   test("owner can create a valid profile", async () => {
     await assertSucceeds(
@@ -162,9 +282,29 @@ describe("Users/{uid} profile", () => {
     await assertSucceeds(getDoc(doc(admin(), "Users/alice")));
   });
 
-  test("owner can increase totalPoints and xp", async () => {
+  // LT-83: XP rises only alongside the ledger entry that pays for it. A bare
+  // increase, which this test used to assert was allowed, is now refused — see
+  // the XP ledger suite for the full set.
+  test("owner can increase totalPoints and xp with a matching grant", async () => {
     await seed("Users/alice", { ...validProfile(), totalPoints: 100, xp: 100 });
-    await assertSucceeds(
+    const db = alice();
+    const batch = writeBatch(db);
+    batch.set(doc(db, "Users/alice/xpLedger/course-1-module-3"), {
+      type: "module",
+      amount: 50,
+      grantedAt: new Date(),
+    });
+    batch.set(
+      doc(db, "Users/alice"),
+      { totalPoints: 150, xp: 150, lastGrantKey: "course-1-module-3" },
+      { merge: true }
+    );
+    await assertSucceeds(batch.commit());
+  });
+
+  test("ANTI-CHEAT: a bare XP increase with no grant is refused", async () => {
+    await seed("Users/alice", { ...validProfile(), totalPoints: 100, xp: 100 });
+    await assertFails(
       updateDoc(doc(alice(), "Users/alice"), { totalPoints: 150, xp: 150 })
     );
   });
@@ -451,6 +591,12 @@ describe("QuizLeaderboards/{quizId}/Scores/{uid}", () => {
 });
 
 describe("PublicLeaderboard/{uid}", () => {
+  // The board mirrors the profile, so a profile with the same total has to
+  // exist for an entry to be valid at all (LT-83).
+  beforeEach(async () => {
+    await seed("Users/alice", { ...validProfile(), totalPoints: 100, xp: 100 });
+  });
+
   const validEntry = () => ({
     uid: "alice",
     displayName: "Tester",
