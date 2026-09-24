@@ -11,9 +11,9 @@
  *     the private profile's `fullName`, and that learner never chose a name.
  *
  * Runs in two modes. `report` (the default) reads and counts, changing
- * nothing. `apply` writes. Neither mode ever prints a name: the output is
- * document paths and counts, because CI logs are readable by anyone with
- * access to the run.
+ * nothing. `apply` writes. Neither mode ever prints a name, and user ids are
+ * cut short in every path it prints: Actions logs on a public repository are
+ * readable by anyone, and a full id belongs to a child's account.
  *
  * Usage (locally, with GOOGLE_APPLICATION_CREDENTIALS set):
  *   node scripts/scrub-legacy-names.mjs            # report
@@ -29,6 +29,7 @@ import {
   isQuizScorePath,
   isDeadAccount,
   isAdminAccount,
+  maskPath,
   orphanGuard,
   ORPHAN_ABORT_RATIO,
 } from "./lib/legacy-names.mjs";
@@ -257,24 +258,24 @@ async function main() {
 
   console.log(`PublicLeaderboard: ${board.scanned} rows scanned`);
   console.log(`  rows carrying a banned field: ${board.bannedField.length}`);
-  board.bannedField.forEach((id) => console.log(`    PublicLeaderboard/${id}`));
+  board.bannedField.forEach((id) => console.log(`    ${maskPath(`PublicLeaderboard/${id}`)}`));
   console.log(`  rows showing the account name: ${board.accountName.length}`);
-  board.accountName.forEach((id) => console.log(`    PublicLeaderboard/${id}`));
+  board.accountName.forEach((id) => console.log(`    ${maskPath(`PublicLeaderboard/${id}`)}`));
 
   console.log(`\nQuiz scores: ${scores.scanned} rows scanned`);
   console.log(`  rows carrying a banned field: ${scores.bannedField.length}`);
-  scores.bannedField.forEach((path) => console.log(`    ${path}`));
+  scores.bannedField.forEach((path) => console.log(`    ${maskPath(path)}`));
   console.log(`  accounts with no login left: ${scores.deadAccounts.length}`);
   if (scores.removed.length > 0) {
     console.log(`  documents that belong to them: ${scores.removed.length}`);
-    scores.removed.forEach((path) => console.log(`    ${path}`));
+    scores.removed.forEach((path) => console.log(`    ${maskPath(path)}`));
     console.log("    (a profile also takes its enrolledCourses and quizAttempts with it)");
   }
   console.log(`  learner rows owned by an admin account: ${scores.adminRows.length}`);
-  scores.adminRows.forEach((path) => console.log(`    ${path}`));
+  scores.adminRows.forEach((path) => console.log(`    ${maskPath(path)}`));
   if (scores.skipped.length > 0) {
     console.log(`  paths outside QuizLeaderboards, left alone: ${scores.skipped.length}`);
-    scores.skipped.forEach((path) => console.log(`    ${path}`));
+    scores.skipped.forEach((path) => console.log(`    ${maskPath(path)}`));
   }
 
   if (scores.guard.abort) {

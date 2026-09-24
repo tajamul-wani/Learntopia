@@ -83,6 +83,22 @@ export function orphanGuard(orphans, scanned) {
 }
 
 /**
+ * A document path with the user id cut short.
+ *
+ * Actions logs on a public repository are readable by anyone, and these paths
+ * end in the id of a child's account. Six characters is enough to match rows
+ * across boards and to look one up in the console; the whole id is not ours to
+ * publish.
+ */
+export function maskPath(path = "") {
+  const parts = path.split("/");
+  const last = parts[parts.length - 1] || "";
+  if (last.length <= 8) return path;
+  parts[parts.length - 1] = `${last.slice(0, 6)}\u2026`;
+  return parts.join("/");
+}
+
+/**
  * An administrator is not a learner, so learner documents must not exist for
  * one. The Auth lookup already returns custom claims, so no guessing.
  */
