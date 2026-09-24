@@ -5,6 +5,7 @@ import { collection, addDoc, getDocs, doc, setDoc } from "firebase/firestore";
 import { quizzes } from "../data/quizData";
 import { getLocalizedQuiz } from "../utils/localizationUtils";
 import { useAuth } from "../context/AuthContext";
+import { quizLevelGrant, quizLevelsToClaim, QUIZ_LEVEL_XP } from "../utils/xpGrants";
 import { useSound } from "../context/SoundContext";
 import { useLanguage } from "../context/LanguageContext";
 import { useGamification } from "../context/GamificationContext";
@@ -22,7 +23,7 @@ import { Skeleton } from "../Components/ui/Skeleton";
 const Quiz = () => {
   const { playClick, playCorrect, playIncorrect, playLevelUp, playTimerTick, playTimerUrgent } = useSound();
   const { t } = useLanguage();
-  const { addXP, awardPerfectScore, awardSharpMemory, displayName, avatarId } = useGamification();
+  const { grantXp, awardPerfectScore, awardSharpMemory, displayName, avatarId } = useGamification();
 
   // Localize quiz metadata + questions/options for the active language.
   const localizedQuizzes = useMemo(() => quizzes.map((q) => getLocalizedQuiz(q, t)), [t]);
@@ -68,16 +69,6 @@ const Quiz = () => {
   const [loadingScores, setLoadingScores] = useState(false);
   const [xpEarned, setXpEarned] = useState(0);
 
-  // Scaled XP based on quiz score percentage
-  const getScaledXP = (correctCount, totalQuestions) => {
-    if (correctCount === 0) return 0;
-    const pct = (correctCount / totalQuestions) * 100;
-    if (pct === 100) return 100;
-    if (pct >= 80) return 80;
-    if (pct >= 60) return 60;
-    if (pct >= 40) return 40;
-    return 20;
-  };
 
   // Save score to Firestore with fail-safe merge and incremental retake XP
   const saveScore = async (finalScore) => {
@@ -94,11 +85,12 @@ const Quiz = () => {
       const totalQ = activeQuiz.questions.length;
       const previousBest = highScores[activeQuiz.id] || 0;
 
-      const prevMaxXP = getScaledXP(previousBest, totalQ);
-      const newMaxXP = getScaledXP(finalScore, totalQ);
-
-      // Incremental XP is awarded ONLY for new correct answers exceeding previous best score!
-      const incrementalXP = Math.max(0, newMaxXP - prevMaxXP);
+      // Ten XP per correct answer, and a retake pays only for answers above the
+      // previous best: seven right is seventy, a retake scoring seven again is
+      // nothing, a retake scoring nine adds twenty. Each score level is claimed
+      // through the ledger, so a level can never be paid for twice.
+      const levels = quizLevelsToClaim(finalScore, previousBest);
+      const incrementalXP = levels.length * QUIZ_LEVEL_XP;
       setXpEarned(incrementalXP);
 
       const attempt = {
@@ -127,9 +119,17 @@ const Quiz = () => {
       }).length;
       if (sharpCount >= 2) awardSharpMemory();
 
-      if (incrementalXP > 0) {
-        // Award ONLY the new incremental XP through GamificationContext
-        await addXP(incrementalXP, t("gamification.celReasonQuiz", { title: activeQuiz.title }));
+      if (levels.length > 0) {
+        // One claim per level, each its own ledger entry: the rules tie a single
+        // grant to a single increase, and a level already banked is refused.
+        for (const level of levels) {
+          const isLast = level === levels[levels.length - 1];
+          await grantXp(
+            quizLevelGrant(activeQuiz.id, level),
+            isLast ? t("gamification.celReasonQuiz", { title: activeQuiz.title }) : "",
+            { silent: !isLast }
+          );
+        }
 
         // Sync to global QuizLeaderboard with the overall best score
         // Display data only: the chosen name and avatar, never the Google
@@ -140,7 +140,8 @@ const Quiz = () => {
           userId: currentUser.uid,
           displayName: displayName || "Learner",
           avatarId: avatarId || "",
-          score: newMaxXP,
+          // The board shows the XP the best run is worth: ten a correct answer.
+          score: Math.max(previousBest, finalScore) * QUIZ_LEVEL_XP,
           rawScore: Math.max(previousBest, finalScore),
           totalQuestions: totalQ,
           completedAt: new Date(),

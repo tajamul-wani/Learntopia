@@ -10,6 +10,7 @@ import { db } from "../firebase/firebase";
 import { doc, getDoc, setDoc, deleteField, increment, arrayUnion } from "firebase/firestore";
 import { COURSES } from "../data/coursesData";
 import { getLocalizedCourse } from "../utils/localizationUtils";
+import { moduleGrant } from "../utils/xpGrants";
 import Card from "../Components/ui/Card";
 import Button from "../Components/ui/Button";
 import Icon from "../Components/ui/Icon";
@@ -25,7 +26,7 @@ const CourseDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { currentUser, loading: authLoading, isAdmin } = useAuth();
-  const { addXP, awardCourseCompletion, awardSharpMemory } = useGamification();
+  const { grantXp, awardCourseCompletion, awardSharpMemory } = useGamification();
   const { playClick } = useSound();
   const { t } = useLanguage();
 
@@ -200,8 +201,8 @@ const CourseDetails = () => {
       setExpandedIndex(newCompleted.length < total ? newCompleted.length : moduleIndex);
 
       if (earnXp) {
-        const xpEarned = course?.xpPerModule || 50;
-        addXP(xpEarned, t("gamification.celReasonModule", { n: moduleIndex + 1 }));
+        // The amount lives with the grant now, so the client cannot choose it.
+        grantXp(moduleGrant(course.id, moduleIndex), t("gamification.celReasonModule", { n: moduleIndex + 1 }));
       } else {
         toast.info(t("toasts.replayModuleNoXp"));
       }
@@ -222,7 +223,7 @@ const CourseDetails = () => {
     if (!ref) return;
     // The +100 completion bonus pays out once, ever. Replaying a finished course
     // (after a restart) still shows the Trophy moment, just without new XP.
-    const grantXp = !courseXpAwarded;
+    const withXp = !courseXpAwarded;
     setSaving(true);
     try {
       await setDoc(
@@ -232,16 +233,16 @@ const CourseDetails = () => {
           completedAt: new Date(),
           completedModules: course?.syllabus ? course.syllabus.map((_, i) => i) : [],
           totalModules: total,
-          ...(grantXp ? { courseXpAwarded: true } : {}),
+          ...(withXp ? { courseXpAwarded: true } : {}),
         },
         { merge: true }
       );
       setIsCompleted(true);
-      if (grantXp) setCourseXpAwarded(true);
+      if (withXp) setCourseXpAwarded(true);
 
       // One Trophy moment for finishing the course; badge + XP persist quietly.
       // On a replay we still celebrate but skip the XP grant.
-      await awardCourseCompletion(course, { grantXp });
+      await awardCourseCompletion(course, { withXp });
 
       // Sharp Memory: 90%+ first-try accuracy across the whole course. Read the
       // accumulated totals back from the doc so it holds across devices/sessions.
