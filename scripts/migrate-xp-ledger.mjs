@@ -20,8 +20,14 @@
  */
 import { initializeApp, cert, applicationDefault } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
+import { getAuth } from "firebase-admin/auth";
 import { readFileSync } from "node:fs";
-import { grantsFromEnrolment, grantsFromQuizBest, planLedger } from "./lib/xp-migration.mjs";
+import {
+  grantsFromEnrolment,
+  grantsFromQuizBest,
+  planLedger,
+  planAlignment,
+} from "./lib/xp-migration.mjs";
 import { maskPath } from "./lib/legacy-names.mjs";
 
 const APPLY = process.argv.includes("--apply");
@@ -35,6 +41,35 @@ function init() {
     return initializeApp({ credential: cert(credentials), projectId: PROJECT_ID });
   }
   return initializeApp({ credential: applicationDefault(), projectId: PROJECT_ID });
+}
+
+/**
+ * The uids carrying the admin claim.
+ *
+ * An administrator is not a learner and must not be counted as one. If Auth
+ * cannot be read the set comes back empty, which means nobody is treated as an
+ * admin — the safe direction, since the alternative is removing a real
+ * learner's profile on the strength of a failed lookup.
+ */
+async function adminUids(uids) {
+  const admins = new Set();
+  for (let i = 0; i < uids.length; i += 100) {
+    const chunk = uids.slice(i, i + 100);
+    try {
+      const res = await getAuth().getUsers(chunk.map((uid) => ({ uid })));
+      for (const user of res.users) {
+        if (user.customClaims?.admin === true) admins.add(user.uid);
+      }
+    } catch (err) {
+      console.log(
+        `\nCould not read Firebase Auth: ${err.message}\n` +
+          "No account is being treated as an administrator, so nothing will be " +
+          "removed on that basis."
+      );
+      return new Set();
+    }
+  }
+  return admins;
 }
 
 /** Everything one learner has already been paid for, from what is stored. */
@@ -67,15 +102,52 @@ async function main() {
   console.log(`project: ${PROJECT_ID}\n`);
 
   const users = await db.collection("Users").get();
+  const admins = await adminUids(users.docs.map((d) => d.id));
+
   let batch = db.batch();
   let queued = 0;
   let written = 0;
   let learnersWithLedger = 0;
   let learnersDone = 0;
+  let aligned = 0;
+  const adminProfiles = [];
 
   for (const user of users.docs) {
     const uid = user.id;
-    const currentXp = Number(user.data().xp) || 0;
+
+    // An administrator is not a learner: their profile document is the last
+    // learner-shaped thing that account owns, and while it exists they are
+    // counted among the learners here while the dashboard and the leaderboard
+    // correctly show fewer.
+    if (admins.has(uid)) {
+      adminProfiles.push(`Users/${uid}`);
+      if (APPLY) await db.recursiveDelete(db.collection("Users").doc(uid));
+      continue;
+    }
+
+    // One number, not two. `xp` levels a learner up, `totalPoints` is what the
+    // board shows, and an older version let them drift apart. Raise xp to meet
+    // the score the learner has been shown; never lower what they see.
+    const alignment = planAlignment(user.data());
+    if (alignment) {
+      aligned += 1;
+      console.log(
+        `${maskPath(`Users/${uid}`)}: shown ${alignment.xp}, levelled from ` +
+          `${Number(user.data().xp) || 0} — raising xp to match`
+      );
+      if (APPLY) {
+        await db.collection("Users").doc(uid).update({ xp: alignment.xp });
+        const legacyRef = db.collection("Users").doc(uid).collection("xpLedger").doc("legacy-balance");
+        const legacy = await legacyRef.get();
+        await legacyRef.set({
+          type: "legacy",
+          amount: (legacy.exists ? Number(legacy.data().amount) || 0 : 0) + alignment.legacyTopUp,
+          grantedAt: new Date(),
+        });
+      }
+    }
+
+    const currentXp = alignment ? alignment.xp : Number(user.data().xp) || 0;
 
     const existing = await db.collection("Users").doc(uid).collection("xpLedger").get();
     if (!existing.empty) {
@@ -115,7 +187,12 @@ async function main() {
 
   if (APPLY && queued > 0) await batch.commit();
 
-  console.log(`\n${users.size} learner(s) scanned`);
+  console.log(`\n${users.size - adminProfiles.length} learner(s) scanned`);
+  if (adminProfiles.length > 0) {
+    console.log(`  admin account(s) skipped, profile removed: ${adminProfiles.length}`);
+    adminProfiles.forEach((path) => console.log(`    ${maskPath(path)}`));
+  }
+  console.log(`  score fields brought together: ${aligned}`);
   console.log(`  already had a ledger, skipped: ${learnersWithLedger}`);
   console.log(`  needing a ledger: ${learnersDone}`);
   console.log(APPLY ? `  entries written: ${written}` : "  Nothing was written.");

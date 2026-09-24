@@ -3,6 +3,7 @@ import {
   grantsFromEnrolment,
   grantsFromQuizBest,
   planLedger,
+  planAlignment,
   MODULE_XP,
   COURSE_COMPLETE_XP,
   QUIZ_LEVEL_XP,
@@ -90,5 +91,34 @@ describe("planning a learner's ledger", () => {
     expect(plan.entries).toEqual([]);
     expect(plan.reconciliation).toBe(null);
     expect(plan.total).toBe(0);
+  });
+});
+
+// One number, not two. `xp` levels a learner up and `totalPoints` is what the
+// board shows; an older version defined the second as "XP plus quiz points", so
+// they drifted for anyone with quiz history. A learner was shown 790 points and
+// levelled from 450.
+
+describe("aligning the two score fields", () => {
+  test("xp is raised to meet the score the learner is shown", () => {
+    expect(planAlignment({ xp: 450, totalPoints: 790 })).toEqual({ xp: 790, legacyTopUp: 340 });
+  });
+
+  test("a displayed score is never lowered to meet xp", () => {
+    expect(planAlignment({ xp: 800, totalPoints: 600 })).toBe(null);
+  });
+
+  test("fields that already agree need nothing", () => {
+    expect(planAlignment({ xp: 560, totalPoints: 560 })).toBe(null);
+  });
+
+  test("a learner with no score at all needs nothing", () => {
+    expect(planAlignment({})).toBe(null);
+    expect(planAlignment({ xp: 0, totalPoints: 0 })).toBe(null);
+  });
+
+  test("missing or malformed fields are treated as zero, not trusted", () => {
+    expect(planAlignment({ totalPoints: 100 })).toEqual({ xp: 100, legacyTopUp: 100 });
+    expect(planAlignment({ xp: "nonsense", totalPoints: 50 })).toEqual({ xp: 50, legacyTopUp: 50 });
   });
 });
