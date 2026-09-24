@@ -76,3 +76,26 @@ export function planLedger(currentXp = 0, grants = []) {
     total: reconstructed + (reconciliation ? reconciliation.amount : 0),
   };
 }
+
+/**
+ * Bringing a learner's two score fields back together.
+ *
+ * `xp` drives levels and `totalPoints` is what the board shows. They are meant
+ * to be one number — the app itself sets totalPoints = xp — but an older
+ * version defined totalPoints as "XP plus quiz points", so for anyone with quiz
+ * history from that era the two drifted apart. A learner could be shown 790
+ * points and levelled from 450.
+ *
+ * Alignment raises `xp` to meet `totalPoints`, never the other way round: a
+ * displayed score is what a child has been told they have, so it is the one
+ * that must not move. The difference is added to their legacy-balance entry so
+ * the ledger still sums to what they hold.
+ *
+ * @returns {{xp: number, legacyTopUp: number}|null} null when nothing to do
+ */
+export function planAlignment({ xp = 0, totalPoints = 0 } = {}) {
+  const currentXp = Number(xp) || 0;
+  const points = Number(totalPoints) || 0;
+  if (points <= currentXp) return null;
+  return { xp: points, legacyTopUp: points - currentXp };
+}
