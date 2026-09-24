@@ -1,8 +1,10 @@
 # One-off maintenance, run by hand from the Actions tab.
 #
 # Builds an XP ledger for learners who earned XP before the ledger existed, so
-# work already paid for cannot be claimed again. It defaults to a read-only
-# report; writing requires choosing "apply" explicitly.
+# work already paid for cannot be claimed again. It also brings a learner's two
+# score fields back together where they drifted, and removes the leftover
+# learner profile of an admin account. It defaults to a read-only report;
+# writing requires choosing "apply" explicitly.
 #
 # A learner who already has ledger entries is skipped, so running it twice is
 # harmless. The job prints shortened user ids and counts, never a name, because
