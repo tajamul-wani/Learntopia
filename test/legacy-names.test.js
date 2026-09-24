@@ -4,6 +4,8 @@ import {
   planQuizScore,
   isQuizScorePath,
   isDeadAccount,
+  isAdminAccount,
+  maskPath,
   orphanGuard,
 } from "../scripts/lib/legacy-names.mjs";
 
@@ -121,4 +123,46 @@ test("an implausible number of dead accounts stops the run", () => {
 
 test("an empty collection never triggers the brake", () => {
   expect(orphanGuard(0, 0)).toEqual({ abort: false, ratio: 0 });
+});
+
+// LT-103: an administrator is not a learner. Their quiz scores were landing on
+// boards that other learners read, showing up as an account nobody could
+// account for.
+
+test("an admin claim is recognised from the Auth lookup", () => {
+  expect(isAdminAccount({ authKnown: true, claims: { admin: true } })).toBe(true);
+});
+
+test("a learner is not an admin", () => {
+  expect(isAdminAccount({ authKnown: true, claims: {} })).toBe(false);
+  expect(isAdminAccount({ authKnown: true })).toBe(false);
+  expect(isAdminAccount({ authKnown: true, claims: { admin: "yes" } })).toBe(false);
+});
+
+test("a lookup that could not answer is never treated as an admin", () => {
+  expect(isAdminAccount({ authKnown: false, claims: { admin: true } })).toBe(false);
+  expect(isAdminAccount({})).toBe(false);
+});
+
+// Actions logs on a public repository are readable by anyone, and these paths
+// end in the id of a child's account.
+
+test("a printed path keeps enough of the id to match rows, not to identify one", () => {
+  expect(maskPath("QuizLeaderboards/python/Scores/r1dkJUiyY3hjCkK6rwgrgadpsf83")).toBe(
+    "QuizLeaderboards/python/Scores/r1dkJU\u2026"
+  );
+  expect(maskPath("PublicLeaderboard/aIPqwZBmyBVPQdan3NxM4VXXFNj2")).toBe(
+    "PublicLeaderboard/aIPqwZ\u2026"
+  );
+});
+
+test("the same account still masks to the same prefix on every board", () => {
+  const a = maskPath("QuizLeaderboards/math/Scores/r1dkJUiyY3hjCkK6rwgrgadpsf83");
+  const b = maskPath("QuizLeaderboards/web/Scores/r1dkJUiyY3hjCkK6rwgrgadpsf83");
+  expect(a.split("/").pop()).toBe(b.split("/").pop());
+});
+
+test("a short path is left alone rather than mangled", () => {
+  expect(maskPath("Users/abc123")).toBe("Users/abc123");
+  expect(maskPath("")).toBe("");
 });

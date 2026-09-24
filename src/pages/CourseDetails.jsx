@@ -24,7 +24,7 @@ import BotAvatar from "../Components/BotAvatar";
 const CourseDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { currentUser, loading: authLoading } = useAuth();
+  const { currentUser, loading: authLoading, isAdmin } = useAuth();
   const { addXP, awardCourseCompletion, awardSharpMemory } = useGamification();
   const { playClick } = useSound();
   const { t } = useLanguage();
@@ -110,6 +110,9 @@ const CourseDetails = () => {
           setCourseXpAwarded(!!data.courseXpAwarded);
           setIsCompleted(!!data.completed);
           setExpandedIndex(done.length < total ? done.length : total - 1);
+        } else if (isAdmin) {
+          // An administrator browsing a course is looking, not enrolling.
+          setExpandedIndex(0);
         } else {
           await setDoc(docRef, {
             courseId: c.id,
@@ -129,7 +132,7 @@ const CourseDetails = () => {
       }
     };
     load();
-  }, [currentUser, authLoading, id, navigate, t]);
+  }, [currentUser, authLoading, isAdmin, id, navigate, t]);
 
   const total = course?.syllabus?.length || 0;
   const progressPct = total ? Math.round((completedModules.length / total) * 100) : 0;
@@ -150,6 +153,10 @@ const CourseDetails = () => {
 
   const checkAnswersAndComplete = async (moduleIndex) => {
     if (saving) return;
+    if (isAdmin) {
+      toast.info(t("toasts.adminNotALearner"));
+      return;
+    }
     const ref = courseRef();
     if (!ref) return;
 
@@ -207,6 +214,10 @@ const CourseDetails = () => {
 
   const markCourseComplete = async () => {
     if (!allDone || saving) return;
+    if (isAdmin) {
+      toast.info(t("toasts.adminNotALearner"));
+      return;
+    }
     const ref = courseRef();
     if (!ref) return;
     // The +100 completion bonus pays out once, ever. Replaying a finished course
@@ -252,6 +263,10 @@ const CourseDetails = () => {
 
   const resetCourse = async () => {
     if (saving) return;
+    if (isAdmin) {
+      toast.info(t("toasts.adminNotALearner"));
+      return;
+    }
     const ref = courseRef();
     if (!ref) return;
     setSaving(true);

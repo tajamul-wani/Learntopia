@@ -11,9 +11,9 @@
  *     the private profile's `fullName`, and that learner never chose a name.
  *
  * Runs in two modes. `report` (the default) reads and counts, changing
- * nothing. `apply` writes. Neither mode ever prints a name: the output is
- * document paths and counts, because CI logs are readable by anyone with
- * access to the run.
+ * nothing. `apply` writes. Neither mode ever prints a name, and user ids are
+ * cut short in every path it prints: Actions logs on a public repository are
+ * readable by anyone, and a full id belongs to a child's account.
  *
  * Usage (locally, with GOOGLE_APPLICATION_CREDENTIALS set):
  *   node scripts/scrub-legacy-names.mjs            # report
@@ -28,6 +28,8 @@ import {
   planQuizScore,
   isQuizScorePath,
   isDeadAccount,
+  isAdminAccount,
+  maskPath,
   orphanGuard,
   ORPHAN_ABORT_RATIO,
 } from "./lib/legacy-names.mjs";
@@ -65,8 +67,10 @@ function accountLookup() {
         const chunk = missing.slice(i, i + 100);
         try {
           const res = await getAuth().getUsers(chunk.map((uid) => ({ uid })));
-          const found = new Set(res.users.map((u) => u.uid));
-          for (const uid of chunk) cache.set(uid, { known: true, exists: found.has(uid) });
+          const byUid = new Map(res.users.map((u) => [u.uid, u.customClaims || {}]));
+          for (const uid of chunk) {
+            cache.set(uid, { known: true, exists: byUid.has(uid), claims: byUid.get(uid) || {} });
+          }
         } catch (err) {
           if (!reportedFailure) {
             console.log(
@@ -82,8 +86,8 @@ function accountLookup() {
       }
     },
     get(uid) {
-      const hit = cache.get(uid) || { known: false, exists: false };
-      return { authKnown: hit.known, authExists: hit.exists };
+      const hit = cache.get(uid) || { known: false, exists: false, claims: {} };
+      return { authKnown: hit.known, authExists: hit.exists, claims: hit.claims };
     },
     get failed() {
       return reportedFailure;
@@ -168,7 +172,14 @@ async function scrubQuizScores(db, pending) {
   // is why the first run of this job reported zero rows while the boards
   // visibly had entries.
   const scores = await db.collectionGroup("Scores").get();
-  const findings = { bannedField: [], skipped: [], deadAccounts: [], removed: [] };
+  const findings = {
+    bannedField: [],
+    skipped: [],
+    deadAccounts: [],
+    removed: [],
+    adminAccounts: [],
+    adminRows: [],
+  };
 
   const rows = scores.docs.filter((d) => {
     if (isQuizScorePath(d.ref.path)) return true;
@@ -181,10 +192,20 @@ async function scrubQuizScores(db, pending) {
   await accounts.load([...new Set(rows.map((d) => d.id))]);
 
   const byDeadUid = new Map();
+  const byAdminUid = new Map();
   for (const score of rows) {
     const uid = score.id;
-    if (isDeadAccount(accounts.get(uid))) {
+    const account = accounts.get(uid);
+
+    if (isDeadAccount(account)) {
       byDeadUid.set(uid, [...(byDeadUid.get(uid) || []), score.ref.path]);
+      continue;
+    }
+    // An administrator is not a learner: their scores do not belong on a board
+    // other learners read, and they show up there as an account nobody can
+    // account for.
+    if (isAdminAccount(account)) {
+      byAdminUid.set(uid, [...(byAdminUid.get(uid) || []), score.ref.path]);
       continue;
     }
 
@@ -206,6 +227,20 @@ async function scrubQuizScores(db, pending) {
     findings.removed.push(...removable);
   }
 
+  // An admin keeps their account; only the learner documents go.
+  for (const [uid, paths] of byAdminUid) {
+    findings.adminAccounts.push(uid);
+    findings.adminRows.push(...paths);
+    if (APPLY) {
+      for (const path of paths) await pending.delete(db.doc(path));
+      const publicRef = db.collection("PublicLeaderboard").doc(uid);
+      if ((await publicRef.get()).exists) {
+        findings.adminRows.push(`PublicLeaderboard/${uid}`);
+        await pending.delete(publicRef);
+      }
+    }
+  }
+
   return { scanned, guard, authUnavailable: accounts.failed, ...findings };
 }
 
@@ -223,22 +258,24 @@ async function main() {
 
   console.log(`PublicLeaderboard: ${board.scanned} rows scanned`);
   console.log(`  rows carrying a banned field: ${board.bannedField.length}`);
-  board.bannedField.forEach((id) => console.log(`    PublicLeaderboard/${id}`));
+  board.bannedField.forEach((id) => console.log(`    ${maskPath(`PublicLeaderboard/${id}`)}`));
   console.log(`  rows showing the account name: ${board.accountName.length}`);
-  board.accountName.forEach((id) => console.log(`    PublicLeaderboard/${id}`));
+  board.accountName.forEach((id) => console.log(`    ${maskPath(`PublicLeaderboard/${id}`)}`));
 
   console.log(`\nQuiz scores: ${scores.scanned} rows scanned`);
   console.log(`  rows carrying a banned field: ${scores.bannedField.length}`);
-  scores.bannedField.forEach((path) => console.log(`    ${path}`));
+  scores.bannedField.forEach((path) => console.log(`    ${maskPath(path)}`));
   console.log(`  accounts with no login left: ${scores.deadAccounts.length}`);
   if (scores.removed.length > 0) {
     console.log(`  documents that belong to them: ${scores.removed.length}`);
-    scores.removed.forEach((path) => console.log(`    ${path}`));
+    scores.removed.forEach((path) => console.log(`    ${maskPath(path)}`));
     console.log("    (a profile also takes its enrolledCourses and quizAttempts with it)");
   }
+  console.log(`  learner rows owned by an admin account: ${scores.adminRows.length}`);
+  scores.adminRows.forEach((path) => console.log(`    ${maskPath(path)}`));
   if (scores.skipped.length > 0) {
     console.log(`  paths outside QuizLeaderboards, left alone: ${scores.skipped.length}`);
-    scores.skipped.forEach((path) => console.log(`    ${path}`));
+    scores.skipped.forEach((path) => console.log(`    ${maskPath(path)}`));
   }
 
   if (scores.guard.abort) {
@@ -254,6 +291,7 @@ async function main() {
     board.bannedField.length +
     board.accountName.length +
     scores.bannedField.length +
+    scores.adminRows.length +
     (scores.guard.abort ? 0 : scores.removed.length);
   console.log(`\n${total} document(s) need cleaning. ${APPLY ? `${written} written.` : "Nothing was written."}`);
   if (!APPLY && total > 0) console.log("Re-run the workflow with mode: apply to clean them.");
