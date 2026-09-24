@@ -62,7 +62,7 @@ const Quiz = () => {
   const [timeLeft, setTimeLeft] = useState(15);
 
   // Firebase / user state
-  const { currentUser } = useAuth();
+  const { currentUser, isAdmin } = useAuth();
   const [highScores, setHighScores] = useState({});
   const [isSaving, setIsSaving] = useState(false);
   const [loadingScores, setLoadingScores] = useState(false);
@@ -82,6 +82,13 @@ const Quiz = () => {
   // Save score to Firestore with fail-safe merge and incremental retake XP
   const saveScore = async (finalScore) => {
     if (!currentUser || !activeQuiz) return;
+    // An administrator is not a learner. Without this an admin taking a quiz
+    // writes an attempt and a row onto a public board, where it shows up as a
+    // learner nobody can account for.
+    if (isAdmin) {
+      toast.info(t("toasts.adminNotALearner"));
+      return;
+    }
     setIsSaving(true);
     try {
       const totalQ = activeQuiz.questions.length;
