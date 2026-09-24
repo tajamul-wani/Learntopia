@@ -29,13 +29,37 @@ service cloud.firestore {
     // Profile documents (Users/{uid}) may hold these known fields. Includes the
     // gamification fields (xp, quizPoints) and streak-popup/claim bookkeeping so
     // the XP/points/streak system can persist to the canonical profile doc.
+    // XP ledger: every grant, once, for a fixed amount.
+    //
+    // This table mirrors src/utils/xpGrants.js. A profile's xp may only rise
+    // alongside a ledger entry created in the same write, which makes XP
+    // unforgeable from a client: there is no way to type a number, and a key
+    // that exists can never be created again.
+    function grantAmount(type) {
+      return type == 'module' ? 50
+           : type == 'course' ? 100
+           : type == 'quiz' ? 10
+           : type == 'streak7' ? 20
+           : type == 'streak15' ? 40
+           : type == 'streak30' ? 80
+           : -1;
+    }
+
+    function isValidGrant() {
+      let d = request.resource.data;
+      return d.keys().hasOnly(['type', 'amount', 'grantedAt'])
+          && d.type is string
+          && d.amount is number
+          && d.amount == grantAmount(d.type);
+    }
+
     function isValidProfile() {
       let d = request.resource.data;
       return d.keys().hasOnly(['email', 'fullName', 'displayName', 'avatarId', 'photoURL', 'usePhoto',
                                'totalPoints', 'streak', 'lastLoginDate',
                                'badges', 'xp', 'quizPoints', 'updatedAt',
                                'lastStreakClaimDate', 'lastStreakPopupDate',
-                               'identityConfirmedAt'])
+                               'identityConfirmedAt', 'lastGrantKey'])
           && d.email is string
           && d.fullName is string
           && (!('displayName' in d) || d.displayName is string)
@@ -47,7 +71,9 @@ service cloud.firestore {
           && (!('usePhoto' in d) || d.usePhoto is bool)
           // Set once, when the learner picks or skips their identity, so the
           // prompt never comes back.
-          && (!('identityConfirmedAt' in d) || d.identityConfirmedAt is timestamp);
+          && (!('identityConfirmedAt' in d) || d.identityConfirmedAt is timestamp)
+          // Names the ledger entry that pays for an xp increase in this write.
+          && (!('lastGrantKey' in d) || d.lastGrantKey is string);
     }
 
     // Quiz attempts are validated so a client can't write garbage or an
@@ -123,6 +149,18 @@ service cloud.firestore {
     // Public leaderboard entries carry DISPLAY data only — never email/PII.
     // This shape check makes it impossible to write an email into the
     // world-readable PublicLeaderboard collection.
+    /**
+     * A field of the signed-in learner's profile, as it stands after this write.
+     *
+     * The board mirrors the profile field for field. Binding it to `xp` alone
+     * looked tidier and was wrong: older profiles carry totalPoints with no xp
+     * at all, so an honest mirror of such a profile was refused.
+     */
+    function profileField(name) {
+      let path = /databases/$(database)/documents/Users/$(request.auth.uid);
+      return existsAfter(path) ? getAfter(path).data.get(name, 0) : 0;
+    }
+
     function isValidPublicEntry() {
       let d = request.resource.data;
       // `fullName` is deliberately absent: it used to carry the account's real
@@ -130,10 +168,31 @@ service cloud.firestore {
       // user can read. Writers clear any legacy value with deleteField().
       return d.keys().hasOnly(['uid', 'displayName', 'avatarId', 'totalPoints', 'streak', 'badges', 'xp', 'updatedAt'])
           && (!('displayName' in d) || d.displayName is string)
-          && (!('avatarId' in d) || d.avatarId is string);
+          && (!('avatarId' in d) || d.avatarId is string)
+          // The board mirrors the profile; it is not a second place to keep
+          // score. Without this, inflating the public row directly is the
+          // easiest forgery available, whatever the ledger says.
+          && (!('totalPoints' in d) || d.totalPoints == profileField('totalPoints'))
+          && (!('xp' in d) || d.xp == profileField('xp'));
     }
 
     // Security check for profile updates (cheating prevention)
+    /**
+     * True when this write creates the ledger entry that pays for `rise`.
+     *
+     * The entry must not have existed before and must exist after, so a grant
+     * pays exactly once: replaying a module, resetting a course or deleting an
+     * enrolment all leave the key in place, and the claim is refused.
+     */
+    function paidByGrant(userId, rise) {
+      let key = request.resource.data.get('lastGrantKey', '');
+      let path = /databases/$(database)/documents/Users/$(userId)/xpLedger/$(key);
+      return key != ''
+          && !exists(path)
+          && existsAfter(path)
+          && getAfter(path).data.amount == rise;
+    }
+
     function isValidProfileUpdate(userId) {
       let current = resource.data;
       let next = request.resource.data;
@@ -161,9 +220,15 @@ service cloud.firestore {
       let currentBadges = current.get('badges', []);
       let nextBadges = next.get('badges', []);
 
+      // XP is bound to the ledger. It may stay the same, or rise by exactly the
+      // amount of a grant created in THIS write and never created before, and
+      // totalPoints must move with it. (The grant check lives in its own
+      // function: rules allow ten variables per function and this one is full.)
       return isValidProfile()
           && nextPoints >= currentPoints
           && nextXp >= currentXp
+          && (nextXp == currentXp || (paidByGrant(userId, nextXp - currentXp)
+                                      && (nextPoints - currentPoints) == (nextXp - currentXp)))
           && nextBadges.size() >= currentBadges.size()
           && nextBadges.size() <= currentBadges.size() + 1
           && (currentBadges.size() == 0 || nextBadges.hasAll(currentBadges));
@@ -194,6 +259,19 @@ service cloud.firestore {
       // gone after the same write, so a real name can't be left behind on it.
       allow delete: if isOwner(userId)
           && !existsAfter(/databases/$(database)/documents/PublicLeaderboard/$(userId));
+
+      // --- XP ledger (create-once, never edited) --------------------------
+      // The record of every grant a learner has ever claimed. Entries are
+      // created alongside the xp increase they pay for and are then permanent:
+      // no update, and no delete outside account deletion. That permanence is
+      // what stops XP being earned twice — deleting an enrolment, resetting a
+      // course or replaying a quiz all leave the grant keys in place.
+      match /xpLedger/{grantKey} {
+        allow read:   if isOwner(userId) || isAdmin();
+        allow create: if isOwner(userId) && isValidGrant();
+        allow update: if false;
+        allow delete: if isOwner(userId) && profileDeleted(userId);
+      }
 
       // --- Quiz attempts (append-only history) --------------------------
       // Owner can read and add attempts (admin may read any); nobody edits
