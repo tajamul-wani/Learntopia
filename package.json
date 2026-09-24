@@ -12,7 +12,7 @@
     "test:unit": "vitest run",
     "test:watch": "vitest",
     "test:rules": "node --test test/firestore.rules.test.js",
-    "test:rules:ci": "firebase emulators:exec --only firestore --project demo-learntopia \"node --test test/firestore.rules.test.js\"",
+    "test:rules:ci": "npx --yes firebase-tools@13 emulators:exec --only firestore --project demo-learntopia \"node --test test/firestore.rules.test.js\"",
     "emulators": "npx --yes firebase-tools@13 emulators:start --only auth,firestore --project demo-learntopia",
     "test:e2e": "npx --yes firebase-tools@13 emulators:exec --only auth,firestore --project demo-learntopia \"playwright test\"",
     "test:e2e:ui": "playwright test --ui",
