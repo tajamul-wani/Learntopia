@@ -4,6 +4,7 @@ import {
   planQuizScore,
   isQuizScorePath,
   isDeadAccount,
+  isAdminAccount,
   orphanGuard,
 } from "../scripts/lib/legacy-names.mjs";
 
@@ -121,4 +122,23 @@ test("an implausible number of dead accounts stops the run", () => {
 
 test("an empty collection never triggers the brake", () => {
   expect(orphanGuard(0, 0)).toEqual({ abort: false, ratio: 0 });
+});
+
+// LT-103: an administrator is not a learner. Their quiz scores were landing on
+// boards that other learners read, showing up as an account nobody could
+// account for.
+
+test("an admin claim is recognised from the Auth lookup", () => {
+  expect(isAdminAccount({ authKnown: true, claims: { admin: true } })).toBe(true);
+});
+
+test("a learner is not an admin", () => {
+  expect(isAdminAccount({ authKnown: true, claims: {} })).toBe(false);
+  expect(isAdminAccount({ authKnown: true })).toBe(false);
+  expect(isAdminAccount({ authKnown: true, claims: { admin: "yes" } })).toBe(false);
+});
+
+test("a lookup that could not answer is never treated as an admin", () => {
+  expect(isAdminAccount({ authKnown: false, claims: { admin: true } })).toBe(false);
+  expect(isAdminAccount({})).toBe(false);
 });

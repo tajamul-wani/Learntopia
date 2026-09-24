@@ -81,3 +81,11 @@ export function orphanGuard(orphans, scanned) {
   const ratio = orphans / scanned;
   return { abort: ratio > ORPHAN_ABORT_RATIO, ratio };
 }
+
+/**
+ * An administrator is not a learner, so learner documents must not exist for
+ * one. The Auth lookup already returns custom claims, so no guessing.
+ */
+export function isAdminAccount({ authKnown, claims }) {
+  return authKnown === true && claims?.admin === true;
+}
