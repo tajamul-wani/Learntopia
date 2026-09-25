@@ -4,7 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { useSound } from "../context/SoundContext";
 import { useLanguage } from "../context/LanguageContext";
 import { db } from "../firebase/firebase";
-import { setDoc, doc, collection, getDocs } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
 import Card from "../Components/ui/Card";
 import Button from "../Components/ui/Button";
 import ImageWithSkeleton from "../Components/ui/ImageWithSkeleton";
@@ -19,13 +19,13 @@ import star from "../assets/CourseImg/star.png";
 const Courses = () => {
   const navigate = useNavigate();
   const { currentUser } = useAuth();
-  const { playBadgeUnlock, playClick } = useSound();
+  const { playClick } = useSound();
   const { t } = useLanguage();
   const [query, setQuery] = useState("");
   const [enrolledIds, setEnrolledIds] = useState([]);
   // Courses the user left but can rejoin — their saved progress still exists.
   const [unenrolledIds, setUnenrolledIds] = useState([]);
-  const [enrollingId, setEnrollingId] = useState(null);
+  const [completedIds, setCompletedIds] = useState([]);
 
   useEffect(() => {
     if (currentUser) {
@@ -34,9 +34,16 @@ const Courses = () => {
           const snap = await getDocs(collection(db, "Users", currentUser.uid, "enrolledCourses"));
           const active = [];
           const left = [];
-          snap.docs.forEach((d) => (d.data().unenrolled ? left.push(d.id) : active.push(d.id)));
+          const finished = [];
+          snap.docs.forEach((d) => {
+            const data = d.data();
+            if (data.unenrolled) return left.push(d.id);
+            if (data.completed) finished.push(d.id);
+            return active.push(d.id);
+          });
           setEnrolledIds(active);
           setUnenrolledIds(left);
+          setCompletedIds(finished);
         } catch (e) {
           console.error("Error fetching enrolled courses", e);
         }
@@ -45,62 +52,15 @@ const Courses = () => {
     }
   }, [currentUser]);
 
-  const handleEnroll = async (course) => {
+  // A card sends a learner to the course, and nothing else. Joining is one
+  // explicit action on the course page now, so nobody is enrolled for looking.
+  const openCourse = (course) => {
+    playClick();
     if (!currentUser) {
-      playClick();
       navigate("/login", { state: { returnTo: `/course/${course.id}` } });
       return;
     }
-
-    const idStr = course.id.toString();
-    const isEnrolled = enrolledIds.includes(idStr);
-    if (isEnrolled) {
-      playClick();
-      navigate(`/course/${course.id}`);
-      return;
-    }
-
-    // Rejoin path: the user unenrolled earlier, so their progress is still on
-    // file — only clear the flag, never reset completedModules.
-    const isRejoin = unenrolledIds.includes(idStr);
-
-    try {
-      playBadgeUnlock();
-      if (isRejoin) {
-        await setDoc(
-          doc(db, "Users", currentUser.uid, "enrolledCourses", idStr),
-          { unenrolled: false },
-          { merge: true }
-        );
-        setUnenrolledIds((prev) => prev.filter((x) => x !== idStr));
-      } else {
-        await setDoc(
-          doc(db, "Users", currentUser.uid, "enrolledCourses", idStr),
-          {
-            courseId: course.id,
-            title: course.title,
-            category: course.category,
-            enrolledAt: new Date(),
-            unenrolled: false,
-            completed: false,
-            completedModules: [],
-            totalModules: course.syllabus ? course.syllabus.length : 0,
-          },
-          { merge: true }
-        );
-      }
-
-      setEnrolledIds((prev) => [...prev, idStr]);
-      setEnrollingId(course.id);
-      
-      // 3.5 second fun loader
-      setTimeout(() => {
-        setEnrollingId(null);
-        navigate(`/course/${course.id}`);
-      }, 3500);
-    } catch (err) {
-      console.error("Enrollment error:", err);
-    }
+    navigate(`/course/${course.id}`);
   };
 
   const localizedCourses = useMemo(() => {
@@ -147,27 +107,32 @@ const Courses = () => {
           {filtered.map((course) => {
             const isEnrolled = enrolledIds.includes(course.id.toString());
             const isRejoin = !isEnrolled && unenrolledIds.includes(course.id.toString());
+            const isCompleted = completedIds.includes(course.id.toString());
 
             return (
               <Card key={course.id} hoverable className="group flex flex-col p-5">
-                <div className="mb-4 flex items-center justify-between">
-                  <span className="text-xs font-semibold uppercase tracking-[0.06em] text-ink-low">
+                {/* The header holds a category of unknown length and up to two
+                    badges. Without wrapping and a shrinkable category, a long
+                    word like MATHEMATICS and a two-line badge sit on top of
+                    each other. */}
+                <div className="mb-4 flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
+                  <span className="min-w-0 flex-1 truncate text-xs font-semibold uppercase tracking-[0.06em] text-ink-low">
                     {course.category}
                   </span>
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-none items-center gap-2">
                     {isEnrolled && (
-                      <span className="flex items-center gap-1 text-xs font-bold text-state-success bg-state-success/10 px-2 py-0.5 rounded-md border border-state-success/20">
-                        <Icon name="check-circle" size={12} />
-                        {t("courses.enrolledBadge")}
+                      <span className="flex items-center gap-1 whitespace-nowrap rounded-md border border-state-success/20 bg-state-success/10 px-2 py-0.5 text-xs font-bold text-state-success">
+                        <Icon name={isCompleted ? "trophy" : "check-circle"} size={12} className="flex-none" />
+                        {isCompleted ? t("courses.completedBadge") : t("courses.enrolledBadge")}
                       </span>
                     )}
                     {isRejoin && (
-                      <span className="flex items-center gap-1 text-xs font-bold text-state-warning bg-state-warning/10 px-2 py-0.5 rounded-md border border-state-warning/20">
-                        <Icon name="refresh-cw" size={12} />
+                      <span className="flex items-center gap-1 whitespace-nowrap rounded-md border border-state-warning/20 bg-state-warning/10 px-2 py-0.5 text-xs font-bold text-state-warning">
+                        <Icon name="refresh-cw" size={12} className="flex-none" />
                         {t("courses.rejoinBadge")}
                       </span>
                     )}
-                    <span className="flex items-center gap-1.5 rounded-full border border-white/10 bg-surface-2 px-3 py-1 text-xs font-bold text-ink-hi shadow-clay-sm">
+                    <span className="flex flex-none items-center gap-1.5 whitespace-nowrap rounded-full border border-white/10 bg-surface-2 px-3 py-1 text-xs font-bold text-ink-hi shadow-clay-sm">
                       <img src={star} alt="" className="h-3.5 w-3.5" />
                       {course.rating}
                     </span>
@@ -195,11 +160,21 @@ const Courses = () => {
                     </div>
                     <p className="mt-1.5 text-xs text-ink-low">{course.students} {String(t("stats.studentsLegend") || "").toLowerCase()}</p>
                   </div>
-                  {isEnrolled ? (
+                  {isCompleted ? (
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => handleEnroll(course)}
+                      onClick={() => openCourse(course)}
+                      className="gap-1.5 border-state-success/30 bg-state-success/[0.08] text-state-success hover:bg-state-success/[0.15]"
+                    >
+                      <Icon name="refresh-cw" size={14} />
+                      {t("courses.restart")}
+                    </Button>
+                  ) : isEnrolled ? (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => openCourse(course)}
                       className="border-state-success/30 bg-state-success/[0.08] text-state-success hover:bg-state-success/[0.15]"
                     >
                       {t("courses.continueLearning")}
@@ -207,15 +182,15 @@ const Courses = () => {
                   ) : isRejoin ? (
                     <Button
                       size="sm"
-                      onClick={() => handleEnroll(course)}
-                      className="border-state-warning/30 bg-state-warning/[0.10] text-state-warning hover:bg-state-warning/[0.18]"
+                      onClick={() => openCourse(course)}
+                      className="gap-1.5 border-state-warning/30 bg-state-warning/[0.10] text-state-warning hover:bg-state-warning/[0.18]"
                     >
                       <Icon name="refresh-cw" size={14} />
                       {t("courses.rejoin")}
                     </Button>
                   ) : (
-                    <Button size="sm" onClick={() => handleEnroll(course)}>
-                      {t("courses.startLearning")}
+                    <Button size="sm" onClick={() => openCourse(course)}>
+                      {t("courses.viewCourse")}
                     </Button>
                   )}
                 </div>
@@ -235,20 +210,6 @@ const Courses = () => {
               </Button>
             }
           />
-        </div>
-      )}
-
-      {/* Fun Enrollment Loader */}
-      {enrollingId && (
-        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-ground-900/90 backdrop-blur-md animate-fade-in">
-          <div className="relative flex h-32 w-32 items-center justify-center">
-            <div className="absolute h-full w-full animate-[spin_3s_linear_infinite] rounded-full border-b-4 border-t-4 border-sky opacity-80" />
-            <div className="absolute h-24 w-24 animate-[spin_2s_linear_infinite_reverse] rounded-full border-l-4 border-r-4 border-violet-500 opacity-80" />
-            <div className="animate-pulse">
-              <Icon name="star" size={40} className="text-white fill-white" />
-            </div>
-          </div>
-          <h2 className="mt-8 text-3xl font-extrabold text-white tracking-tight animate-pulse">{t("courses.enrolling")}</h2>
         </div>
       )}
 
