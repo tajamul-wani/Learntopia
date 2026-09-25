@@ -14,7 +14,8 @@ import EmptyState from "../Components/ui/EmptyState";
 import Icon from "../Components/ui/Icon";
 import { COURSES } from "../data/coursesData";
 import { getLocalizedCourse } from "../utils/localizationUtils";
-import star from "../assets/CourseImg/star.png";
+import { courseFacts } from "../utils/courseFacts";
+import { courseTint } from "../utils/courseTint";
 
 const Courses = () => {
   const navigate = useNavigate();
@@ -108,6 +109,7 @@ const Courses = () => {
             const isEnrolled = enrolledIds.includes(course.id.toString());
             const isRejoin = !isEnrolled && unenrolledIds.includes(course.id.toString());
             const isCompleted = completedIds.includes(course.id.toString());
+            const facts = courseFacts(course);
 
             return (
               <Card key={course.id} hoverable className="group flex flex-col p-5">
@@ -120,52 +122,60 @@ const Courses = () => {
                     {course.category}
                   </span>
                   <div className="flex flex-none items-center gap-2">
-                    {isEnrolled && (
+                    {isEnrolled && tab === "all" && (
                       <span className="flex items-center gap-1 whitespace-nowrap rounded-md border border-state-success/20 bg-state-success/10 px-2 py-0.5 text-xs font-bold text-state-success">
                         <Icon name={isCompleted ? "trophy" : "check-circle"} size={12} className="flex-none" />
                         {isCompleted ? t("courses.completedBadge") : t("courses.enrolledBadge")}
                       </span>
                     )}
-                    {isRejoin && (
+                    {isRejoin && tab === "all" && (
                       <span className="flex items-center gap-1 whitespace-nowrap rounded-md border border-state-warning/20 bg-state-warning/10 px-2 py-0.5 text-xs font-bold text-state-warning">
                         <Icon name="refresh-cw" size={12} className="flex-none" />
                         {t("courses.rejoinBadge")}
                       </span>
                     )}
-                    <span className="flex flex-none items-center gap-1.5 whitespace-nowrap rounded-full border border-white/10 bg-surface-2 px-3 py-1 text-xs font-bold text-ink-hi shadow-clay-sm">
-                      <img src={star} alt="" className="h-3.5 w-3.5" />
-                      {course.rating}
-                    </span>
                   </div>
                 </div>
 
-                <div className="relative mb-4 flex justify-center overflow-hidden rounded-2xl clay-inset py-8">
-                  <div className="pointer-events-none absolute left-1/2 top-3 h-20 w-32 -translate-x-1/2 rounded-full bg-violet-500/30 blur-2xl transition-opacity duration-500 group-hover:bg-sky/30" />
+                {/* A tint per course, so a grid of six reads as six things
+                    rather than six identical dark wells. */}
+                <div className={`mb-4 flex justify-center overflow-hidden rounded-2xl border border-white/[0.06] py-8 shadow-[inset_0_2px_10px_rgba(0,0,0,0.45)] ${courseTint(course)}`}>
                   <ImageWithSkeleton
                     src={course.image}
                     alt={course.title}
-                    imgClassName="relative h-24 w-auto object-contain drop-shadow-[0_12px_22px_rgba(0,0,0,0.5)] transition-[opacity,transform] duration-500 group-hover:scale-[1.07]"
+                    imgClassName="h-24 w-auto object-contain drop-shadow-[0_12px_22px_rgba(0,0,0,0.5)] transition-[opacity,transform] duration-500 group-hover:scale-[1.07]"
                   />
                 </div>
 
                 <h3 className="text-lg font-bold leading-snug text-ink-hi">{course.title}</h3>
                 <p className="mt-2 mb-6 text-xs leading-relaxed text-ink-low line-clamp-2">{course.desc}</p>
 
-                <div className="mt-auto flex items-center justify-between border-t border-white/[0.07] pt-5">
-                  <div>
-                    <div className="flex -space-x-2">
-                      {course.avatars.map((a, i) => (
-                        <img key={i} src={a} alt="" className="h-6 w-6 rounded-full border-2 border-ground-800 object-cover" />
-                      ))}
-                    </div>
-                    <p className="mt-1.5 text-xs text-ink-low">{course.students} {String(t("stats.studentsLegend") || "").toLowerCase()}</p>
+                <div className="mt-auto flex items-center justify-between gap-3 border-t border-white/[0.07] pt-5">
+                  {/* What a learner actually needs to choose: how much there
+                      is, how long it takes, how hard it is and what it pays.
+                      Every number is counted from the course itself. */}
+                  <div className="min-w-0 space-y-1.5">
+                    <p className="flex items-center gap-1.5 text-xs font-semibold text-ink">
+                      <Icon name="book-open" size={13} className="flex-none text-violet-400" />
+                      <span className="truncate">
+                        {t("courses.moduleCount", { count: facts.modules })}
+                        {facts.duration && ` · ${facts.duration}`}
+                      </span>
+                    </p>
+                    <p className="flex items-center gap-1.5 text-xs text-ink-low">
+                      <Icon name="zap" size={13} className="flex-none text-sky" />
+                      <span className="truncate">
+                        {facts.difficulty && `${facts.difficulty} · `}
+                        <span className="font-bold tabular-nums text-ink">{facts.xp} XP</span>
+                      </span>
+                    </p>
                   </div>
                   {isCompleted ? (
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={() => openCourse(course)}
-                      className="gap-1.5 border-state-success/30 bg-state-success/[0.08] text-state-success hover:bg-state-success/[0.15]"
+                      className="flex-none gap-1.5 border-state-success/30 bg-state-success/[0.08] text-state-success hover:bg-state-success/[0.15]"
                     >
                       <Icon name="refresh-cw" size={14} />
                       {t("courses.restart")}

@@ -22,7 +22,7 @@ for (const route of PUBLIC_ROUTES) {
     // domcontentloaded (not 'load') so slow images/fonts on a WSL /mnt/c dev
     // server can't stall the test; then wait for the app shell to actually mount.
     await page.goto(route, { waitUntil: "domcontentloaded" });
-    // The Robo-Py logo is in the navbar on every page — a reliable "React mounted"
+    // The app logo is in the navbar on every page — a reliable "React mounted"
     // signal that also replaces the initial loading splash.
     await expect(page.getByRole("img", { name: /learntopia/i }).first()).toBeVisible();
     // Pages are lazy-loaded behind a Suspense skeleton, and a cold WSL /mnt/c Vite
@@ -55,11 +55,11 @@ test.describe("home page", () => {
     // Hero has its own "Start free" CTA (it appears in the hero and a lower CTA
     // band, so scope to the first).
     await expect(page.getByRole("button", { name: /start free/i }).first()).toBeVisible();
-    // Featured course cards use the "Enroll now" CTA (gated; see home-enroll.spec.js).
-    await expect(page.getByRole("button", { name: /enroll now/i }).first()).toBeVisible();
+    // Featured course cards open the course (gated; see home-enroll.spec.js).
+    await expect(page.getByRole("button", { name: /view course/i }).first()).toBeVisible();
     // Browse-all CTA links onward.
     await expect(page.getByRole("button", { name: /browse all courses/i })).toBeVisible();
-    // The Robo-Py logo mark is present in the navbar.
+    // The app logo mark is present in the navbar.
     await expect(page.getByRole("img", { name: /learntopia/i }).first()).toBeVisible();
   });
 });

@@ -5,6 +5,8 @@ import Icon from "../Components/ui/Icon";
 import StatsSection from "../Components/StatsSection";
 import { COURSES } from "../data/coursesData";
 import { getLocalizedCourse } from "../utils/localizationUtils";
+import { courseFacts } from "../utils/courseFacts";
+import { courseTint } from "../utils/courseTint";
 import { useLanguage } from "../context/LanguageContext";
 import { useAuth } from "../context/AuthContext";
 
@@ -38,9 +40,10 @@ const Home = () => {
   const { currentUser } = useAuth();
   const featured = COURSES.slice(0, 3).map((c) => getLocalizedCourse(c, t));
 
-  // Enrolling requires an account: send logged-out users to login first, then
-  // bounce them back to the course they picked (where enrollment is recorded).
-  const handleEnroll = (courseId) => {
+  // A card opens the course and nothing else — joining is one explicit action
+  // on the course page itself. Logged-out visitors sign in first and land back
+  // on the course they picked, still having joined nothing.
+  const openCourse = (courseId) => {
     const returnTo = `/course/${courseId}`;
     if (currentUser) {
       navigate(returnTo);
@@ -136,25 +139,30 @@ const Home = () => {
       <section className="pt-24 sm:pt-32">
         <SecHead eyebrow={t("home.featuredEyebrow")} title={t("home.featuredTitle")} desc={t("home.featuredDesc")} />
         <div className="grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
-          {featured.map((c, i) => (
+          {featured.map((c) => (
             <div key={c.id} className="flex flex-col gap-3.5 rounded-2xl border border-white/10 bg-surface p-5 shadow-clay">
               <div className="flex items-center justify-between">
                 <span className="text-[0.64rem] font-extrabold uppercase tracking-[0.11em] text-ink-low">{c.category}</span>
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-surface-2 px-2.5 py-1 text-xs font-extrabold text-gold-400 shadow-clay-sm">
-                  <Icon name="star" size={13} className="fill-current" /> {c.rating}
+                {/* The level, not an invented rating: it is the one thing that
+                    tells a child whether this course is for them today. */}
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-surface-2 px-2.5 py-1 text-xs font-extrabold text-sky shadow-clay-sm">
+                  <Icon name="bar-chart" size={13} /> {c.difficulty}
                 </span>
               </div>
-              <div className={`grid h-28 place-items-center overflow-hidden rounded-2xl border border-white/5 p-6 shadow-[inset_0_2px_10px_rgba(0,0,0,0.45)] ${WELL_TINT[i]}`}>
+              <div className={`grid h-28 place-items-center overflow-hidden rounded-2xl border border-white/5 p-6 shadow-[inset_0_2px_10px_rgba(0,0,0,0.45)] ${courseTint(c)}`}>
                 <img src={c.image} alt="" className="max-h-16 w-auto object-contain" />
               </div>
               <h3 className="line-clamp-2 text-base font-bold text-ink-hi">{c.title}</h3>
               <p className="line-clamp-2 text-sm leading-relaxed text-ink-low">{c.desc}</p>
               <div className="mt-auto flex items-center justify-between gap-3 pt-1">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-surface-2 px-3 py-1.5 text-xs font-extrabold text-state-success shadow-clay-sm">
-                  <Icon name="check" size={13} /> {t("home.freeLabel")}
+                <span className="inline-flex min-w-0 items-center gap-1.5 rounded-full bg-surface-2 px-3 py-1.5 text-xs font-extrabold text-state-success shadow-clay-sm">
+                  <Icon name="check" size={13} className="flex-none" />
+                  <span className="truncate">
+                    {t("home.freeLabel")} · {t("courses.moduleCount", { count: courseFacts(c).modules })}
+                  </span>
                 </span>
-                <Button size="sm" onClick={() => handleEnroll(c.id)}>
-                  {t("home.enrollBtn")} <Icon name="arrow-right" size={14} />
+                <Button size="sm" onClick={() => openCourse(c.id)}>
+                  {t("courses.viewCourse")} <Icon name="arrow-right" size={14} />
                 </Button>
               </div>
             </div>
