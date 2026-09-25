@@ -1,6 +1,7 @@
 import { db } from "../firebase/firebase";
-import { getDoc, doc, collection, getDocs, setDoc, query, orderBy, limit } from "firebase/firestore";
+import { getDoc, doc, collection, getDocs, query, orderBy, limit } from "firebase/firestore";
 import { deleteAccountAndData, getReauthMethod, markAccountDeleted } from "../services/accountDeletion";
+import { leave as leaveCourse, enroll as rejoinCourse } from "../services/enrollment";
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "../context/ToastContext";
@@ -325,13 +326,11 @@ const Dashboard = () => {
     if (!courseToUnenroll || !currentUser) return;
     setUnenrollLoading(true);
     try {
-      // Soft unenroll: flag the course instead of deleting it, so XP and
-      // completed-module progress are kept and it can be rejoined.
-      await setDoc(
-        doc(db, "Users", currentUser.uid, "enrolledCourses", courseToUnenroll.courseId.toString()),
-        { unenrolled: true, unenrolledAt: new Date() },
-        { merge: true }
-      );
+      // Leaving is soft: the document stays, flagged, so XP and completed
+      // modules survive. One shared service owns this and the rejoin below,
+      // because three copies of these writes is what let a course page enrol
+      // someone just for looking at it.
+      await leaveCourse(currentUser.uid, courseToUnenroll.courseId);
       setEnrolledCourses((prev) =>
         prev.map((c) => (c.courseId === courseToUnenroll.courseId ? { ...c, unenrolled: true } : c))
       );
@@ -350,11 +349,7 @@ const Dashboard = () => {
   const handleRejoin = async (course) => {
     if (!currentUser) return;
     try {
-      await setDoc(
-        doc(db, "Users", currentUser.uid, "enrolledCourses", course.courseId.toString()),
-        { unenrolled: false },
-        { merge: true }
-      );
+      await rejoinCourse(currentUser.uid, { id: course.courseId, title: course.title, category: course.category });
       setEnrolledCourses((prev) =>
         prev.map((c) => (c.courseId === course.courseId ? { ...c, unenrolled: false } : c))
       );

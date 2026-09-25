@@ -1,4 +1,4 @@
-import { test, expect } from "./support/emulator.js";
+import { test, expect, enrollLearner } from "./support/emulator.js";
 
 // Signed-in course-experience specs:
 //   LT-63  journey-map course view (syllabus as a clay node path)
@@ -16,6 +16,9 @@ const COURSE_PATH = "/course/1";
 test.describe("course experience (signed in)", () => {
   test("journey map renders nodes, certificate and a distinct tutor orb (LT-63, LT-65)", async ({ page, learner }) => {
     expect(learner.uid).toBeTruthy();
+    // Opening a course page no longer enrols anyone (LT-51); this spec is about
+    // what a learner sees INSIDE a course, so put them in it.
+    await enrollLearner(learner.uid, 1);
     await page.goto(COURSE_PATH, { waitUntil: "domcontentloaded" });
     await expect(page.getByLabel("Loading page")).toBeHidden({ timeout: 20000 });
 
@@ -38,6 +41,9 @@ test.describe("course experience (signed in)", () => {
 
   test("matching keeps a stable order on tap and links the matched pair (LT-64)", async ({ page, learner }) => {
     expect(learner.uid).toBeTruthy();
+    // Opening a course page no longer enrols anyone (LT-51); this spec is about
+    // what a learner sees INSIDE a course, so put them in it.
+    await enrollLearner(learner.uid, 1);
     await page.goto(COURSE_PATH, { waitUntil: "domcontentloaded" });
     await expect(page.getByLabel("Loading page")).toBeHidden({ timeout: 20000 });
     await page.getByRole("button", { name: /course curriculum/i }).click();

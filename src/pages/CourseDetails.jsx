@@ -11,6 +11,9 @@ import { doc, getDoc, setDoc, deleteField, increment, arrayUnion } from "firebas
 import { COURSES } from "../data/coursesData";
 import { getLocalizedCourse } from "../utils/localizationUtils";
 import { moduleGrant } from "../utils/xpGrants";
+import { canLearn, primaryAction } from "../utils/enrollmentState";
+import { enroll, restart as restartCourse } from "../services/enrollment";
+import CoursePreview from "../Components/CoursePreview";
 import Card from "../Components/ui/Card";
 import Button from "../Components/ui/Button";
 import Icon from "../Components/ui/Icon";
@@ -47,6 +50,11 @@ const CourseDetails = () => {
   const [saving, setSaving] = useState(false);
   const [showResetModal, setShowResetModal] = useState(false);
   const [showAIDrawer, setShowAIDrawer] = useState(false);
+  // The enrolment document, or null. Opening this page used to CREATE one,
+  // which enrolled anyone who so much as looked at a course — and could land
+  // after progress had loaded and overwrite it.
+  const [enrolment, setEnrolment] = useState(null);
+  const [joining, setJoining] = useState(false);
   
   const [activeTab, setActiveTab] = useState("overview");
 
@@ -87,10 +95,6 @@ const CourseDetails = () => {
 
   useEffect(() => {
     if (authLoading) return;
-    if (!currentUser) {
-      navigate("/login", { state: { returnTo: `/course/${id}` }, replace: true });
-      return;
-    }
 
     const c = COURSES.find((c) => c.id.toString() === id);
     if (!c) {
@@ -98,32 +102,26 @@ const CourseDetails = () => {
       return;
     }
 
+    // Read only. Joining a course is now something a learner does on purpose,
+    // through the preview's one button.
     const load = async () => {
       const total = c.syllabus.length;
+      if (!currentUser) {
+        setLoadingData(false);
+        return;
+      }
       try {
-        const docRef = doc(db, "Users", currentUser.uid, "enrolledCourses", c.id.toString());
-        const snap = await getDoc(docRef);
-        if (snap.exists()) {
-          const data = snap.data();
+        const snap = await getDoc(doc(db, "Users", currentUser.uid, "enrolledCourses", c.id.toString()));
+        const data = snap.exists() ? snap.data() : null;
+        setEnrolment(data);
+        if (data) {
           const done = Array.isArray(data.completedModules) ? data.completedModules : [];
           setCompletedModules(done);
           setXpAwardedModules(Array.isArray(data.xpAwardedModules) ? data.xpAwardedModules : []);
           setCourseXpAwarded(!!data.courseXpAwarded);
           setIsCompleted(!!data.completed);
           setExpandedIndex(done.length < total ? done.length : total - 1);
-        } else if (isAdmin) {
-          // An administrator browsing a course is looking, not enrolling.
-          setExpandedIndex(0);
         } else {
-          await setDoc(docRef, {
-            courseId: c.id,
-            title: c.title,
-            category: c.category,
-            enrolledAt: new Date(),
-            completed: false,
-            completedModules: [],
-            totalModules: total,
-          });
           setExpandedIndex(0);
         }
       } catch (err) {
@@ -294,6 +292,39 @@ const CourseDetails = () => {
     }
   };
 
+  /** Join, rejoin, or replay — whichever the preview offered. */
+  const handleStart = async () => {
+    if (!currentUser) {
+      navigate("/login", { state: { returnTo: `/course/${id}` } });
+      return;
+    }
+    if (isAdmin) {
+      toast.info(t("toasts.adminNotALearner"));
+      return;
+    }
+    setJoining(true);
+    try {
+      const action = primaryAction(enrolment);
+      if (action === "restart") {
+        await restartCourse(currentUser.uid, course.id);
+        setCompletedModules([]);
+        setIsCompleted(false);
+        setEnrolment((prev) => ({ ...prev, completedModules: [], completed: false, unenrolled: false }));
+      } else {
+        const next = await enroll(currentUser.uid, course);
+        setEnrolment(next);
+        setCompletedModules(Array.isArray(next.completedModules) ? next.completedModules : []);
+        setIsCompleted(!!next.completed);
+      }
+      setExpandedIndex(0);
+    } catch (err) {
+      console.error("Enrollment error:", err);
+      toast.error(t("toasts.loadDataFailed"));
+    } finally {
+      setJoining(false);
+    }
+  };
+
   if (authLoading || loadingData || !course) {
     return (
       <div className="container-page py-16 text-ink-hi md:py-20">
@@ -304,6 +335,20 @@ const CourseDetails = () => {
           <Skeleton className="h-20 w-full rounded-xl" />
         </Card>
       </div>
+    );
+  }
+
+  // Not joined, or joined and left: the lessons stay closed and the preview
+  // does the asking. Reaching this URL directly used to open the whole course.
+  if (!canLearn(enrolment)) {
+    return (
+      <CoursePreview
+        course={course}
+        enrolment={enrolment}
+        action={primaryAction(enrolment, { signedIn: !!currentUser })}
+        onAction={handleStart}
+        busy={joining}
+      />
     );
   }
 
