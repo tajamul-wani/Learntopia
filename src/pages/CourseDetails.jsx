@@ -12,6 +12,7 @@ import { COURSES } from "../data/coursesData";
 import { getLocalizedCourse } from "../utils/localizationUtils";
 import { moduleGrant } from "../utils/xpGrants";
 import { canLearn, primaryAction } from "../utils/enrollmentState";
+import { courseFacts, courseSkills } from "../utils/courseFacts";
 import { enroll, restart as restartCourse } from "../services/enrollment";
 import CoursePreview from "../Components/CoursePreview";
 import Card from "../Components/ui/Card";
@@ -41,6 +42,9 @@ const CourseDetails = () => {
     const c = COURSES.find((item) => item.id.toString() === id);
     return c ? getLocalizedCourse(c, t) : null;
   }, [id, t]);
+
+  const facts = useMemo(() => courseFacts(course), [course]);
+  const topics = useMemo(() => courseSkills(course), [course]);
 
   const [completedModules, setCompletedModules] = useState([]);
   // Modules that have EVER paid out XP, and whether the +100 completion bonus was
@@ -312,6 +316,7 @@ const CourseDetails = () => {
       return;
     }
     setJoining(true);
+    setEntering(true);
     try {
       const action = primaryAction(enrolment);
       if (action === "restart") {
@@ -329,6 +334,8 @@ const CourseDetails = () => {
     } catch (err) {
       console.error("Enrollment error:", err);
       toast.error(t("toasts.loadDataFailed"));
+      // The join failed, so there is no course to walk into.
+      setEntering(false);
     } finally {
       setJoining(false);
     }
@@ -391,10 +398,11 @@ const CourseDetails = () => {
           {t("courseDetails.backToCourses")}
         </button>
 
-        {/* Header Revamp */}
+        {/* Shown while deciding, dropped once they are working: on the
+            curriculum the course is chosen and this is all answered. */}
+        {activeTab !== "syllabus" && (
         <div className="mb-10 flex flex-col items-center gap-8 md:flex-row md:items-start md:text-left text-center">
-          <div className="relative flex h-48 w-full max-w-[260px] sm:w-64 flex-none items-center justify-center overflow-hidden rounded-3xl clay-inset p-6">
-            <div className="pointer-events-none absolute left-1/2 top-4 h-24 w-32 -translate-x-1/2 rounded-full bg-violet-500/20 blur-3xl transition-all duration-700 hover:scale-150" />
+          <div className={`relative flex h-48 w-full max-w-[260px] sm:w-64 flex-none items-center justify-center overflow-hidden rounded-3xl border border-white/[0.06] p-6 shadow-[inset_0_2px_10px_rgba(0,0,0,0.45)] ${courseTint(course)}`}>
             <ImageWithSkeleton
               src={course.image}
               alt=""
@@ -407,30 +415,28 @@ const CourseDetails = () => {
               <span className="inline-block rounded-full border border-white/10 bg-surface-2 px-3 py-1 text-xs font-bold uppercase tracking-wider text-sky shadow-clay-sm">
                 {course.category}
               </span>
-              <span className="flex items-center gap-1 text-xs font-bold text-state-warning">
-                <Icon name="star" size={14} className="fill-state-warning" /> {course.rating}
-              </span>
             </div>
             
             <h1 className="mt-4 text-3xl font-extrabold tracking-tight text-ink-hi md:text-4xl lg:text-5xl">{course.title}</h1>
             <p className="mt-4 text-lg leading-relaxed text-ink-low">{course.desc}</p>
             
-            <div className="mt-6 flex flex-wrap items-center justify-center gap-3 md:justify-start">
-              <div className="flex items-center gap-2 rounded-xl bg-surface-2 px-3.5 py-2 text-sm font-medium text-ink-hi border border-white/10 shadow-clay-sm">
-                <Icon name="clock" size={16} className="text-violet-400" />
-                {course.duration || "N/A"}
-              </div>
-              <div className="flex items-center gap-2 rounded-xl bg-surface-2 px-3.5 py-2 text-sm font-medium text-ink-hi border border-white/10 shadow-clay-sm">
-                <Icon name="book" size={16} className="text-violet-400" />
-                {course.difficulty || "All Levels"}
-              </div>
-              <div className="flex items-center gap-2 rounded-xl bg-surface-2 px-3.5 py-2 text-sm font-medium text-ink-hi border border-white/10 shadow-clay-sm">
-                <Icon name="users" size={16} className="text-violet-400" />
-                {course.students} {t("courses.enrolledBadge").toLowerCase()}
-              </div>
-            </div>
+            {/* Same four facts, same tiles as the preview — counted from the
+                course, so neither can drift from what is inside it. */}
+            <CourseFactTiles
+              course={course}
+              gridClassName="grid-cols-2"
+              className="mt-6 text-left"
+            />
           </div>
         </div>
+        )}
+
+        {/* On the curriculum, this one line is all the orientation needed. */}
+        {activeTab === "syllabus" && (
+          <h1 className="mb-5 text-2xl font-extrabold tracking-tight text-ink-hi sm:text-3xl">
+            {course.title}
+          </h1>
+        )}
 
         {/* Progress bar */}
         <Card className="mb-10 p-5 md:p-6">
@@ -512,6 +518,22 @@ const CourseDetails = () => {
                   ))}
                 </div>
               </section>
+
+              {topics.length > 0 && (
+                <section>
+                  <h3 className="mb-5 text-2xl font-bold text-ink-hi">{t("courseDetails.topics")}</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {topics.map((topic) => (
+                      <span
+                        key={topic}
+                        className="rounded-full border border-violet-500/25 bg-violet-500/10 px-3.5 py-1.5 text-sm font-semibold text-violet-300"
+                      >
+                        {topic}
+                      </span>
+                    ))}
+                  </div>
+                </section>
+              )}
 
               <section>
                 <h3 className="mb-5 text-2xl font-bold text-ink-hi">{t("courseDetails.prerequisites")}</h3>

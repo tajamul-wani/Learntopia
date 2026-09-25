@@ -19,7 +19,6 @@ const TINT = {
 };
 
 // Soft category tint behind each featured image so the trio reads as one set.
-const WELL_TINT = ["bg-violet-500/10", "bg-sky/10", "bg-state-success/10"];
 
 const HOW_STEPS = [
   { n: "1", tone: "violet", icon: "book" },

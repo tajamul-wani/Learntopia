@@ -250,7 +250,7 @@ const Courses = () => {
                       variant="ghost"
                       size="sm"
                       onClick={() => openCourse(course)}
-                      className="border-state-success/30 bg-state-success/[0.08] text-state-success hover:bg-state-success/[0.15]"
+                      className="flex-none border-state-success/30 bg-state-success/[0.08] text-state-success hover:bg-state-success/[0.15]"
                     >
                       {t("courses.continueLearning")}
                     </Button>
@@ -258,13 +258,13 @@ const Courses = () => {
                     <Button
                       size="sm"
                       onClick={() => openCourse(course)}
-                      className="gap-1.5 border-state-warning/30 bg-state-warning/[0.10] text-state-warning hover:bg-state-warning/[0.18]"
+                      className="flex-none gap-1.5 border-state-warning/30 bg-state-warning/[0.10] text-state-warning hover:bg-state-warning/[0.18]"
                     >
                       <Icon name="refresh-cw" size={14} />
                       {t("courses.rejoin")}
                     </Button>
                   ) : (
-                    <Button size="sm" onClick={() => openCourse(course)}>
+                    <Button size="sm" className="flex-none" onClick={() => openCourse(course)}>
                       {t("courses.viewCourse")}
                     </Button>
                   )}

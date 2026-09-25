@@ -28,73 +28,49 @@ import { TUTOR_NAME } from "../config/tutor";
 const CoursePreview = ({ course, action = "enroll", enrolment = null, onAction, busy = false }) => {
   const { t } = useLanguage();
   const modules = course?.syllabus || [];
-  const totalXp = modules.reduce((sum, m) => sum + (Number(m.xpReward) || 0), 0);
+  const facts = courseFacts(course);
+  const topics = courseSkills(course);
   const pct = progressPercent(enrolment, modules.length);
 
-  const facts = [
-    { icon: "book-open", label: t("coursePreview.modules"), value: modules.length },
-    { icon: "clock", label: t("coursePreview.duration"), value: course?.duration },
-    { icon: "bar-chart", label: t("coursePreview.difficulty"), value: course?.difficulty },
-    { icon: "zap", label: t("coursePreview.xpOnOffer"), value: `${totalXp} XP` },
-  ].filter((f) => f.value);
-
   return (
-    <div className="container-page py-8 text-ink-hi md:py-14">
+    <div className="container-page pb-8 pt-10 text-ink-hi md:pb-16 md:pt-16">
       <div className="mx-auto max-w-5xl animate-fade-in">
 
         {/* ── Hero ── */}
-        <Card className="overflow-hidden p-5 sm:p-7 md:p-9">
+        <Card className="overflow-hidden p-6 sm:p-8 md:p-10">
           <div className="grid items-center gap-6 md:grid-cols-[1fr_auto] md:gap-8">
             <div className="min-w-0">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-violet-500/25 bg-violet-500/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.08em] text-violet-300">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-violet-500/25 bg-violet-500/10 px-3.5 py-1.5 text-xs font-bold uppercase tracking-[0.08em] text-violet-300">
                 {course?.category}
               </span>
-              <h1 className="mt-3 text-2xl font-extrabold leading-tight tracking-tight sm:text-3xl md:text-4xl">
+              <h1 className="mt-4 text-[1.75rem] font-extrabold leading-[1.15] tracking-tight sm:text-4xl md:text-[2.75rem]">
                 {course?.title}
               </h1>
-              <p className="mt-3 max-w-2xl text-sm leading-relaxed text-ink-low sm:text-base">
+              <p className="mt-4 max-w-2xl text-base leading-relaxed text-ink-low sm:text-lg">
                 {course?.desc}
               </p>
             </div>
 
             {/* The art is decorative, so it drops below the fold on a phone
                 rather than pushing the title and the CTA off the screen. */}
-            <div className="relative hidden justify-center md:flex">
-              <div className="pointer-events-none absolute inset-0 m-auto h-24 w-32 rounded-full bg-violet-500/25 blur-2xl" />
+            <div className={`hidden place-items-center rounded-3xl border border-white/[0.06] p-6 shadow-[inset_0_2px_10px_rgba(0,0,0,0.45)] md:grid ${courseTint(course)}`}>
               <ImageWithSkeleton
                 src={course?.image}
                 alt=""
-                imgClassName="relative h-28 w-auto object-contain drop-shadow-[0_14px_26px_rgba(0,0,0,0.5)] lg:h-36"
+                imgClassName="h-28 w-auto object-contain drop-shadow-[0_14px_26px_rgba(0,0,0,0.5)] lg:h-36"
               />
             </div>
           </div>
 
           {/* ── The honest numbers ── */}
-          <div className="mt-6 grid grid-cols-2 gap-2.5 sm:gap-3 lg:grid-cols-4">
-            {facts.map((fact) => (
-              <div
-                key={fact.label}
-                className="flex items-center gap-2.5 rounded-xl border border-white/10 bg-surface-2 px-3 py-2.5 shadow-clay-sm"
-              >
-                <span className="grid h-8 w-8 flex-none place-items-center rounded-lg bg-violet-500/12 text-violet-300">
-                  <Icon name={fact.icon} size={15} />
-                </span>
-                <span className="min-w-0">
-                  <span className="block truncate text-sm font-bold">{fact.value}</span>
-                  <span className="block text-[10px] uppercase tracking-[0.06em] text-ink-faint">
-                    {fact.label}
-                  </span>
-                </span>
-              </div>
-            ))}
-          </div>
+          <CourseFactTiles course={course} className="mt-8" />
 
           {/* ── The one thing to do ── */}
-          <div className="mt-6 flex flex-col gap-3 border-t border-white/[0.07] pt-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="mt-8 flex flex-col gap-4 border-t border-white/[0.07] pt-6 sm:flex-row sm:items-center sm:justify-between">
             <div className="min-w-0">
               {pct > 0 && (
                 <>
-                  <div className="flex items-center justify-between gap-3 text-xs font-semibold text-ink-low">
+                  <div className="flex items-center justify-between gap-3 text-sm font-semibold text-ink-low">
                     <span>{t("coursePreview.yourProgress")}</span>
                     <span className="tabular-nums text-ink-hi">{pct}%</span>
                   </div>
@@ -107,7 +83,7 @@ const CoursePreview = ({ course, action = "enroll", enrolment = null, onAction, 
                 </>
               )}
               {pct === 0 && (
-                <p className="text-xs text-ink-low">{t("coursePreview.freeForever")}</p>
+                <p className="text-sm text-ink-low">{t("coursePreview.freeForever")}</p>
               )}
             </div>
 
@@ -126,65 +102,91 @@ const CoursePreview = ({ course, action = "enroll", enrolment = null, onAction, 
 
         {/* ── What you'll be able to do ── */}
         {course?.learningObjectives?.length > 0 && (
-          <section className="mt-6">
-            <h2 className="mb-3 text-lg font-extrabold sm:text-xl">{t("coursePreview.whatYouLearn")}</h2>
-            <div className="grid gap-2.5 sm:grid-cols-2">
+          <section className="mt-8 md:mt-14">
+            <h2 className="mb-4 text-xl font-extrabold sm:text-2xl">{t("coursePreview.whatYouLearn")}</h2>
+            <div className="grid gap-3 sm:grid-cols-2 lg:gap-4">
               {course.learningObjectives.map((objective) => (
                 <div
                   key={objective}
-                  className="flex items-start gap-2.5 rounded-xl border border-white/10 bg-surface px-3.5 py-3 shadow-clay-sm"
+                  className="flex items-start gap-3 rounded-2xl border border-white/10 bg-surface px-4 py-4 shadow-clay-sm lg:gap-4 lg:px-6 lg:py-5"
                 >
-                  <Icon name="check-circle" size={16} className="mt-0.5 flex-none text-state-success" />
-                  <p className="text-sm leading-relaxed text-ink">{objective}</p>
+                  <Icon name="check-circle" size={18} className="mt-0.5 flex-none text-state-success lg:h-[22px] lg:w-[22px]" />
+                  <p className="text-[0.9375rem] leading-relaxed text-ink lg:text-[1.0625rem]">{objective}</p>
                 </div>
               ))}
             </div>
           </section>
         )}
 
+        {/* ── What it actually covers ──
+            Taken from the module titles rather than written by hand, so it
+            cannot describe a course that no longer exists. */}
+        {topics.length > 0 && (
+          <section className="mt-8 md:mt-14">
+            <h2 className="mb-4 text-xl font-extrabold sm:text-2xl">{t("coursePreview.topics")}</h2>
+            <div className="flex flex-wrap gap-2.5">
+              {topics.map((topic) => (
+                <span
+                  key={topic}
+                  className="rounded-full border border-violet-500/25 bg-violet-500/10 px-4 py-2 text-[0.9375rem] font-semibold text-violet-300"
+                >
+                  {topic}
+                </span>
+              ))}
+            </div>
+          </section>
+        )}
+
         {/* ── The outline, lessons still closed ── */}
-        <section className="mt-6">
-          <div className="mb-3 flex items-baseline justify-between gap-3">
-            <h2 className="text-lg font-extrabold sm:text-xl">{t("coursePreview.outline")}</h2>
-            <span className="text-xs text-ink-faint">
-              {t("coursePreview.moduleCount", { count: modules.length })}
-            </span>
+        <section className="mt-8 md:mt-14">
+          <div className="mb-4">
+            <h2 className="text-xl font-extrabold sm:text-2xl">{t("coursePreview.outline")}</h2>
+            <p className="mt-1 text-sm text-ink-low">
+              {t("coursePreview.contentCount", {
+                lessons: facts.lessons,
+                exercises: facts.exercises,
+              })}
+            </p>
           </div>
 
-          <ol className="space-y-2.5">
+          <ol className="space-y-3">
             {modules.map((module, index) => {
               const done = Array.isArray(enrolment?.completedModules)
                 && enrolment.completedModules.includes(index);
               return (
                 <li
                   key={module.title}
-                  className="flex items-start gap-3 rounded-xl border border-white/10 bg-surface px-3.5 py-3 shadow-clay-sm sm:px-4"
+                  className="flex items-start gap-3.5 rounded-2xl border border-white/10 bg-surface px-4 py-4 shadow-clay-sm sm:px-5"
                 >
                   <span
-                    className={`grid h-7 w-7 flex-none place-items-center rounded-lg text-xs font-bold tabular-nums ${
+                    className={`grid h-9 w-9 flex-none place-items-center rounded-xl text-[0.9375rem] font-bold tabular-nums sm:h-10 sm:w-10 ${
                       done
                         ? "bg-state-success/15 text-state-success"
                         : "bg-surface-3 text-ink-low"
                     }`}
                   >
-                    {done ? <Icon name="check" size={14} /> : index + 1}
+                    {done ? <Icon name="check" size={17} /> : index + 1}
                   </span>
                   <span className="min-w-0 flex-1">
-                    <span className="block text-sm font-bold leading-snug">{module.title}</span>
+                    <span className="block text-balance text-base font-bold leading-snug">{module.title}</span>
                     {module.desc && (
-                      <span className="mt-0.5 block text-xs leading-relaxed text-ink-low">
+                      <span className="mt-1 block text-pretty text-sm leading-relaxed text-ink-low">
                         {module.desc}
                       </span>
                     )}
                   </span>
-                  <span className="flex flex-none items-center gap-2">
+                  {/* Sits on the badge's line rather than floating at the top
+                      of a wrapped title. */}
+                  <span className="flex flex-none items-center gap-2 self-start">
                     {module.xpReward > 0 && (
-                      <span className="hidden items-center gap-1 rounded-md bg-violet-500/12 px-2 py-0.5 text-[10px] font-bold text-violet-300 sm:inline-flex">
+                      <span className="hidden items-center gap-1 rounded-lg bg-violet-500/12 px-2.5 py-1.5 text-xs font-bold text-violet-300 sm:inline-flex">
                         +{module.xpReward} XP
                       </span>
                     )}
                     {!done && action !== "continue" && action !== "restart" && (
-                      <Icon name="lock" size={14} className="text-ink-faint" />
+                      <span className="grid h-9 w-9 place-items-center rounded-xl bg-surface-2 text-ink-faint sm:h-10 sm:w-10">
+                        <Icon name="lock" size={17} />
+                      </span>
                     )}
                   </span>
                 </li>
@@ -195,12 +197,12 @@ const CoursePreview = ({ course, action = "enroll", enrolment = null, onAction, 
 
         {/* ── Before you start ── */}
         {course?.prerequisites?.length > 0 && (
-          <section className="mt-6">
-            <h2 className="mb-3 text-lg font-extrabold sm:text-xl">{t("coursePreview.prerequisites")}</h2>
-            <ul className="space-y-2">
+          <section className="mt-8 md:mt-14">
+            <h2 className="mb-4 text-xl font-extrabold sm:text-2xl">{t("coursePreview.prerequisites")}</h2>
+            <ul className="space-y-2.5">
               {course.prerequisites.map((item) => (
-                <li key={item} className="flex items-start gap-2.5 text-sm text-ink">
-                  <Icon name="check" size={15} className="mt-0.5 flex-none text-sky" />
+                <li key={item} className="flex items-start gap-3 text-pretty text-[0.9375rem] leading-relaxed text-ink">
+                  <Icon name="check" size={17} className="mt-0.5 flex-none text-sky" />
                   {item}
                 </li>
               ))}
