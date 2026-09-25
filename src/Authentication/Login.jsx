@@ -241,9 +241,9 @@ const Login = () => {
                   onChange={(e) => setAgreed(e.target.checked)}
                   className="h-4 w-4 rounded accent-violet-600"
                 />
-                Remember me
+                {t("ui.rememberMe")}
               </label>
-              <Link to="/" className="text-sky transition-colors hover:underline">Forgot password?</Link>
+              <Link to="/" className="text-sky transition-colors hover:underline">{t("ui.forgotPassword")}</Link>
             </div>
 
             <Button type="submit" fullWidth loading={loading} className="mt-1">

@@ -329,7 +329,7 @@ const ExerciseEngine = ({ exercises = [], onAllCorrect, onFirstAttempt, isComple
         )}
         {hasFeedback && !isCorrect && (
           <p className="flex items-center gap-2 text-sm font-medium text-state-success">
-            <Icon name="lightbulb" size={16} /> Correct answer: <span className="font-bold">{exercise.answer}</span>
+            <Icon name="lightbulb" size={16} /> {t("ui.correctAnswer")} <span className="font-bold">{exercise.answer}</span>
           </p>
         )}
       </div>
@@ -364,7 +364,7 @@ const ExerciseEngine = ({ exercises = [], onAllCorrect, onFirstAttempt, isComple
 
     return (
       <div className="space-y-4">
-        <p className="text-xs font-medium text-ink-low">Tap one term on the left, then tap its match on the right</p>
+        <p className="text-xs font-medium text-ink-low">{t("ui.matchHint")}</p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
           {/* Left column — Terms */}

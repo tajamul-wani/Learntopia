@@ -102,7 +102,7 @@ const Navbar = () => {
             <div className="flex items-center gap-2">
               <div
                 onClick={() => navigate("/dashboard")}
-                title="View your student profile & dashboard"
+                title={t("ui.profileAndDashboard")}
                 className="group h-[34px] flex items-center gap-2 rounded-full border border-white/10 bg-surface-2 shadow-clay-sm px-3.5 cursor-pointer transition-all duration-200 hover:border-sky/50 hover:bg-sky/10 hover:shadow-glow"
               >
                 <Avatar
