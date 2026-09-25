@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useRef } from "react";
+import { useEffect, useState, useMemo, useRef, useCallback } from "react";
 import { useParams, useNavigate, useBlocker } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useGamification } from "../context/GamificationContext";
@@ -54,6 +54,9 @@ const CourseDetails = () => {
   const [saving, setSaving] = useState(false);
   const [showResetModal, setShowResetModal] = useState(false);
   const [showAIDrawer, setShowAIDrawer] = useState(false);
+  // Held true from the moment someone joins until the doorway animation ends,
+  // so the preview never flickers into the course behind the overlay.
+  const [entering, setEntering] = useState(false);
   // The enrolment document, or null. Opening this page used to CREATE one,
   // which enrolled anyone who so much as looked at a course — and could land
   // after progress had loaded and overwrite it.
@@ -297,6 +300,8 @@ const CourseDetails = () => {
   };
 
   /** Join, rejoin, or replay — whichever the preview offered. */
+  const finishEntering = useCallback(() => setEntering(false), []);
+
   const handleStart = async () => {
     if (!currentUser) {
       navigate("/login", { state: { returnTo: `/course/${id}` } });
@@ -344,19 +349,36 @@ const CourseDetails = () => {
 
   // Not joined, or joined and left: the lessons stay closed and the preview
   // does the asking. Reaching this URL directly used to open the whole course.
+  // The doorway outlives the branch below: it is the second child of the
+  // fragment either way, so React updates it in place instead of tearing it
+  // down and restarting the animation the moment the course becomes available.
+  // `ready` is the truth it waits on — the write has landed and the course can
+  // actually be shown.
+  const doorway = entering ? (
+    <CourseEnterOverlay
+      course={course}
+      ready={!joining && canLearn(enrolment)}
+      onDone={finishEntering}
+    />
+  ) : null;
+
   if (!canLearn(enrolment)) {
     return (
-      <CoursePreview
-        course={course}
-        enrolment={enrolment}
-        action={primaryAction(enrolment, { signedIn: !!currentUser })}
-        onAction={handleStart}
-        busy={joining}
-      />
+      <>
+        <CoursePreview
+          course={course}
+          enrolment={enrolment}
+          action={primaryAction(enrolment, { signedIn: !!currentUser })}
+          onAction={handleStart}
+          busy={joining}
+        />
+        {doorway}
+      </>
     );
   }
 
   return (
+    <>
     <div className="container-page py-12 md:py-16">
       <div className="mx-auto max-w-4xl animate-fade-up">
         
@@ -785,6 +807,8 @@ const CourseDetails = () => {
       />
 
     </div>
+    {doorway}
+    </>
   );
 };
 
