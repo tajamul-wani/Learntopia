@@ -1,4 +1,4 @@
-import { test, expect } from "./support/emulator.js";
+import { test, expect, enrollLearner } from "./support/emulator.js";
 
 // LT-93: the tutor showed raw error text on production ("Set VITE_GEMINI_PROXY_URL
 // to the deployed Gemini proxy Worker URL and restart your Vite dev server"),
@@ -13,7 +13,10 @@ const COURSE_PATH = "/course/1";
 const TUTOR_ENDPOINT = "**/__tutor-proxy";
 const INTERNALS = /VITE_|import\.meta|Vite dev server|proxy Worker|Gemini proxy|API key/i;
 
-const openTutor = async (page) => {
+const openTutor = async (page, learner) => {
+  // Opening a course page no longer enrols anyone (LT-51), and the tutor lives
+  // inside the course, so put the learner in it first.
+  await enrollLearner(learner.uid, 1);
   await page.goto(COURSE_PATH, { waitUntil: "domcontentloaded" });
   await expect(page.getByLabel("Loading page")).toBeHidden({ timeout: 20000 });
   // The drawer's send button carries the same "Ask <tutor>" label, so scope to
@@ -35,7 +38,7 @@ test.describe("AI tutor", () => {
       route.fulfill({ status: 500, contentType: "application/json", body: '{"error":"upstream"}' })
     );
 
-    await openTutor(page);
+    await openTutor(page, learner);
     await ask(page);
 
     const error = page.getByText(/couldn't reach your ai tutor|having a rest/i).first();
@@ -54,7 +57,7 @@ test.describe("AI tutor", () => {
       })
     );
 
-    await openTutor(page);
+    await openTutor(page, learner);
     await ask(page);
 
     await expect(page.getByText("A variable is a labelled box.")).toBeVisible({ timeout: 20000 });

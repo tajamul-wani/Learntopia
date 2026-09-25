@@ -172,6 +172,25 @@ export async function createLearner(testInfo, { points = 0 } = {}) {
   return { uid, email, password: PASSWORD, displayName };
 }
 
+/**
+ * Puts a learner inside a course.
+ *
+ * Opening a course page no longer enrols anyone (LT-51), so a spec that wants
+ * the lessons has to say so. Seeding the document is deterministic and skips
+ * the preview, which those specs are not testing.
+ */
+export async function enrollLearner(uid, courseId, { totalModules = 4, completedModules = [] } = {}) {
+  await writeDoc(`Users/${uid}/enrolledCourses/${courseId}`, {
+    courseId: Number(courseId),
+    title: "Course",
+    category: "Programming",
+    completed: false,
+    completedModules,
+    totalModules,
+    unenrolled: false,
+  });
+}
+
 export async function signIn(page, { email, password }) {
   await page.goto("/login", { waitUntil: "domcontentloaded" });
   // Login is lazy-loaded; wait for the Suspense skeleton to clear before typing.
