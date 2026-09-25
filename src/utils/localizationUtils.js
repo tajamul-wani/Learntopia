@@ -83,14 +83,6 @@ export const getLocalizedCourse = (course, t) => {
   const prerequisites = (course.prerequisites || []).map((req, i) =>
     resolve(`courseData.${cId}.prerequisites.${i}`, req)
   );
-  const aiTutor = course.aiTutor
-    ? {
-        ...course.aiTutor,
-        name: resolve(`courseData.${cId}.aiTutor.name`, course.aiTutor.name),
-        role: resolve(`courseData.${cId}.aiTutor.role`, course.aiTutor.role),
-      }
-    : course.aiTutor;
-
   return {
     ...course,
     title,
@@ -99,7 +91,6 @@ export const getLocalizedCourse = (course, t) => {
     difficulty,
     learningObjectives,
     prerequisites,
-    aiTutor,
     syllabus,
   };
 };

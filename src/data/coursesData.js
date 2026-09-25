@@ -21,11 +21,6 @@ export const COURSES = [
       "Use loops, variables, and logic",
       "Build a fully playable text-based game"
     ],
-    aiTutor: {
-      name: "Robo-Py",
-      role: "AI Coding Buddy",
-      avatar: one
-    },
     xpPerModule: 50,
     totalXP: 300,
     badge: { name: "Python Pioneer", icon: "code" },
@@ -350,11 +345,6 @@ export const COURSES = [
       "Solve deductive logic puzzles",
       "Apply algorithmic thinking"
     ],
-    aiTutor: {
-      name: "Count AI-Cula",
-      role: "AI Math Genius",
-      avatar: two
-    },
     xpPerModule: 50,
     totalXP: 300,
     badge: { name: "Math Wizard", icon: "sparkles" },
@@ -647,11 +637,6 @@ export const COURSES = [
       "Grasp compound interest",
       "Learn the basics of investing"
     ],
-    aiTutor: {
-      name: "Penny Bot",
-      role: "AI Financial Advisor",
-      avatar: three
-    },
     xpPerModule: 50,
     totalXP: 300,
     badge: { name: "Cash Master", icon: "award" },
@@ -899,11 +884,6 @@ export const COURSES = [
       "Understand digital citizenship",
       "Design a mock campaign"
     ],
-    aiTutor: {
-      name: "Viral AI",
-      role: "AI Marketing Strategist",
-      avatar: four
-    },
     xpPerModule: 50,
     totalXP: 300,
     badge: { name: "Brand Genius", icon: "zap" },
@@ -1125,11 +1105,6 @@ export const COURSES = [
       "Understand the CSS Box Model",
       "Deploy your website"
     ],
-    aiTutor: {
-      name: "WebWeaver",
-      role: "AI Frontend Master",
-      avatar: one
-    },
     xpPerModule: 50,
     totalXP: 300,
     badge: { name: "Web Architect", icon: "code" },
@@ -1353,11 +1328,6 @@ export const COURSES = [
       "Structure dynamic character poses",
       "Render and polish illustrations"
     ],
-    aiTutor: {
-      name: "Pixel Bot",
-      role: "AI Concept Artist",
-      avatar: two
-    },
     xpPerModule: 50,
     totalXP: 300,
     badge: { name: "Digital Picasso", icon: "star" },

@@ -19,10 +19,9 @@ const openTutor = async (page, learner) => {
   await enrollLearner(learner.uid, 1);
   await page.goto(COURSE_PATH, { waitUntil: "domcontentloaded" });
   await expect(page.getByLabel("Loading page")).toBeHidden({ timeout: 20000 });
-  // The drawer's send button carries the same "Ask <tutor>" label, so scope to
-  // the card button on the page: it is the first one and the only enabled one
-  // before the drawer opens.
-  await page.getByRole("button", { name: /^ask /i }).first().click();
+  // The drawer's send button carries the same "Ask Leo" name, so the launcher
+  // is addressed by its test id rather than by label.
+  await page.getByTestId("tutor-launcher").click();
   await expect(page.getByPlaceholder(/ask a question about this course/i)).toBeVisible();
 };
 
