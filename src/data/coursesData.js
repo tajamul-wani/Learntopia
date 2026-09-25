@@ -5,21 +5,13 @@ import Dmarket from "../assets/CourseImg/Dmarket.png";
 import coding from "../assets/CourseImg/coding.png";
 import python from "../assets/CourseImg/python.png";
 
-import one from "../assets/Icons/one.jpg";
-import two from "../assets/Icons/two.jpg";
-import three from "../assets/Icons/three.jpg";
-import four from "../assets/Icons/four.jpg";
-
 export const COURSES = [
   {
     id: 1,
     category: "Programming",
     title: "Python for Kids: Build Your First Game!",
-    rating: "4.9",
     image: python,
-    students: "1,200",
     desc: "Learn to code by building real games. Perfect for beginners aged 7-16. Dive into Python fundamentals and game mechanics!",
-    avatars: [one, two, three, four],
     duration: "4 hours",
     difficulty: "Beginner",
     prerequisites: ["A computer with internet access", "Basic typing skills"],
@@ -29,11 +21,6 @@ export const COURSES = [
       "Use loops, variables, and logic",
       "Build a fully playable text-based game"
     ],
-    aiTutor: {
-      name: "Robo-Py",
-      role: "AI Coding Buddy",
-      avatar: one
-    },
     xpPerModule: 50,
     totalXP: 300,
     badge: { name: "Python Pioneer", icon: "code" },
@@ -347,11 +334,8 @@ export const COURSES = [
     id: 2,
     category: "Mathematics",
     title: "Math Magic: Puzzles & Logic",
-    rating: "4.8",
     image: math,
-    students: "950",
     desc: "Develop critical thinking by solving puzzles, identifying patterns, and mastering logic.",
-    avatars: [one, two, three],
     duration: "3.5 hours",
     difficulty: "All Levels",
     prerequisites: ["Basic arithmetic"],
@@ -361,11 +345,6 @@ export const COURSES = [
       "Solve deductive logic puzzles",
       "Apply algorithmic thinking"
     ],
-    aiTutor: {
-      name: "Count AI-Cula",
-      role: "AI Math Genius",
-      avatar: two
-    },
     xpPerModule: 50,
     totalXP: 300,
     badge: { name: "Math Wizard", icon: "sparkles" },
@@ -647,11 +626,8 @@ export const COURSES = [
     id: 3,
     category: "Finance",
     title: "Money Smart: Kids & Cash",
-    rating: "4.9",
     image: finance,
-    students: "840",
     desc: "Develop financial literacy early. Learn about budgeting, compound interest, banking, and smart investing.",
-    avatars: [one, two, three, four],
     duration: "5 hours",
     difficulty: "Beginner",
     prerequisites: ["Basic math skills (percentages, addition)"],
@@ -661,11 +637,6 @@ export const COURSES = [
       "Grasp compound interest",
       "Learn the basics of investing"
     ],
-    aiTutor: {
-      name: "Penny Bot",
-      role: "AI Financial Advisor",
-      avatar: three
-    },
     xpPerModule: 50,
     totalXP: 300,
     badge: { name: "Cash Master", icon: "award" },
@@ -902,11 +873,8 @@ export const COURSES = [
     id: 4,
     category: "Marketing",
     title: "Future Creators: Digital Marketing",
-    rating: "4.7",
     image: Dmarket,
-    students: "620",
     desc: "Master branding, storytelling, content creation, and online safety.",
-    avatars: [one, two, three],
     duration: "4.5 hours",
     difficulty: "Intermediate",
     prerequisites: ["Familiarity with social media"],
@@ -916,11 +884,6 @@ export const COURSES = [
       "Understand digital citizenship",
       "Design a mock campaign"
     ],
-    aiTutor: {
-      name: "Viral AI",
-      role: "AI Marketing Strategist",
-      avatar: four
-    },
     xpPerModule: 50,
     totalXP: 300,
     badge: { name: "Brand Genius", icon: "zap" },
@@ -1131,11 +1094,8 @@ export const COURSES = [
     id: 5,
     category: "Science",
     title: "Web Wonders: HTML & CSS",
-    rating: "4.9",
     image: coding,
-    students: "1,400",
     desc: "Master the core markup and styling languages that power the internet.",
-    avatars: [one, two, three],
     duration: "6 hours",
     difficulty: "Beginner",
     prerequisites: ["A computer with a web browser"],
@@ -1145,11 +1105,6 @@ export const COURSES = [
       "Understand the CSS Box Model",
       "Deploy your website"
     ],
-    aiTutor: {
-      name: "WebWeaver",
-      role: "AI Frontend Master",
-      avatar: one
-    },
     xpPerModule: 50,
     totalXP: 300,
     badge: { name: "Web Architect", icon: "code" },
@@ -1362,11 +1317,8 @@ export const COURSES = [
     id: 6,
     category: "Arts",
     title: "Digital Art: Draw on Your Screen",
-    rating: "4.6",
     image: paint,
-    students: "1,100",
     desc: "Unleash your creativity with digital art techniques.",
-    avatars: [one, two, three, four],
     duration: "4 hours",
     difficulty: "All Levels",
     prerequisites: ["A digital drawing tablet"],
@@ -1376,11 +1328,6 @@ export const COURSES = [
       "Structure dynamic character poses",
       "Render and polish illustrations"
     ],
-    aiTutor: {
-      name: "Pixel Bot",
-      role: "AI Concept Artist",
-      avatar: two
-    },
     xpPerModule: 50,
     totalXP: 300,
     badge: { name: "Digital Picasso", icon: "star" },

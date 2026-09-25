@@ -226,11 +226,11 @@ const SignUp = () => {
 
           <form className="flex flex-col gap-4" onSubmit={handleRegister}>
             <Field
-              label="Full name"
+              label={t("ui.fullName")}
               id="fullName"
               type="text"
               icon="user"
-              placeholder="Enter your name"
+              placeholder={t("ui.fullNamePlaceholder")}
               required
               value={userFName}
               onChange={(e) => setUserFName(e.target.value)}
@@ -278,8 +278,8 @@ const SignUp = () => {
               />
               <span>
                 I agree to the{" "}
-                <Link to="/terms" target="_blank" rel="noreferrer" className="text-sky hover:underline">Terms of Service</Link>,{" "}
-                <Link to="/privacy" target="_blank" rel="noreferrer" className="text-sky hover:underline">Privacy Policy</Link>.
+                <Link to="/terms" target="_blank" rel="noreferrer" className="text-sky hover:underline">{t("ui.termsOfService")}</Link>,{" "}
+                <Link to="/privacy" target="_blank" rel="noreferrer" className="text-sky hover:underline">{t("ui.privacyPolicy")}</Link>.
               </span>
             </label>
 

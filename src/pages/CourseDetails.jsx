@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useRef } from "react";
+import { useEffect, useState, useMemo, useRef, useCallback } from "react";
 import { useParams, useNavigate, useBlocker } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useGamification } from "../context/GamificationContext";
@@ -12,6 +12,7 @@ import { COURSES } from "../data/coursesData";
 import { getLocalizedCourse } from "../utils/localizationUtils";
 import { moduleGrant } from "../utils/xpGrants";
 import { canLearn, primaryAction } from "../utils/enrollmentState";
+import { courseFacts, courseSkills } from "../utils/courseFacts";
 import { enroll, restart as restartCourse } from "../services/enrollment";
 import CoursePreview from "../Components/CoursePreview";
 import Card from "../Components/ui/Card";
@@ -24,6 +25,10 @@ import LessonPlayer from "../Components/LessonPlayer";
 import ExerciseEngine from "../Components/ExerciseEngine";
 import AIChatDrawer from "../Components/AIChatDrawer";
 import BotAvatar from "../Components/BotAvatar";
+import TutorLauncher from "../Components/TutorLauncher";
+import CourseEnterOverlay from "../Components/CourseEnterOverlay";
+import CourseFactTiles from "../Components/CourseFactTiles";
+import { courseTint } from "../utils/courseTint";
 
 const CourseDetails = () => {
   const { id } = useParams();
@@ -38,6 +43,9 @@ const CourseDetails = () => {
     return c ? getLocalizedCourse(c, t) : null;
   }, [id, t]);
 
+  const facts = useMemo(() => courseFacts(course), [course]);
+  const topics = useMemo(() => courseSkills(course), [course]);
+
   const [completedModules, setCompletedModules] = useState([]);
   // Modules that have EVER paid out XP, and whether the +100 completion bonus was
   // ever granted. These persist across a course restart (unlike completedModules,
@@ -50,6 +58,9 @@ const CourseDetails = () => {
   const [saving, setSaving] = useState(false);
   const [showResetModal, setShowResetModal] = useState(false);
   const [showAIDrawer, setShowAIDrawer] = useState(false);
+  // Held true from the moment someone joins until the doorway animation ends,
+  // so the preview never flickers into the course behind the overlay.
+  const [entering, setEntering] = useState(false);
   // The enrolment document, or null. Opening this page used to CREATE one,
   // which enrolled anyone who so much as looked at a course — and could land
   // after progress had loaded and overwrite it.
@@ -293,6 +304,8 @@ const CourseDetails = () => {
   };
 
   /** Join, rejoin, or replay — whichever the preview offered. */
+  const finishEntering = useCallback(() => setEntering(false), []);
+
   const handleStart = async () => {
     if (!currentUser) {
       navigate("/login", { state: { returnTo: `/course/${id}` } });
@@ -303,6 +316,7 @@ const CourseDetails = () => {
       return;
     }
     setJoining(true);
+    setEntering(true);
     try {
       const action = primaryAction(enrolment);
       if (action === "restart") {
@@ -320,6 +334,8 @@ const CourseDetails = () => {
     } catch (err) {
       console.error("Enrollment error:", err);
       toast.error(t("toasts.loadDataFailed"));
+      // The join failed, so there is no course to walk into.
+      setEntering(false);
     } finally {
       setJoining(false);
     }
@@ -340,19 +356,36 @@ const CourseDetails = () => {
 
   // Not joined, or joined and left: the lessons stay closed and the preview
   // does the asking. Reaching this URL directly used to open the whole course.
+  // The doorway outlives the branch below: it is the second child of the
+  // fragment either way, so React updates it in place instead of tearing it
+  // down and restarting the animation the moment the course becomes available.
+  // `ready` is the truth it waits on — the write has landed and the course can
+  // actually be shown.
+  const doorway = entering ? (
+    <CourseEnterOverlay
+      course={course}
+      ready={!joining && canLearn(enrolment)}
+      onDone={finishEntering}
+    />
+  ) : null;
+
   if (!canLearn(enrolment)) {
     return (
-      <CoursePreview
-        course={course}
-        enrolment={enrolment}
-        action={primaryAction(enrolment, { signedIn: !!currentUser })}
-        onAction={handleStart}
-        busy={joining}
-      />
+      <>
+        <CoursePreview
+          course={course}
+          enrolment={enrolment}
+          action={primaryAction(enrolment, { signedIn: !!currentUser })}
+          onAction={handleStart}
+          busy={joining}
+        />
+        {doorway}
+      </>
     );
   }
 
   return (
+    <>
     <div className="container-page py-12 md:py-16">
       <div className="mx-auto max-w-4xl animate-fade-up">
         
@@ -365,10 +398,11 @@ const CourseDetails = () => {
           {t("courseDetails.backToCourses")}
         </button>
 
-        {/* Header Revamp */}
+        {/* Shown while deciding, dropped once they are working: on the
+            curriculum the course is chosen and this is all answered. */}
+        {activeTab !== "syllabus" && (
         <div className="mb-10 flex flex-col items-center gap-8 md:flex-row md:items-start md:text-left text-center">
-          <div className="relative flex h-48 w-full max-w-[260px] sm:w-64 flex-none items-center justify-center overflow-hidden rounded-3xl clay-inset p-6">
-            <div className="pointer-events-none absolute left-1/2 top-4 h-24 w-32 -translate-x-1/2 rounded-full bg-violet-500/20 blur-3xl transition-all duration-700 hover:scale-150" />
+          <div className={`relative flex h-48 w-full max-w-[260px] sm:w-64 flex-none items-center justify-center overflow-hidden rounded-3xl border border-white/[0.06] p-6 shadow-[inset_0_2px_10px_rgba(0,0,0,0.45)] ${courseTint(course)}`}>
             <ImageWithSkeleton
               src={course.image}
               alt=""
@@ -381,30 +415,28 @@ const CourseDetails = () => {
               <span className="inline-block rounded-full border border-white/10 bg-surface-2 px-3 py-1 text-xs font-bold uppercase tracking-wider text-sky shadow-clay-sm">
                 {course.category}
               </span>
-              <span className="flex items-center gap-1 text-xs font-bold text-state-warning">
-                <Icon name="star" size={14} className="fill-state-warning" /> {course.rating}
-              </span>
             </div>
             
             <h1 className="mt-4 text-3xl font-extrabold tracking-tight text-ink-hi md:text-4xl lg:text-5xl">{course.title}</h1>
             <p className="mt-4 text-lg leading-relaxed text-ink-low">{course.desc}</p>
             
-            <div className="mt-6 flex flex-wrap items-center justify-center gap-3 md:justify-start">
-              <div className="flex items-center gap-2 rounded-xl bg-surface-2 px-3.5 py-2 text-sm font-medium text-ink-hi border border-white/10 shadow-clay-sm">
-                <Icon name="clock" size={16} className="text-violet-400" />
-                {course.duration || "N/A"}
-              </div>
-              <div className="flex items-center gap-2 rounded-xl bg-surface-2 px-3.5 py-2 text-sm font-medium text-ink-hi border border-white/10 shadow-clay-sm">
-                <Icon name="book" size={16} className="text-violet-400" />
-                {course.difficulty || "All Levels"}
-              </div>
-              <div className="flex items-center gap-2 rounded-xl bg-surface-2 px-3.5 py-2 text-sm font-medium text-ink-hi border border-white/10 shadow-clay-sm">
-                <Icon name="users" size={16} className="text-violet-400" />
-                {course.students} {t("courses.enrolledBadge").toLowerCase()}
-              </div>
-            </div>
+            {/* Same four facts, same tiles as the preview — counted from the
+                course, so neither can drift from what is inside it. */}
+            <CourseFactTiles
+              course={course}
+              gridClassName="grid-cols-2"
+              className="mt-6 text-left"
+            />
           </div>
         </div>
+        )}
+
+        {/* On the curriculum, this one line is all the orientation needed. */}
+        {activeTab === "syllabus" && (
+          <h1 className="mb-5 text-2xl font-extrabold tracking-tight text-ink-hi sm:text-3xl">
+            {course.title}
+          </h1>
+        )}
 
         {/* Progress bar */}
         <Card className="mb-10 p-5 md:p-6">
@@ -487,6 +519,22 @@ const CourseDetails = () => {
                 </div>
               </section>
 
+              {topics.length > 0 && (
+                <section>
+                  <h3 className="mb-5 text-2xl font-bold text-ink-hi">{t("courseDetails.topics")}</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {topics.map((topic) => (
+                      <span
+                        key={topic}
+                        className="rounded-full border border-violet-500/25 bg-violet-500/10 px-3.5 py-1.5 text-sm font-semibold text-violet-300"
+                      >
+                        {topic}
+                      </span>
+                    ))}
+                  </div>
+                </section>
+              )}
+
               <section>
                 <h3 className="mb-5 text-2xl font-bold text-ink-hi">{t("courseDetails.prerequisites")}</h3>
                 <ul className="space-y-3 rounded-2xl border border-white/10 bg-surface p-6 shadow-clay">
@@ -501,28 +549,25 @@ const CourseDetails = () => {
             </div>
 
             <div className="space-y-6">
-              {/* AI Tutor Card */}
-              <Card className="p-6 sticky top-24 border-violet-500/15">
-                <div className="absolute top-4 right-4 flex h-6 w-6 items-center justify-center rounded-full border border-violet-500/30 bg-violet-500/15 shadow-clay-sm">
-                  <Icon name="cpu" size={14} className="text-violet-400" />
-                </div>
-                <h4 className="mb-5 text-xs font-bold uppercase tracking-[0.1em] text-violet-300">
-                  {t("courseDetails.yourAiTutor")}
-                </h4>
-                <div className="flex flex-col items-center gap-4 text-center">
-                  <BotAvatar name={course.aiTutor?.name} size="lg" />
-                  <div>
-                    <h5 className="text-xl font-extrabold text-ink-hi">{course.aiTutor?.name || "AI Tutor"}</h5>
-                    <p className="mt-1 text-sm font-semibold text-sky">{course.aiTutor?.role}</p>
+
+              {course.badge?.name && (
+                <Card className="p-6 sticky top-24">
+                  <h4 className="mb-4 text-xs font-bold uppercase tracking-[0.1em] text-gold-400">
+                    {t("courseDetails.reward")}
+                  </h4>
+                  <div className="flex items-center gap-3.5">
+                    <span className="grid h-12 w-12 flex-none place-items-center rounded-xl border border-gold-500/25 bg-gold-500/10 text-gold-400 shadow-clay-sm">
+                      <Icon name={course.badge.icon || "award"} size={22} />
+                    </span>
+                    <div className="min-w-0">
+                      <p className="truncate text-base font-extrabold text-ink-hi">{course.badge.name}</p>
+                      <p className="mt-0.5 text-xs text-ink-low">
+                        {t("courseDetails.rewardSub", { xp: facts.xp })}
+                      </p>
+                    </div>
                   </div>
-                  <p className="mt-2 text-sm leading-relaxed text-ink-low">
-                    {t("courseDetails.aiTutorSub")}
-                  </p>
-                  <Button variant="primary" className="mt-4 w-full gap-2 shadow-[0_0_15px_rgba(139,124,246,0.4)] hover:shadow-[0_0_25px_rgba(139,124,246,0.6)]" onClick={() => setShowAIDrawer(true)}>
-                    <Icon name="message-circle" size={16} /> {t("courseDetails.askTutor", { name: course.aiTutor?.name })}
-                  </Button>
-                </div>
-              </Card>
+                </Card>
+              )}
             </div>
           </div>
         )}
@@ -535,9 +580,6 @@ const CourseDetails = () => {
                 <h3 className="text-2xl font-bold text-ink-hi">{t("courseDetails.courseModules")}</h3>
                 <p className="mt-1 text-sm text-ink-low">{t("courseDetails.moduleUnlockHint")}</p>
               </div>
-              <Button variant="secondary" size="sm" className="gap-2 shrink-0 border-violet-500/30 text-violet-300 hover:bg-violet-500/10" onClick={() => setShowAIDrawer(true)}>
-                <Icon name="help-circle" size={16} /> {t("courseDetails.needHelpAskAi")}
-              </Button>
             </div>
             
             <div className="relative">
@@ -655,6 +697,18 @@ const CourseDetails = () => {
               );
             })}
 
+                {/* Leo, cheering them on toward the finish line */}
+                <div className="flex items-end gap-3">
+                  <div className="flex-none">
+                    <BotAvatar size="sm" />
+                  </div>
+                  <div className="rounded-2xl rounded-bl-md border border-white/10 bg-surface px-4 py-2.5 text-sm font-semibold text-ink shadow-clay-sm">
+                    {isCompleted
+                      ? t("courseDetails.journeyDone")
+                      : t("courseDetails.journeyProgress", { done: completedModules.length, total })}
+                  </div>
+                </div>
+
                 {/* Certificate — the finish line */}
                 <div className="flex items-start gap-3 sm:gap-4">
                   <div className={`grid h-11 w-11 flex-none place-items-center rounded-2xl shadow-clay-sm sm:h-16 sm:w-16 sm:rounded-[20px] ${isCompleted ? "bg-state-warning text-ground" : "bg-surface-2 text-ink-low"}`}>
@@ -670,60 +724,42 @@ const CourseDetails = () => {
               </div>
             </div>
 
-            {/* Robo-Py guide at the end of the journey */}
-            <div className="mt-6 flex items-end gap-3">
-              <div className="flex-none">
-                <BotAvatar name={course.aiTutor?.name || "Robo-Py"} size="sm" />
+            {/* Nothing to claim until every module is done, so until then there
+                is no button to explain or grey out — the journey above already
+                says what is left. Finishing the last module is what makes this
+                appear, which is the whole reward moment. */}
+            {allDone && !isCompleted && (
+              <div className="mt-8 flex animate-scale-up flex-col items-center gap-4 rounded-2xl border border-state-success/25 bg-state-success/[0.06] px-5 py-6 text-center shadow-clay-sm sm:px-8">
+                <span className="grid h-12 w-12 place-items-center rounded-2xl bg-state-success/15 text-state-success">
+                  <Icon name="trophy" size={24} />
+                </span>
+                <p className="text-base font-bold text-ink-hi sm:text-lg">
+                  {t("courseDetails.certificateReady")}
+                </p>
+                <Button
+                  onClick={markCourseComplete}
+                  loading={saving}
+                  className="w-full gap-2 shadow-[0_0_18px_rgba(139,124,246,0.35)] sm:w-auto"
+                >
+                  <Icon name="award" size={17} />
+                  {t("courseDetails.markComplete")}
+                </Button>
               </div>
-              <div className="rounded-2xl rounded-bl-md border border-white/10 bg-surface px-4 py-2.5 text-sm font-semibold text-ink shadow-clay-sm">
-                {isCompleted
-                  ? t("courseDetails.journeyDone")
-                  : t("courseDetails.journeyProgress", { done: completedModules.length, total })}
-              </div>
-            </div>
+            )}
 
-            {/* Completion Card now placed at the bottom of the Syllabus tab */}
-            <Card className={`mt-10 p-6 md:p-8 transition-colors duration-500 ${isCompleted ? "border-state-success/40 bg-state-success/[0.05]" : "border-violet-500/20"}`}>
-              <div className="flex flex-col items-center justify-between gap-6 text-center sm:flex-row sm:text-left">
-                <div>
-                  <h4 className="flex items-center justify-center gap-2 text-xl font-bold text-ink-hi sm:justify-start md:text-2xl">
-                    {isCompleted ? (
-                      <>
-                        <span className="text-state-success animate-bounce"><Icon name="trophy" size={24} /></span>
-                        You&rsquo;ve finished this course!
-                      </>
-                    ) : allDone ? (
-                      "All modules done — claim your completion!"
-                    ) : (
-                      "Keep going!"
-                    )}
-                  </h4>
-                  <p className="mt-2 text-sm text-ink-low md:text-base">
-                    {isCompleted
-                      ? "This course is marked as completed on your dashboard."
-                      : allDone
-                      ? "You finished every module. Mark the course complete to save it."
-                      : `Finish all ${total} modules to unlock course completion (${completedModules.length}/${total} done).`}
-                  </p>
-                </div>
-                <div className="flex flex-none gap-3">
-                  <Button variant="secondary" onClick={() => navigate("/dashboard")}>Dashboard</Button>
-                  {isCompleted ? (
-                    <Button variant="secondary" onClick={() => setShowResetModal(true)} className="gap-2">
-                      <Icon name="refresh-cw" size={16} /> Start Again
-                    </Button>
-                  ) : (
-                    <Button onClick={markCourseComplete} disabled={!allDone} loading={saving && allDone} className="shadow-[0_0_15px_rgba(139,124,246,0.3)]">
-                      Mark as complete
-                    </Button>
-                  )}
-                </div>
+            {isCompleted && (
+              <div className="mt-8 flex justify-center">
+                <Button
+                  variant="secondary"
+                  onClick={() => setShowResetModal(true)}
+                  className="w-full gap-2 sm:w-auto"
+                >
+                  <Icon name="refresh-cw" size={16} />
+                  {t("courses.restart")}
+                </Button>
               </div>
-            </Card>
+            )}
 
-            <p className="mt-8 text-center text-xs font-medium text-ink-low/70">
-              Need to manage your enrollments? You can drop or restart courses anytime from your <span className="cursor-pointer text-sky hover:underline" onClick={() => navigate("/dashboard")}>Student Dashboard</span>.
-            </p>
           </div>
         )}
       </div>
@@ -780,6 +816,11 @@ const CourseDetails = () => {
         </div>
       </Modal>
 
+      <TutorLauncher
+        courseId={course.id}
+        onOpen={() => setShowAIDrawer(true)}
+      />
+
       <AIChatDrawer
         isOpen={showAIDrawer}
         onClose={() => setShowAIDrawer(false)}
@@ -788,6 +829,8 @@ const CourseDetails = () => {
       />
 
     </div>
+    {doorway}
+    </>
   );
 };
 

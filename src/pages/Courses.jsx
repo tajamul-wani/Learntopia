@@ -14,7 +14,8 @@ import EmptyState from "../Components/ui/EmptyState";
 import Icon from "../Components/ui/Icon";
 import { COURSES } from "../data/coursesData";
 import { getLocalizedCourse } from "../utils/localizationUtils";
-import star from "../assets/CourseImg/star.png";
+import { courseFacts } from "../utils/courseFacts";
+import { courseTint } from "../utils/courseTint";
 
 const Courses = () => {
   const navigate = useNavigate();
@@ -26,6 +27,9 @@ const Courses = () => {
   // Courses the user left but can rejoin — their saved progress still exists.
   const [unenrolledIds, setUnenrolledIds] = useState([]);
   const [completedIds, setCompletedIds] = useState([]);
+  // Finished and left courses are still a learner's own history, so they get
+  // their own tabs instead of sitting in the catalog with a badge on them.
+  const [tab, setTab] = useState("all");
 
   useEffect(() => {
     if (currentUser) {
@@ -67,13 +71,36 @@ const Courses = () => {
     return COURSES.map((c) => getLocalizedCourse(c, t));
   }, [t]);
 
+  // Tabs only mean anything once a learner has a history, so they are hidden
+  // when signed out and when there is nothing in them yet.
+  const tabs = useMemo(() => {
+    if (!currentUser) return [];
+    const available = [{ key: "all", count: localizedCourses.length }];
+    if (completedIds.length > 0) available.push({ key: "completed", count: completedIds.length });
+    if (unenrolledIds.length > 0) available.push({ key: "left", count: unenrolledIds.length });
+    return available.length > 1 ? available : [];
+  }, [currentUser, localizedCourses.length, completedIds.length, unenrolledIds.length]);
+
+  // A tab can empty out under the learner — finishing the last left course, for
+  // instance — so fall back to the catalog rather than showing a dead tab.
+  useEffect(() => {
+    if (tab !== "all" && !tabs.some((item) => item.key === tab)) setTab("all");
+  }, [tab, tabs]);
+
   const filtered = useMemo(() => {
+    const inTab =
+      tab === "completed"
+        ? localizedCourses.filter((c) => completedIds.includes(c.id.toString()))
+        : tab === "left"
+          ? localizedCourses.filter((c) => unenrolledIds.includes(c.id.toString()))
+          : localizedCourses;
+
     const q = query.trim().toLowerCase();
-    if (!q) return localizedCourses;
-    return localizedCourses.filter(
+    if (!q) return inTab;
+    return inTab.filter(
       (c) => c.title.toLowerCase().includes(q) || c.category.toLowerCase().includes(q)
     );
-  }, [query, localizedCourses]);
+  }, [query, localizedCourses, tab, completedIds, unenrolledIds]);
 
   return (
     <div className="container-page py-16 md:py-20">
@@ -83,6 +110,45 @@ const Courses = () => {
         title={t("courses.title")}
         description={t("courses.subtitle")}
       />
+
+      {/* Catalog / Completed / Left — a learner's own history, kept out of the
+          catalog rather than layered onto it as badges. */}
+      {tabs.length > 0 && (
+        <div className="mt-8 flex justify-center">
+          <div
+            role="tablist"
+            aria-label={t("courses.tabsLabel")}
+            className="flex max-w-full gap-1 overflow-x-auto rounded-2xl border border-white/10 bg-surface p-1 shadow-clay-sm"
+          >
+            {tabs.map(({ key, count }) => (
+              <button
+                key={key}
+                role="tab"
+                type="button"
+                aria-selected={tab === key}
+                onClick={() => {
+                  playClick();
+                  setTab(key);
+                }}
+                className={`flex flex-none items-center gap-2 whitespace-nowrap rounded-xl px-3.5 py-2 text-sm font-bold transition-colors sm:px-4 ${
+                  tab === key
+                    ? "bg-violet-500/15 text-violet-300"
+                    : "text-ink-low hover:bg-white/[0.04] hover:text-ink-hi"
+                }`}
+              >
+                {t(`courses.tab.${key}`)}
+                <span
+                  className={`rounded-md px-1.5 py-0.5 text-[11px] tabular-nums ${
+                    tab === key ? "bg-violet-500/20 text-violet-300" : "bg-surface-2 text-ink-faint"
+                  }`}
+                >
+                  {count}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Search */}
       <div className="mx-auto mt-8 max-w-xl">
@@ -108,6 +174,7 @@ const Courses = () => {
             const isEnrolled = enrolledIds.includes(course.id.toString());
             const isRejoin = !isEnrolled && unenrolledIds.includes(course.id.toString());
             const isCompleted = completedIds.includes(course.id.toString());
+            const facts = courseFacts(course);
 
             return (
               <Card key={course.id} hoverable className="group flex flex-col p-5">
@@ -120,52 +187,60 @@ const Courses = () => {
                     {course.category}
                   </span>
                   <div className="flex flex-none items-center gap-2">
-                    {isEnrolled && (
+                    {isEnrolled && tab === "all" && (
                       <span className="flex items-center gap-1 whitespace-nowrap rounded-md border border-state-success/20 bg-state-success/10 px-2 py-0.5 text-xs font-bold text-state-success">
                         <Icon name={isCompleted ? "trophy" : "check-circle"} size={12} className="flex-none" />
                         {isCompleted ? t("courses.completedBadge") : t("courses.enrolledBadge")}
                       </span>
                     )}
-                    {isRejoin && (
+                    {isRejoin && tab === "all" && (
                       <span className="flex items-center gap-1 whitespace-nowrap rounded-md border border-state-warning/20 bg-state-warning/10 px-2 py-0.5 text-xs font-bold text-state-warning">
                         <Icon name="refresh-cw" size={12} className="flex-none" />
                         {t("courses.rejoinBadge")}
                       </span>
                     )}
-                    <span className="flex flex-none items-center gap-1.5 whitespace-nowrap rounded-full border border-white/10 bg-surface-2 px-3 py-1 text-xs font-bold text-ink-hi shadow-clay-sm">
-                      <img src={star} alt="" className="h-3.5 w-3.5" />
-                      {course.rating}
-                    </span>
                   </div>
                 </div>
 
-                <div className="relative mb-4 flex justify-center overflow-hidden rounded-2xl clay-inset py-8">
-                  <div className="pointer-events-none absolute left-1/2 top-3 h-20 w-32 -translate-x-1/2 rounded-full bg-violet-500/30 blur-2xl transition-opacity duration-500 group-hover:bg-sky/30" />
+                {/* A tint per course, so a grid of six reads as six things
+                    rather than six identical dark wells. */}
+                <div className={`mb-4 flex justify-center overflow-hidden rounded-2xl border border-white/[0.06] py-8 shadow-[inset_0_2px_10px_rgba(0,0,0,0.45)] ${courseTint(course)}`}>
                   <ImageWithSkeleton
                     src={course.image}
                     alt={course.title}
-                    imgClassName="relative h-24 w-auto object-contain drop-shadow-[0_12px_22px_rgba(0,0,0,0.5)] transition-[opacity,transform] duration-500 group-hover:scale-[1.07]"
+                    imgClassName="h-24 w-auto object-contain drop-shadow-[0_12px_22px_rgba(0,0,0,0.5)] transition-[opacity,transform] duration-500 group-hover:scale-[1.07]"
                   />
                 </div>
 
                 <h3 className="text-lg font-bold leading-snug text-ink-hi">{course.title}</h3>
                 <p className="mt-2 mb-6 text-xs leading-relaxed text-ink-low line-clamp-2">{course.desc}</p>
 
-                <div className="mt-auto flex items-center justify-between border-t border-white/[0.07] pt-5">
-                  <div>
-                    <div className="flex -space-x-2">
-                      {course.avatars.map((a, i) => (
-                        <img key={i} src={a} alt="" className="h-6 w-6 rounded-full border-2 border-ground-800 object-cover" />
-                      ))}
-                    </div>
-                    <p className="mt-1.5 text-xs text-ink-low">{course.students} {String(t("stats.studentsLegend") || "").toLowerCase()}</p>
+                <div className="mt-auto flex items-center justify-between gap-3 border-t border-white/[0.07] pt-5">
+                  {/* What a learner actually needs to choose: how much there
+                      is, how long it takes, how hard it is and what it pays.
+                      Every number is counted from the course itself. */}
+                  <div className="min-w-0 space-y-1.5">
+                    <p className="flex items-center gap-1.5 text-xs font-semibold text-ink">
+                      <Icon name="book-open" size={13} className="flex-none text-violet-400" />
+                      <span className="truncate">
+                        {t("courses.moduleCount", { count: facts.modules })}
+                        {facts.duration && ` · ${facts.duration}`}
+                      </span>
+                    </p>
+                    <p className="flex items-center gap-1.5 text-xs text-ink-low">
+                      <Icon name="zap" size={13} className="flex-none text-sky" />
+                      <span className="truncate">
+                        {facts.difficulty && `${facts.difficulty} · `}
+                        <span className="font-bold tabular-nums text-ink">{facts.xp} XP</span>
+                      </span>
+                    </p>
                   </div>
                   {isCompleted ? (
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={() => openCourse(course)}
-                      className="gap-1.5 border-state-success/30 bg-state-success/[0.08] text-state-success hover:bg-state-success/[0.15]"
+                      className="flex-none gap-1.5 border-state-success/30 bg-state-success/[0.08] text-state-success hover:bg-state-success/[0.15]"
                     >
                       <Icon name="refresh-cw" size={14} />
                       {t("courses.restart")}
@@ -175,7 +250,7 @@ const Courses = () => {
                       variant="ghost"
                       size="sm"
                       onClick={() => openCourse(course)}
-                      className="border-state-success/30 bg-state-success/[0.08] text-state-success hover:bg-state-success/[0.15]"
+                      className="flex-none border-state-success/30 bg-state-success/[0.08] text-state-success hover:bg-state-success/[0.15]"
                     >
                       {t("courses.continueLearning")}
                     </Button>
@@ -183,13 +258,13 @@ const Courses = () => {
                     <Button
                       size="sm"
                       onClick={() => openCourse(course)}
-                      className="gap-1.5 border-state-warning/30 bg-state-warning/[0.10] text-state-warning hover:bg-state-warning/[0.18]"
+                      className="flex-none gap-1.5 border-state-warning/30 bg-state-warning/[0.10] text-state-warning hover:bg-state-warning/[0.18]"
                     >
                       <Icon name="refresh-cw" size={14} />
                       {t("courses.rejoin")}
                     </Button>
                   ) : (
-                    <Button size="sm" onClick={() => openCourse(course)}>
+                    <Button size="sm" className="flex-none" onClick={() => openCourse(course)}>
                       {t("courses.viewCourse")}
                     </Button>
                   )}

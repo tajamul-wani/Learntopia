@@ -106,7 +106,7 @@ function ToastCard({ toast: item, onDismiss }) {
       <button
         type="button"
         onClick={close}
-        aria-label="Dismiss notification"
+        aria-label={t("ui.dismissNotification")}
         className="absolute right-2 top-2 grid h-6 w-6 place-items-center rounded-md text-ink-faint transition-colors hover:bg-surface-2 hover:text-ink"
       >
         <Icon name="close" size={13} />

@@ -4,6 +4,7 @@ import { useSound } from "../context/SoundContext";
 import { sendMessageToGemini, buildSystemPrompt } from "../services/geminiService";
 import Icon from "./ui/Icon";
 import BotAvatar from "./BotAvatar";
+import { tutorFor } from "../config/tutor";
 
 /**
  * AIChatDrawer — Premium Slide-out AI Tutor Drawer
@@ -18,7 +19,8 @@ const AIChatDrawer = ({ isOpen, onClose, course, currentModule }) => {
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
-  const tutor = course?.aiTutor || { name: "AI Tutor", role: "Learning Buddy" };
+  // Leo everywhere; the course is what makes the answers specific.
+  const tutor = tutorFor(t);
   const systemPrompt = course ? buildSystemPrompt(tutor, course, currentModule) : "";
 
   // Auto-scroll to bottom when messages update
@@ -178,7 +180,7 @@ const AIChatDrawer = ({ isOpen, onClose, course, currentModule }) => {
         <div className="flex items-center justify-between border-b border-white/10 bg-surface p-4 shadow-lg">
           <div className="flex items-center gap-3 min-w-0">
             <div className="relative flex-none">
-              <BotAvatar name={tutor.name} size="sm" />
+              <BotAvatar size="sm" />
               <div className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full border-2 border-ground-900 bg-state-success shadow-sm" />
             </div>
             <div className="min-w-0">
@@ -217,7 +219,7 @@ const AIChatDrawer = ({ isOpen, onClose, course, currentModule }) => {
             >
               {/* Avatar for AI */}
               {msg.role === "model" && (
-                <BotAvatar name={tutor.name} size="sm" className="!w-8 !h-8 !p-1 flex-none mt-0.5" />
+                <BotAvatar size="sm" className="!w-8 !h-8 !p-1 flex-none mt-0.5" />
               )}
 
               <div
@@ -243,7 +245,7 @@ const AIChatDrawer = ({ isOpen, onClose, course, currentModule }) => {
           {/* Typing Indicator */}
           {isLoading && (
             <div className="flex items-start gap-2.5">
-              <BotAvatar name={tutor.name} size="sm" className="!w-8 !h-8 !p-1 flex-none" />
+              <BotAvatar size="sm" className="!w-8 !h-8 !p-1 flex-none" />
               <div className="rounded-2xl rounded-tl-none border border-violet-500/30 bg-violet-500/10 p-3.5 shadow-clay-sm">
                 <div className="flex items-center gap-2">
                   <div className="flex items-center gap-1">
@@ -270,7 +272,7 @@ const AIChatDrawer = ({ isOpen, onClose, course, currentModule }) => {
         {/* Quick Suggestion Chips (when conversation is fresh) */}
         {messages.length <= 2 && !isLoading && (
           <div className="px-4 pb-2">
-            <p className="mb-2 text-[11px] font-bold uppercase tracking-wider text-ink-low">Suggested Prompts:</p>
+            <p className="mb-2 text-[11px] font-bold uppercase tracking-wider text-ink-low">{t("ui.suggestedPrompts")}</p>
             <div className="flex flex-wrap gap-1.5">
               {suggestionChips.map((chip, i) => (
                 <button

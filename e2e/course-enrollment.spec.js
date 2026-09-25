@@ -41,6 +41,42 @@ test.describe("course enrollment flow", () => {
     await expect(page.getByRole("button", { name: /start this course/i })).toBeHidden({ timeout: 20000 });
   });
 
+  // Joining used to be a spinner inside a button — the page just became a
+  // different page. Crossing into a course should look like crossing into one.
+  test("joining shows the way in, then lands on the course", async ({ page, learner }) => {
+    await page.goto(`/course/${COURSE_ID}`, { waitUntil: "domcontentloaded" });
+    await expect(page.getByLabel("Loading page")).toBeHidden({ timeout: 20000 });
+    await page.getByRole("button", { name: /start this course/i }).click();
+
+    // The doorway names the course being entered, so it can never be mistaken
+    // for a generic loading screen.
+    const doorway = page.getByTestId("course-doorway");
+    await expect(doorway).toBeVisible({ timeout: 10000 });
+    await expect(doorway).toContainText(/Python for Kids/i);
+
+    // It clears itself — nothing here waits on a click.
+    await expect(doorway).toBeHidden({ timeout: 15000 });
+
+    // The regression this guards: the doorway used to run on its own timer, so
+    // it closed while the enrolment was still being written and dropped the
+    // learner back onto a spinning button for a few seconds. It now waits for
+    // the course, so the course must already be there the instant it closes —
+    // hence a tight timeout here, not a generous one.
+    await expect(
+      page.getByRole("button", { name: /course curriculum/i }),
+      "the doorway closed before the course was ready"
+    ).toBeVisible({ timeout: 1000 });
+    await expect(
+      page.getByRole("button", { name: /start this course/i }),
+      "the learner was sent back to the preview after the animation"
+    ).toBeHidden();
+
+    expect(
+      await docExists(`Users/${learner.uid}/enrolledCourses/${COURSE_ID}`),
+      "the animation played but the learner was never enrolled"
+    ).toBe(true);
+  });
+
   // The other silent bug: leaving a course closed it on the dashboard but the
   // URL still taught you.
   test("a learner who left sees the preview, not the lessons", async ({ page, learner }) => {

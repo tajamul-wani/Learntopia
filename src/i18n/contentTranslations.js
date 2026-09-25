@@ -694,7 +694,6 @@ export const contentTranslations = {
           "Construir un juego de texto totalmente jugable"
         ],
         prerequisites: ["Una computadora con acceso a internet", "Habilidades básicas de mecanografía"],
-        aiTutor: { name: "Robo-Py", role: "Compañero de Código IA" },
         modules: [
           {
             title: "Módulo 1: ¡Hola Python!",
@@ -789,7 +788,6 @@ export const contentTranslations = {
           "Entender patrones, lógica y secuencias"
         ],
         prerequisites: ["Matemáticas básicas de primaria", "Papel y lápiz para practicar"],
-        aiTutor: { name: "Count AI-Cula", role: "Genio Matemático IA" },
         modules: [
           {
             title: "Módulo 1: Patrones Numéricos",
@@ -879,7 +877,6 @@ export const contentTranslations = {
           "Aprender los conceptos básicos de inversión"
         ],
         prerequisites: ["Habilidades matemáticas básicas (porcentajes, suma)"],
-        aiTutor: { name: "Penny Bot", role: "Asesor Financiero IA" },
         modules: [
           {
             title: "Módulo 1: ¿Qué es el Dinero?",
@@ -960,7 +957,6 @@ export const contentTranslations = {
           "Diseñar una campaña simulada"
         ],
         prerequisites: ["Familiaridad con redes sociales"],
-        aiTutor: { name: "Viral AI", role: "Estratega de Marketing IA" },
         modules: [
           {
             title: "Módulo 1: Marca e Identidad",
@@ -1036,7 +1032,6 @@ export const contentTranslations = {
           "Publicar tu sitio web"
         ],
         prerequisites: ["Una computadora con navegador web"],
-        aiTutor: { name: "WebWeaver", role: "Maestro Frontend IA" },
         modules: [
           {
             title: "Módulo 1: Estructura HTML",
@@ -1112,7 +1107,6 @@ export const contentTranslations = {
           "Renderizar y pulir ilustraciones"
         ],
         prerequisites: ["Una tableta de dibujo digital"],
-        aiTutor: { name: "Pixel Bot", role: "Artista de Concepto IA" },
         modules: [
           {
             title: "Módulo 1: Capas y Arte No Destructivo",

@@ -39,6 +39,29 @@ test.describe("course experience (signed in)", () => {
     await expect(page.locator('svg[viewBox="0 0 100 100"]').first()).toBeVisible();
   });
 
+  // LT-51 PR2: the hero exists to help someone choose. On the curriculum that
+  // choice is made, so it gets out of the way of the modules.
+  test("the curriculum drops the sales header but keeps the course named", async ({ page, learner }) => {
+    await enrollLearner(learner.uid, 1);
+    await page.goto(COURSE_PATH, { waitUntil: "domcontentloaded" });
+    await expect(page.getByLabel("Loading page")).toBeHidden({ timeout: 20000 });
+
+    // Overview still answers "is this course for me".
+    const pitch = page.getByText(/Learn to code by building real games/i);
+    const level = page.getByText("Beginner", { exact: true });
+    await expect(pitch).toBeVisible();
+    await expect(level.first()).toBeVisible();
+
+    await page.getByRole("button", { name: /course curriculum/i }).click();
+    await expect(page.getByRole("heading", { name: /course modules/i })).toBeVisible();
+
+    await expect(pitch, "the sales pitch followed the learner into the curriculum").toBeHidden();
+    await expect(level.first(), "the choose-a-course tiles are still in the way").toBeHidden();
+
+    // But they are never lost as to which course they are in.
+    await expect(page.getByRole("heading", { name: /Python for Kids/i }).first()).toBeVisible();
+  });
+
   test("matching keeps a stable order on tap and links the matched pair (LT-64)", async ({ page, learner }) => {
     expect(learner.uid).toBeTruthy();
     // Opening a course page no longer enrols anyone (LT-51); this spec is about
