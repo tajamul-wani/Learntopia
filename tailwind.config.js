@@ -102,6 +102,17 @@ export default {
           "0%": { opacity: "0", transform: "scale(0.94) translateY(8px)" },
           "100%": { opacity: "1", transform: "scale(1) translateY(0)" },
         },
+        // The tutor launcher's resting state: a slow sonar ring and a soft
+        // breath, so the bot reads as available without ever demanding a tap.
+        "tutor-ping": {
+          "0%": { transform: "scale(1)", opacity: "0.5" },
+          "70%": { transform: "scale(1.5)", opacity: "0" },
+          "100%": { transform: "scale(1.5)", opacity: "0" },
+        },
+        "tutor-breathe": {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-4px)" },
+        },
       },
       animation: {
         shimmer: "shimmer 1.5s infinite",
@@ -109,6 +120,8 @@ export default {
         "fade-in": "fade-in 0.5s ease forwards",
         "scale-up": "scale-up 0.35s ease forwards",
         "popup-pop": "popup-pop 0.28s cubic-bezier(0.22,1,0.36,1) forwards",
+        "tutor-ping": "tutor-ping 2.8s cubic-bezier(0,0,0.2,1) infinite",
+        "tutor-breathe": "tutor-breathe 3.6s ease-in-out infinite",
       },
     },
   },

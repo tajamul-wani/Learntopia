@@ -2,8 +2,12 @@ import Card from "./ui/Card";
 import Button from "./ui/Button";
 import Icon from "./ui/Icon";
 import ImageWithSkeleton from "./ui/ImageWithSkeleton";
+import CourseFactTiles from "./CourseFactTiles";
+import { courseTint } from "../utils/courseTint";
 import { useLanguage } from "../context/LanguageContext";
 import { progressPercent } from "../utils/enrollmentState";
+import { courseFacts, courseSkills } from "../utils/courseFacts";
+import { TUTOR_NAME } from "../config/tutor";
 
 /**
  * The course page as it looks before a learner joins — and the only way into a
@@ -204,17 +208,28 @@ const CoursePreview = ({ course, action = "enroll", enrolment = null, onAction, 
           </section>
         )}
 
-        {/* The AI tutor is a real feature and worth saying so, once. */}
-        {course?.aiTutor?.name && (
-          <Card className="mt-6 flex items-center gap-3.5 p-4 sm:p-5">
+        {/* The two things that are real and worth saying once: who helps, and
+            what finishing pays out. */}
+        <div className="mt-8 grid gap-3.5 sm:grid-cols-2 md:mt-14">
+          <Card className="flex items-center gap-3.5 p-4 sm:p-5">
             <span className="grid h-11 w-11 flex-none place-items-center rounded-xl bg-sky/12 text-sky shadow-clay-sm">
               <Icon name="robot" size={20} />
             </span>
             <p className="min-w-0 text-sm text-ink">
-              {t("coursePreview.tutorLine", { name: course.aiTutor.name })}
+              {t("coursePreview.tutorLine", { name: TUTOR_NAME })}
             </p>
           </Card>
-        )}
+          {facts.badge && (
+            <Card className="flex items-center gap-3.5 p-4 sm:p-5">
+              <span className="grid h-11 w-11 flex-none place-items-center rounded-xl bg-gold-500/12 text-gold-400 shadow-clay-sm">
+                <Icon name={course?.badge?.icon || "award"} size={20} />
+              </span>
+              <p className="min-w-0 text-sm text-ink">
+                {t("coursePreview.badgeLine", { name: facts.badge })}
+              </p>
+            </Card>
+          )}
+        </div>
       </div>
     </div>
   );

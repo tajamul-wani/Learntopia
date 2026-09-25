@@ -44,7 +44,9 @@ export const translations = {
       "unavailable": "Your AI tutor is having a rest right now. Please try again later.",
       "clearChat": "Clear chat history",
       "poweredBy": "Powered by Google Gemini 2.0 Flash • Kid-Safe AI",
-      "chatGreeting": "Hi there! I'm {name}, your {subject} buddy! Ask me anything about this course, and let's learn together!"
+      "chatGreeting": "Hi there! I'm {name}, your {subject} buddy! Ask me anything about this course, and let's learn together!",
+      "launcherTeaser": "Hi! I'm {name}. Stuck on anything? Just ask me.",
+      "dismissTeaser": "Hide this message"
     },
     nav: {
       home: "Home",
@@ -183,12 +185,9 @@ export const translations = {
       category: "Category",
       backToCourses: "Back to Courses",
       module: "Module",
-      yourAiTutor: "Your AI Tutor",
-      aiTutorSub: "I am powered by AI and I'm here to help you master this course!",
       askTutor: "Ask {name}",
       courseModules: "Course Modules",
       moduleUnlockHint: "Complete all exercises in a module to unlock the next one.",
-      needHelpAskAi: "Need help? Ask AI",
       completePreviousToUnlock: "Complete the previous module to unlock",
       certificate: "Certificate",
       certificateEarned: "Earned. View it on your dashboard.",
@@ -975,7 +974,9 @@ export const translations = {
       "unavailable": "Tu tutor IA está descansando ahora mismo. Inténtalo más tarde.",
       "clearChat": "Limpiar historial de chat",
       "poweredBy": "Desarrollado por Google Gemini 2.0 Flash • IA Segura para Niños",
-      "chatGreeting": "¡Hola! Soy {name}, ¡tu compañero de {subject}! Pregúntame lo que quieras sobre este curso, ¡y aprendamos juntos!"
+      "chatGreeting": "¡Hola! Soy {name}, ¡tu compañero de {subject}! Pregúntame lo que quieras sobre este curso, ¡y aprendamos juntos!",
+      "launcherTeaser": "¡Hola! Soy {name}. ¿Te atascas? Solo pregúntame.",
+      "dismissTeaser": "Ocultar este mensaje"
     },
     nav: {
       home: "Inicio",
@@ -1114,12 +1115,9 @@ export const translations = {
       category: "Categoría",
       backToCourses: "Volver a Cursos",
       module: "Módulo",
-      yourAiTutor: "Tu Tutor IA",
-      aiTutorSub: "¡Tengo tecnología de IA y estoy aquí para ayudarte a dominar este curso!",
       askTutor: "Preguntar a {name}",
       courseModules: "Módulos del Curso",
       moduleUnlockHint: "Completa todos los ejercicios de un módulo para desbloquear el siguiente.",
-      needHelpAskAi: "¿Necesitas ayuda? Pregunta a la IA",
       completePreviousToUnlock: "Completa el módulo anterior para desbloquear",
       certificate: "Certificado",
       certificateEarned: "¡Obtenido! Míralo en tu panel.",
