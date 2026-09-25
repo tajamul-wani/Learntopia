@@ -27,6 +27,9 @@ const Courses = () => {
   // Courses the user left but can rejoin — their saved progress still exists.
   const [unenrolledIds, setUnenrolledIds] = useState([]);
   const [completedIds, setCompletedIds] = useState([]);
+  // Finished and left courses are still a learner's own history, so they get
+  // their own tabs instead of sitting in the catalog with a badge on them.
+  const [tab, setTab] = useState("all");
 
   useEffect(() => {
     if (currentUser) {
@@ -68,13 +71,36 @@ const Courses = () => {
     return COURSES.map((c) => getLocalizedCourse(c, t));
   }, [t]);
 
+  // Tabs only mean anything once a learner has a history, so they are hidden
+  // when signed out and when there is nothing in them yet.
+  const tabs = useMemo(() => {
+    if (!currentUser) return [];
+    const available = [{ key: "all", count: localizedCourses.length }];
+    if (completedIds.length > 0) available.push({ key: "completed", count: completedIds.length });
+    if (unenrolledIds.length > 0) available.push({ key: "left", count: unenrolledIds.length });
+    return available.length > 1 ? available : [];
+  }, [currentUser, localizedCourses.length, completedIds.length, unenrolledIds.length]);
+
+  // A tab can empty out under the learner — finishing the last left course, for
+  // instance — so fall back to the catalog rather than showing a dead tab.
+  useEffect(() => {
+    if (tab !== "all" && !tabs.some((item) => item.key === tab)) setTab("all");
+  }, [tab, tabs]);
+
   const filtered = useMemo(() => {
+    const inTab =
+      tab === "completed"
+        ? localizedCourses.filter((c) => completedIds.includes(c.id.toString()))
+        : tab === "left"
+          ? localizedCourses.filter((c) => unenrolledIds.includes(c.id.toString()))
+          : localizedCourses;
+
     const q = query.trim().toLowerCase();
-    if (!q) return localizedCourses;
-    return localizedCourses.filter(
+    if (!q) return inTab;
+    return inTab.filter(
       (c) => c.title.toLowerCase().includes(q) || c.category.toLowerCase().includes(q)
     );
-  }, [query, localizedCourses]);
+  }, [query, localizedCourses, tab, completedIds, unenrolledIds]);
 
   return (
     <div className="container-page py-16 md:py-20">
@@ -84,6 +110,45 @@ const Courses = () => {
         title={t("courses.title")}
         description={t("courses.subtitle")}
       />
+
+      {/* Catalog / Completed / Left — a learner's own history, kept out of the
+          catalog rather than layered onto it as badges. */}
+      {tabs.length > 0 && (
+        <div className="mt-8 flex justify-center">
+          <div
+            role="tablist"
+            aria-label={t("courses.tabsLabel")}
+            className="flex max-w-full gap-1 overflow-x-auto rounded-2xl border border-white/10 bg-surface p-1 shadow-clay-sm"
+          >
+            {tabs.map(({ key, count }) => (
+              <button
+                key={key}
+                role="tab"
+                type="button"
+                aria-selected={tab === key}
+                onClick={() => {
+                  playClick();
+                  setTab(key);
+                }}
+                className={`flex flex-none items-center gap-2 whitespace-nowrap rounded-xl px-3.5 py-2 text-sm font-bold transition-colors sm:px-4 ${
+                  tab === key
+                    ? "bg-violet-500/15 text-violet-300"
+                    : "text-ink-low hover:bg-white/[0.04] hover:text-ink-hi"
+                }`}
+              >
+                {t(`courses.tab.${key}`)}
+                <span
+                  className={`rounded-md px-1.5 py-0.5 text-[11px] tabular-nums ${
+                    tab === key ? "bg-violet-500/20 text-violet-300" : "bg-surface-2 text-ink-faint"
+                  }`}
+                >
+                  {count}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Search */}
       <div className="mx-auto mt-8 max-w-xl">
