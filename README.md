@@ -58,8 +58,8 @@ translated into English and Spanish.
 - **Courses**: multi-module tracks with lessons, exercises (multiple choice,
   true/false, fill in the blank, matching pairs) and a syllabus map.
 - **Quizzes**: timed, scored, with a leaderboard per quiz.
-- **AI tutor**: a per-course assistant on Google Gemini, with the key held in a
-  Cloudflare Worker.
+- **AI tutor**: Leo, one assistant across every course, on Google Gemini with
+  the key held in a Cloudflare Worker.
 - **Progress**: XP, levels, badges, daily streaks, a global leaderboard, and a
   dashboard covering courses and quiz history.
 - **Accounts**: email and password or Google sign-in, 26 built-in avatars,
@@ -147,6 +147,11 @@ them pass.
 | **Unit and component** (`npm run test:unit`, Vitest) | Pure helpers and React components with no browser or database: identity and name rules, level maths, the legacy-name scrub's decisions, and component behaviour through Testing Library |
 | **Static** (`npm run lint`, `npm run build`, `npm run test:palette`) | Lint errors, build breakage, and colours outside the design system |
 
+Two guards run inside the unit layer and will fail a pull request on their own:
+`test/palette.test.js` rejects a colour that is not a design token, and
+`test/no-untranslated-ui.test.js` rejects a string written into JSX instead of
+`src/i18n/translations.js`.
+
 **No credentials, and no internet.** The app under test talks to the local
 Firebase Auth and Firestore emulators under the emulator-only
 `demo-learntopia` project, so tests never read or write production data. Each
@@ -182,6 +187,7 @@ src/
 ├── assets/             Images, course art and Lottie animations
 ├── context/            Auth, gamification, language, sound, toast, nav chrome
 ├── data/               Courses, quizzes and avatar definitions
+├── config/             Single-source app constants, such as the AI tutor
 ├── firebase/           Firebase setup, including the emulator switch
 ├── hooks/              Shared React hooks
 ├── i18n/               English and Spanish strings, UI and course content
@@ -189,12 +195,12 @@ src/
 ├── lib/                Monitoring and DOM guards
 ├── pages/              Routed pages (home, courses, quiz, dashboard, docs, legal)
 ├── services/           Gemini client, account deletion
-├── utils/              Profile, localisation, badges, sound helpers
+├── utils/              Profile, localisation, enrolment state, course facts, badges
 ├── App.jsx             Routes
 └── main.jsx            Entry point
 
 e2e/                    Playwright specs, with shared setup in support/
-test/                   Firestore rules tests and the palette guard
+test/                   Firestore rules tests, the palette guard and the i18n guard
 scripts/                Brand and avatar generation, build checks
 public/                 Brand SVG sources and generated PNGs
 worker/                 Cloudflare Worker: Gemini proxy
@@ -323,6 +329,9 @@ above all: a change ships with the tests that prove it.
    undone together, not by file. Use `type: imperative summary`.
 7. Keep to the design system. New colours need discussion first, and the
    palette guard enforces the rest.
+8. Put every string a learner reads in `src/i18n/translations.js` under English
+   and Spanish, and render it with `t()`. The i18n guard fails the build on
+   hardcoded text.
 
 ---
 
