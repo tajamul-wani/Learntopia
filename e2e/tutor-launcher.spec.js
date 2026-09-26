@@ -19,11 +19,11 @@ test.describe("tutor launcher", () => {
     await settle(page);
 
     // The bubble types itself in after a beat, so its text arrives late and
-    // grows — waiting on the final sentence proves it finished typing rather
-    // than rendering all at once.
+    // grows. Waiting on the whole sentence, ending included, proves it finished
+    // typing rather than rendering all at once.
     const teaser = page.getByTestId("tutor-teaser");
     await expect(teaser).toBeVisible({ timeout: 10000 });
-    await expect(teaser).toContainText("Just ask me.", { timeout: 10000 });
+    await expect(teaser).toContainText("Hi! I'm Leo. Stuck? Just ask.", { timeout: 10000 });
 
     const launcher = page.getByTestId("tutor-launcher");
     await expect(launcher).toBeVisible();

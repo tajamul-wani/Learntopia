@@ -586,7 +586,7 @@ export const contentTranslations = {
           { questionText: "¿Qué es el razonamiento deductivo?", options: ["Adivinar al azar", "Usar pistas para eliminar respuestas incorrectas", "Sumar números", "Dibujar formas"] },
           { questionText: "¿Qué es un algoritmo?", options: ["Un error matemático", "Un tipo de dinosaurio", "Una lista de instrucciones paso a paso", "Una figura 3D"] },
           { questionText: "¿Por qué importa el orden de los pasos en un algoritmo?", options: ["No importa", "Para que la computadora no se confunda y falle", "Porque se ve bonito", "Para ahorrar electricidad"] },
-          { questionText: "¿Cuál es la mejor forma de resolver un problema enorme y difícil?", options: ["Llorar", "Dividirlo en pasos pequeños y fáciles", "Adivinar", "Rendirse"] },
+          { questionText: "¿Cuál es la mejor forma de resolver un problema enorme y difícil?", options: ["Dividirlo en pasos pequeños y sencillos", "Empezar por la parte más difícil e ir hacia atrás", "Hacerlo entero de cabeza y de una vez", "Saltar al resultado y comprobarlo después"] },
           { questionText: "La secuencia de Fibonacci se encuentra en:", options: ["Solo en libros de texto", "Semillas de girasol y galaxias", "Solo en computadoras", "En ningún lugar"] },
           { questionText: "Si tienes un triángulo, ¿cuántos ángulos tiene?", options: ["2", "3", "4", "5"] },
           { questionText: "¿Qué empresa usa algoritmos para encontrar sitios web para ti?", options: ["Nintendo", "Google", "McDonald's", "Ford"] }
@@ -699,16 +699,16 @@ export const contentTranslations = {
             title: "Módulo 1: ¡Hola Python!",
             desc: "Aprende qué es Python y escribe tus primeras líneas de código.",
             contentSections: [
-              { title: "Conoce a Alex el Inventor", content: "Alex tiene 11 años y le encantan los videojuegos. Un día Alex pensó: '¿Y si pudiera CREAR mi propio juego en lugar de solo jugarlos?' Su profesora le dijo: '¡Puedes! Solo necesitas un lenguaje llamado Python.' Esta también es TU historia: al final de este curso, ¡crearás tu propio juego desde cero!" },
-              { title: "¿Qué es Python?", content: "Python es un lenguaje de programación: un conjunto especial de palabras y reglas que usas para hablar con las computadoras. ¡Imagina que tienes un amigo robot, pero solo entiende un idioma: Python! Si quieres que el robot baile, dibuje o resuelva problemas de matemáticas, tienes que escribir instrucciones en Python. ¿Lo mejor? Python fue diseñado para parecerse casi al inglés normal, así que es uno de los lenguajes más fáciles de aprender." },
+              { title: "Conoce a Alex el Inventor", content: "Alex tiene 11 años y le encantan los videojuegos. Un día pensó: ¿y si pudiera CREAR uno en vez de solo jugarlo? Su profesora le dijo que sí, que solo necesitaba Python. Esta también es tu historia." },
+              { title: "¿Qué es Python?", content: "Python es un lenguaje para decirle a las computadoras qué hacer. Imagina un amigo robot que solo entiende Python. ¿Quieres que dibuje, baile o resuelva sumas? Escríbelo en Python. Se lee casi como el inglés." },
               { title: "¡Dato Curioso!", content: "¡Python no recibió su nombre por la serpiente! Fue nombrado por un divertido programa de comedia británico llamado 'Monty Python's Flying Circus'. El creador, Guido van Rossum, lo estaba viendo mientras programaba Python y pensó que el nombre era divertido." },
-              { title: "Tu Primer Comando: print()", content: "El comando print() le dice a la computadora que muestre texto en la pantalla. Prueba esto:\n\nprint('Hello World!')\n\nCuando lo ejecutes, la computadora mostrará: Hello World!\n\nPuedes imprimir lo que quieras:\nprint('My name is Alex!')\nprint('I am learning Python!')\n\n¿Notas cómo el texto siempre va entre comillas? ¡Eso le dice a Python: 'Oye, esto es texto, no un comando!'" },
+              { title: "Tu Primer Comando: print()", content: "print() muestra texto en la pantalla:\n\nprint('Hello World!')\n\nLa computadora escribe: Hello World!\n\nPuedes imprimir lo que quieras. Fíjate en las comillas: le dicen a Python que eso es texto, no un comando." },
               { title: "Consejo Pro: ¡No Olvides las Comillas!", content: "Un error muy común de los principiantes es olvidar las comillas alrededor del texto. Si escribes print(Hello) sin comillas, Python se confundirá y mostrará un error. ¡Envuelve siempre tu texto en comillas simples ('Hello') o dobles (\"Hello\") — ambas funcionan!" },
-              { title: "¡Inténtalo Tú Mismo!", content: "Si tienes Python en tu computadora, ábrelo y prueba escribir estos comandos uno por uno:\n\n1. print('Hello World!')\n2. print('My name is [TU NOMBRE]!')\n3. print('I am learning to code!')\n4. print('Python is awesome!')\n\nObserva qué pasa después de cada uno. ¡Acabas de hacer que una computadora hable!" },
-              { title: "Resumen del Módulo 1", content: "Repasemos lo que aprendiste:\n\n• Python es un lenguaje de programación usado para dar instrucciones a las computadoras\n• ¡Fue nombrado por un programa de comedia, no por la serpiente!\n• El comando print() muestra texto en la pantalla\n• El texto debe ir entre comillas (simples o dobles)\n• Acabas de escribir tu primer código real — ¡ya eres oficialmente programador!" }
+              { title: "¡Inténtalo Tú Mismo!", content: "Si tienes Python, ábrelo y escribe estas líneas una a una:\n\nprint('Hello World!')\nprint('My name is [TU NOMBRE]!')\nprint('Python is awesome!')\n\nAcabas de hacer hablar a una computadora." },
+              { title: "Resumen del Módulo 1", content: "• Python es un lenguaje para dar instrucciones a las computadoras\n• Se llama así por un programa de humor, no por la serpiente\n• print() muestra texto en pantalla\n• El texto va entre comillas\n• Acabas de escribir código real" }
             ],
             exercises: [
-              { question: "¿Qué es Python?", options: ["Un tipo de serpiente", "Un lenguaje de programación para hablar con las computadoras", "Un motor de videojuegos", "Un navegador web"] },
+              { question: "¿Qué es Python?", options: [ "Una app de dibujo para crear arte de videojuegos", "Un lenguaje de programación para hablar con las computadoras", "Un tipo de computadora que ejecuta juegos", "Una web donde se descargan videojuegos" ] },
               { question: "Python recibió su nombre por la serpiente." },
               { question: "El comando ___ muestra texto en la pantalla en Python." },
               { question: "¿Por qué necesitamos comillas alrededor del texto en print()?", options: ["Para que se vea bonito", "Para que Python sepa que es texto, no un comando", "Las comillas son opcionales", "Para agrandar el texto"] },
@@ -720,12 +720,12 @@ export const contentTranslations = {
             desc: "Almacena números y texto en la memoria como un profesional.",
             contentSections: [
               { title: "Alex Necesita un Marcador", content: "El juego de Alex avanza, pero hay un problema: ¿cómo recuerda la computadora la puntuación del jugador? Cuando un jugador consigue 10 puntos, ¿a dónde va ese número? Alex necesita una forma de GUARDAR información. ¡Eso es exactamente lo que hacen las variables!" },
-              { title: "¿Qué es una Variable?", content: "Piensa en una variable como una caja etiquetada donde puedes guardar cosas. Si tienes una caja etiquetada 'score' y pones el número 10 dentro, ¡tu variable score ahora es igual a 10!\n\nEn Python, creas una variable así:\nscore = 10\nplayer_name = 'Alex'\n\nEl signo = no significa 'igual' como en matemáticas — significa 'pon este valor dentro de esta caja'. Así que score = 10 significa 'crea una caja llamada score y pon 10 dentro'." },
-              { title: "Diferentes Tipos de Datos", content: "Las computadoras son exigentes: necesitan saber QUÉ TIPO de cosa hay en cada caja:\n\n• Enteros (int): Números enteros como 5, 42 o 1000. ¡Ideales para puntuaciones!\n• Cadenas (str): Texto entre comillas como 'Hello' o 'Alex'. ¡Se usan para nombres y mensajes!\n• Decimales (float): Números con decimales como 3.14 o 99.9. ¡Se usan para precios y medidas precisas!\n• Booleanos (bool): Solo True o False. Como un interruptor de luz: encendido o apagado.\n\nPython es lo bastante inteligente para averiguar el tipo automáticamente cuando creas una variable." },
-              { title: "Variables en Acción", content: "Mira cómo Alex usa variables en el juego:\n\nplayer_name = 'Alex'\nscore = 0\nlives = 3\n\nscore = score + 10\nprint('Score:', score)\n\nLa computadora mostrará: Score: 10\n\n¡Fíjate cómo funciona score = score + 10: Python mira el valor ANTERIOR de score (0), le suma 10 y pone el NUEVO valor (10) de vuelta en la caja!" },
-              { title: "¡Tu Cerebro Está Lleno de Variables!", content: "¡Tu cerebro funciona igual que una computadora con variables! Ahora mismo, tu cerebro tiene una variable llamada 'mi_nombre' que guarda tu nombre, una variable 'mi_edad' que guarda tu edad y una variable 'color_favorito' que guarda tu color favorito. Simplemente no las piensas como 'variables', ¡pero eso es exactamente lo que son!" },
-              { title: "Cómo Nombrar tus Variables", content: "Los buenos nombres de variables describen lo que hay dentro de la caja:\n\nBien: player_score, user_name, lives_remaining\nMal: x, thing, abc123\n\nReglas para los nombres de variables en Python:\n• ¡Sin espacios! Usa guiones bajos: player_name (no player name)\n• No pueden empezar con número: 1score está mal, score1 está bien\n• Python distingue mayúsculas: ¡Score y score son variables DIFERENTES!" },
-              { title: "Resumen del Módulo 2", content: "Repasemos lo que aprendiste:\n\n• Las variables son cajas etiquetadas que guardan datos\n• El signo = significa 'pon este valor en la caja'\n• Los enteros son números enteros, las cadenas son texto, los decimales tienen coma, los booleanos son True/False\n• Puedes actualizar una variable: score = score + 10\n• Usa nombres descriptivos: player_score es mejor que x\n• ¡Python distingue mayúsculas: score y Score son diferentes!" }
+              { title: "¿Qué es una Variable?", content: "Una variable es una caja con etiqueta. Pon 10 en una caja llamada score y score vale 10.\n\nscore = 10\nplayer_name = 'Alex'\n\nEl = no significa igual. Significa pon este valor en esta caja." },
+              { title: "Diferentes Tipos de Datos", content: "La computadora necesita saber QUÉ TIPO de cosa hay en cada caja:\n\nint — números enteros: 5, 42\nstr — texto entre comillas: 'Alex'\nfloat — decimales: 3.14\nbool — True o False\n\nPython deduce el tipo por ti." },
+              { title: "Variables en Acción", content: "Así usa Alex las variables:\n\nscore = 0\nscore = score + 10\nprint('Score:', score)\n\nMuestra: Score: 10. Python mira el valor anterior, le suma 10 y guarda el nuevo en la caja." },
+              { title: "¡Tu Cerebro Está Lleno de Variables!", content: "Tu cerebro hace lo mismo. Guarda una caja llamada mi_nombre con tu nombre, otra mi_edad y otra con tu color favorito. Simplemente nunca las llamaste variables." },
+              { title: "Nombra Estas Cajas", content: "Escribe un buen nombre de variable para cada una: la mejor puntuación, cuántas vidas quedan, si la partida terminó. Luego revísalos: sin espacios, nunca empezando por número, y score no es lo mismo que Score." },
+              { title: "Resumen del Módulo 2", content: "• Las variables son cajas con etiqueta que guardan datos\n• El = mete un valor en la caja\n• int, str, float y bool son los tipos principales\n• score = score + 10 actualiza una caja\n• Score y score son cajas distintas" }
             ],
             exercises: [
               { question: "¿Qué es una variable en programación?", options: ["Un tipo de mensaje de error", "Una caja etiquetada para guardar datos", "Una fórmula matemática", "Un comando de Python"] },
@@ -739,13 +739,13 @@ export const contentTranslations = {
             title: "Módulo 3: Condicionales (if) y Lógica",
             desc: "Haz tu código inteligente con decisiones y condiciones.",
             contentSections: [
-              { title: "El Juego de Alex Necesita un Cerebro", content: "El juego de Alex ya puede guardar puntuaciones, ¡genial! Pero hay un nuevo problema. Cuando un jugador llega a 100 puntos, el juego debería decir '¡GANASTE!' Y cuando el jugador pierde todas sus vidas, debería decir 'FIN DEL JUEGO'. Pero ¿cómo sabe la computadora CUÁNDO hacer estas cosas? Necesita la capacidad de tomar decisiones. ¡Para eso sirven los condicionales (if)!" },
-              { title: "Tomar Decisiones con 'if'", content: "Un condicional (if) permite que tu código tome decisiones, ¡igual que hace tu cerebro cada día!\n\nEn la vida real: 'SI está lloviendo, ENTONCES lleva un paraguas.'\nEn Python: if score > 100:\n              print('You win!')\n\nLa computadora revisa la condición (¿es score mayor que 100?). Si es VERDADERA, ejecuta el código de abajo. Si es FALSA, lo omite por completo." },
-              { title: "Añadir 'else' y 'elif'", content: "¿Y si quieres hacer algo DIFERENTE cuando la condición es falsa?\n\nif score > 100:\n    print('You win!')\nelse:\n    print('Keep trying!')\n\n¿Y si tienes VARIAS condiciones?\n\nif score > 100:\n    print('Amazing!')\nelif score > 50:\n    print('Getting close!')\nelse:\n    print('Keep going!')\n\n'elif' es la abreviatura de 'else if' — revisa otra condición si la primera fue falsa." },
-              { title: "¡Los Condicionales Están POR TODAS PARTES!", content: "¡Los videojuegos usan MILLONES de condicionales!\n\n• SI Mario golpea a un Goomba → pierde una vida\n• SI Mario agarra un hongo → crece\n• SI el temporizador llega a cero → ¡Fin del juego!\n• SI el jugador presiona el botón de salto → Mario salta\n\n¡Cada cosa que ocurre en un juego está controlada por condicionales trabajando juntos!" },
+              { title: "El Juego de Alex Necesita un Cerebro", content: "El juego de Alex guarda la puntuación pero no reacciona. Aciertas y no pasa nada. El juego tiene que tomar una decisión, y para eso existe el if." },
+              { title: "Tomar Decisiones con 'if'", content: "Un if ejecuta código solo cuando algo es verdad:\n\nif score > 100:\n    print('You win!')\n\nLa línea indentada solo se ejecuta si la puntuación pasa de 100. Si no, Python la salta." },
+              { title: "Añadir 'else' y 'elif'", content: "else recoge todo lo que el if no cogió. elif comprueba otra condición antes:\n\nif score > 100:\n    print('Amazing!')\nelif score > 50:\n    print('Close!')\nelse:\n    print('Keep going!')" },
+              { title: "¡Los Condicionales Están POR TODAS PARTES!", content: "Todas las apps que usas funcionan con esto. ¿Contraseña incorrecta? Un if. ¿Aviso de batería baja? Un if. ¿Pantalla de fin de partida? Un if comprobando si tus vidas llegaron a cero." },
               { title: "Operadores de Comparación", content: "Para escribir condiciones, necesitas operadores de comparación:\n\n>  significa 'mayor que'        (10 > 5 es True)\n<  significa 'menor que'        (3 < 7 es True)\n== significa 'igual a'          (5 == 5 es True)\n!= significa 'distinto de'      (5 != 3 es True)\n>= significa 'mayor o igual'    (10 >= 10 es True)\n<= significa 'menor o igual'    (4 <= 9 es True)\n\nFíjate: comprobar la igualdad usa == (doble igual), NO = (un solo igual). ¡El = simple es para asignar variables!" },
-              { title: "¡Los Dos Puntos Son Cruciales!", content: "Cada línea if, elif y else DEBE terminar con dos puntos (:)\n\nCorrecto: if score > 10:\nIncorrecto: if score > 10\n\nAdemás, el código que se ejecuta dentro del condicional debe estar indentado (desplazado a la derecha con espacios). ¡Python usa la indentación para saber qué código pertenece dentro del condicional!" },
-              { title: "Resumen del Módulo 3", content: "Repasemos lo que aprendiste:\n\n• Los condicionales (if) permiten que el código tome decisiones según condiciones\n• Usa 'else' cuando quieras que algo ocurra si la condición es falsa\n• Usa 'elif' para comprobar varias condiciones\n• Operadores de comparación: > < == != >= <=\n• El doble igual (==) comprueba igualdad, el igual simple (=) asigna variables\n• Termina siempre if/elif/else con dos puntos (:)\n• ¡Indenta el código dentro de tu condicional!" }
+              { title: "Encuentra el Error", content: "Una de estas líneas no funcionará:\n\nif score > 10\n    print('Win')\n\nBusca qué falta al final de la primera línea. Python lo necesita para saber que empieza un bloque." },
+              { title: "Resumen del Módulo 3", content: "• if ejecuta código solo cuando algo es verdad\n• else recoge todo lo que el if no cogió\n• elif comprueba otra condición\n• Los dos puntos y la indentación son obligatorios\n• Todas las apps están llenas de esto" }
             ],
             exercises: [
               { question: "¿Qué permiten hacer los condicionales (if) a un programa?", options: ["Colapsar la computadora", "Tomar decisiones según condiciones", "Solo imprimir texto", "Guardar variables"] },
@@ -759,17 +759,17 @@ export const contentTranslations = {
             title: "Módulo 4: ¡Crea un Juego de Adivinanzas!",
             desc: "¡Combina todo para crear tu primer juego real desde cero!",
             contentSections: [
-              { title: "El Gran Momento de Alex", content: "Por fin llegó el día. Alex conoce print(), las variables y los condicionales. ¡Ahora es momento de combinar TODAS estas habilidades para crear un juego real y jugable! El juego se llama 'Adivina el Número': la computadora elige un número secreto y el jugador tiene que adivinarlo. Después de cada intento, la computadora da pistas: '¡Muy alto!' o '¡Muy bajo!' ¡Vamos a crearlo!" },
-              { title: "¿Qué Son los Bucles?", content: "Un bucle te permite ejecutar el mismo código una y otra vez. Sin un bucle, ¡el jugador solo tendría UN intento — eso no es divertido!\n\nEl bucle 'while' sigue ejecutándose mientras una condición sea True:\n\nwhile guess != secret:\n    guess = input('Try again: ')\n\nEsto sigue pidiendo intentos hasta que el jugador acierte. ¡Cuando por fin adivina correctamente, el bucle se detiene!" },
-              { title: "Obtener la Entrada del Usuario", content: "El comando input() permite que el jugador escriba algo en el juego:\n\nguess = input('Enter your guess: ')\n\nLo que sea que el jugador escriba se guarda en la variable 'guess'. Sin embargo, hay algo complicado: ¡input() siempre te da una Cadena (texto), incluso si el jugador escribe un número! Para convertirlo en número y poder compararlo, usamos int():\n\nguess = int(input('Enter your guess: '))" },
-              { title: "El Código Completo del Juego", content: "Aquí está el juego de adivinanzas completo:\n\nimport random\n\nsecret = random.randint(1, 20)\nprint('I picked a number between 1 and 20!')\n\nguess = 0\nattempts = 0\n\nwhile guess != secret:\n    guess = int(input('Your guess: '))\n    attempts = attempts + 1\n    \n    if guess > secret:\n        print('Too High! Try lower.')\n    elif guess < secret:\n        print('Too Low! Try higher.')\n    else:\n        print('YOU GOT IT!')\n        print('It took you', attempts, 'guesses!')\n\n¡Cada concepto que aprendiste — print, variables, if/elif/else, bucles, input — se usa aquí!" },
-              { title: "Números Aleatorios en los Juegos", content: "La función random.randint(1, 20) elige un número aleatorio entre 1 y 20. ¡Cada juego que has jugado usa números aleatorios! Minecraft los usa para generar mundos, Pokémon los usa para decidir si atrapas un Pokémon y los juegos de cartas los usan para barajar el mazo. ¡La aleatoriedad hace que los juegos sean emocionantes porque nunca sabes qué pasará!" },
-              { title: "¡Mejora tu Juego!", content: "Cuando tu juego básico funcione, prueba estas mejoras:\n\nFácil: Cambia el rango de 1-20 a 1-100 para un juego más difícil\nMedio: Limita al jugador a solo 5 intentos. Si se le acaban, imprime '¡Fin del juego!'\nDifícil: Añade un sistema de puntuación — ¡menos intentos = más puntos!\nExperto: ¡Pregunta al jugador si quiere jugar de nuevo tras ganar!\n\n¡Cada mejora usa las mismas habilidades que ya aprendiste, solo combinadas de formas creativas!" },
-              { title: "¡Resumen Final del Curso!", content: "Felicidades — ¡has aprendido todos los fundamentos de Python!\n\n• print() muestra texto en la pantalla\n• Las variables guardan datos en cajas etiquetadas\n• Tipos de datos: Enteros, Cadenas, Decimales, Booleanos\n• If/elif/else toman decisiones según condiciones\n• Operadores de comparación: > < == != >= <=\n• Los bucles while repiten código hasta que una condición es falsa\n• input() obtiene información del usuario\n• int() convierte texto en número\n• random.randint() genera números aleatorios\n\n¡Estás listo para crear tus propios juegos — el cielo es el límite!" }
+              { title: "El Gran Momento de Alex", content: "Alex ya tiene variables, condicionales y un plan: un juego de adivinar. La computadora elige un número, tú adivinas y te dice mayor o menor. Todo lo de los tres módulos, en un juego." },
+              { title: "¿Qué Son los Bucles?", content: "Un bucle repite código para que no lo escribas veinte veces:\n\nwhile guess != answer:\n    guess = int(input('Guess: '))\n\nSigue preguntando hasta acertar. != significa distinto de." },
+              { title: "Obtener la Entrada del Usuario", content: "input() espera a que el jugador escriba y te lo devuelve como texto:\n\nname = input('Your name: ')\n\nSiempre texto. Para hacer cuentas con él, envuélvelo en int(): int(input('Guess: '))" },
+              { title: "El Código Completo del Juego", content: "import random\n\nanswer = random.randint(1, 100)\nguess = 0\n\nwhile guess != answer:\n    guess = int(input('Guess: '))\n    if guess < answer:\n        print('Higher!')\n    elif guess > answer:\n        print('Lower!')\n\nprint('You got it!')" },
+              { title: "Números Aleatorios en los Juegos", content: "import random te da random.randint(1, 100): un número distinto cada vez. Sin él la respuesta sería la misma en cada partida y nadie jugaría dos veces." },
+              { title: "¡Mejora tu Juego!", content: "Añade un contador de intentos. Crea tries = 0, súmale 1 dentro del bucle y muéstralo al final. Luego prueba a limitar al jugador a seis intentos." },
+              { title: "¡Resumen Final del Curso!", content: "• Las variables guardan tus datos\n• if, elif y else toman decisiones\n• Los bucles repiten el trabajo por ti\n• input() lee lo que escribe el jugador\n• random elige un número nuevo cada partida\n• Has creado un juego real y jugable" }
             ],
             exercises: [
               { question: "El comando ___ permite al jugador escribir una respuesta durante un juego." },
-              { question: "¿Por qué usamos un bucle 'while' en el juego de adivinanzas?", options: ["Para poner la pantalla colorida", "Para dejar que el jugador adivine varias veces hasta acertar", "Para detener el juego de inmediato", "Para hacer el juego más difícil de leer"] },
+              { question: "¿Por qué usamos un bucle 'while' en el juego de adivinanzas?", options: [ "Para que la computadora elija un número nuevo cada turno", "Para dejar que el jugador adivine varias veces hasta acertar", "Para mostrarle al jugador todas las respuestas al empezar", "Para terminar el juego en cuanto falle el primer intento" ] },
               { question: "Si el número secreto es 5 y el jugador adivina 8, ¿qué debería decir el juego?", options: ["¡Muy bajo!", "¡Muy alto!", "¡Ganaste!", "¡Error!"] },
               { question: "La función input() siempre devuelve un número, así que nunca necesitas int()." },
               { question: "Relaciona cada concepto de Python con lo que hace en el juego:", pairs: [ { term: "bucle while", definition: "Se repite hasta que el jugador acierta" }, { term: "input()", definition: "Obtiene el intento del jugador" }, { term: "random.randint()", definition: "Elige el número secreto" }, { term: "if/elif/else", definition: "Comprueba si el intento es muy alto o bajo" } ] }
@@ -793,8 +793,8 @@ export const contentTranslations = {
             title: "Módulo 1: Patrones Numéricos",
             desc: "¡Descubre patrones secretos para predecir el futuro!",
             contentSections: [
-              { title: "El Secreto del Descifrador", content: "La agente Maya encontró un cofre antiguo cerrado con una combinación secreta: 2, 4, 6, 8, __. Los guardias estaban desconcertados, pero Maya sonrió: '¡Es solo un patrón! Suma 2 cada vez.' Escribió 10, ¡y el cofre se abrió! Las matemáticas no tratan solo de números grandes: tratan de ver reglas secretas que resuelven misterios." },
-              { title: "La Magia de las Secuencias", content: "Una secuencia es una lista de números que sigue una regla clara. ¡Cuando conoces la regla, puedes predecir lo que viene después! Por ejemplo:\n\n• Regla (+5): 5, 10, 15, 20, 25...\n• Regla (×2): 2, 4, 8, 16, 32...\n• Regla (-3): 20, 17, 14, 11, 8..." },
+              { title: "El Secreto del Descifrador", content: "El cofre estaba cerrado con un código: 2, 4, 6, 8, __. Los guardias no sabían qué hacer. Maya sonrió: suma 2 cada vez. Escribió 10 y se abrió. Los patrones son reglas disfrazadas." },
+              { title: "La Magia de las Secuencias", content: "Una secuencia sigue una sola regla. Encuentra la regla y podrás predecir el siguiente número:\n\n+5: 5, 10, 15, 20...\n×2: 2, 4, 8, 16...\n-3: 20, 17, 14, 11..." },
               { title: "¡A la Naturaleza le Encanta Fibonacci!", content: "La secuencia de Fibonacci empieza así: 1, 1, 2, 3, 5, 8, 13... ¡donde cada número es la suma de los dos anteriores! ¡Los girasoles, las piñas, las conchas de mar e incluso los remolinos de las tormentas siguen exactamente esta secuencia!" },
               { title: "Encontrar la Regla Secreta", content: "Mira esta secuencia: 3, 6, 12, 24, __\n\n¿Cómo pasamos de 3 a 6? Multiplicamos por 2 (o sumamos 3).\n¿Cómo pasamos de 6 a 12? ¡Multiplicamos por 2! (Sumar 3 daría 9, así que la regla DEBE ser ×2).\nPor lo tanto, ¡24 × 2 = 48! ¡El número secreto es 48!" },
               { title: "Consejo Pro: Fíjate en las Diferencias", content: "Si te atascas con un patrón, resta los números adyacentes (6 - 3 = 3, 12 - 6 = 6). ¡Si las diferencias crecen, comprueba la multiplicación!" },
@@ -818,6 +818,7 @@ export const contentTranslations = {
               { title: "Ángulos y Ángulos Rectos", content: "Un ángulo se forma donde se encuentran dos líneas. La esquina de un cuadrado es un ángulo de 90°, llamado Ángulo Recto. Mira a tu alrededor: ¡las puertas, los libros y las pantallas están llenos de ángulos rectos!" },
               { title: "Contar Lados y Vértices", content: "• Triángulo: 3 lados, 3 esquinas (vértices)\n• Cuadrado / Rectángulo: 4 lados, 4 vértices\n• Hexágono: 6 lados, 6 vértices\n• Octágono (señal de Stop): 8 lados, 8 vértices" },
               { title: "Secreto del Cubo", content: "¡Un cubo 3D tiene 6 caras cuadradas planas, 8 esquinas (vértices) y 12 aristas rectas!" },
+              { title: "Caza de Formas", content: "Encuentra cinco cuerpos 3D en tu casa: una lata, una caja, una pelota, un cono, una pirámide. Para cada uno, di qué forma 2D verías si lo cortaras por la mitad." },
               { title: "Resumen del Módulo 2", content: "• 2D = plano (largo y ancho), 3D = sólido (largo, ancho y profundidad)\n• Los hexágonos tienen 6 lados, los octágonos tienen 8\n• Los ángulos de 90° son Ángulos Rectos\n• ¡Los cubos tienen 6 caras, 8 vértices y 12 aristas!" }
             ],
             exercises: [
@@ -836,6 +837,7 @@ export const contentTranslations = {
               { title: "¿Qué es la Lógica Deductiva?", content: "La deducción significa eliminar las posibilidades incorrectas hasta que solo queda la verdad. ¡Si la afirmación A es Verdadera, entonces la afirmación B DEBE ser Verdadera!" },
               { title: "Resolver Acertijos de Orden", content: "Pista 1: Liam es más alto que Sam.\nPista 2: Sam es más alto que Zoe.\nConclusión: Liam > Sam > Zoe. ¡Por lo tanto, Liam es el más alto y Zoe la más baja!" },
               { title: "¡Dibuja una Cuadrícula!", content: "Cuando resuelvas acertijos de lógica con personas y objetos, haz una cuadrícula con marcas de verificación y X para descartar las opciones imposibles." },
+              { title: "Engaña a un Amigo", content: "Inventa un acertijo donde la respuesta obvia sea la equivocada. Pruébalo con alguien. Si responde rápido y falla, tu despiste funcionó." },
               { title: "Resumen del Módulo 3", content: "• La lógica usa hechos para llegar a conclusiones 100% seguras\n• La deducción elimina las opciones incorrectas paso a paso\n• ¡Las pistas de orden ayudan a ordenar los objetos de mayor a menor!" }
             ],
             exercises: [
@@ -850,9 +852,10 @@ export const contentTranslations = {
             title: "Módulo 4: Algoritmos y Resolución de Problemas",
             desc: "Aprende a resolver problemas enormes paso a paso.",
             contentSections: [
-              { title: "El Sándwich de Mantequilla de Maní del Robot", content: "Imagina ordenar a un robot que haga un sándwich. Si dices 'Pon mantequilla de maní en el pan', ¡el robot podría aplastar el frasco cerrado contra la barra de pan! Tienes que decir: 1) Abre el frasco. 2) Coge el cuchillo. 3) Saca mantequilla de maní. 4) Úntala en el pan. ¡Esa receta paso a paso es un algoritmo!" },
+              { title: "El Sándwich de Mantequilla de Maní del Robot", content: "Dile a un robot que ponga mantequilla en el pan y puede aplastar el bote cerrado contra la barra. Tienes que decir: abre el bote, coge el cuchillo, saca, unta. Ese orden exacto es un algoritmo." },
               { title: "¿Qué es un Algoritmo?", content: "Un algoritmo es una lista de instrucciones precisa y ordenada para resolver un problema o completar una tarea." },
               { title: "Descomposición: Dividir Tareas Grandes", content: "Cuando se enfrentan a un problema enorme (como construir un cohete o crear un juego), los expertos usan la Descomposición: ¡dividir 1 problema enorme en 10 pasos pequeños y fáciles!" },
+              { title: "Programa a un Humano", content: "Escribe los pasos para que alguien dibuje un cuadrado sin decir la palabra cuadrado. Léelos tal cual. Cada punto donde se equivoque es un paso que te dejaste." },
               { title: "Resumen del Módulo 4", content: "• Los algoritmos son recetas paso a paso\n• El orden importa: fuera de orden = fallo\n• ¡La descomposición divide las tareas grandes en pasos simples!" }
             ],
             exercises: [
@@ -860,7 +863,7 @@ export const contentTranslations = {
               { question: "En un algoritmo, cambiar el orden de los pasos no importa." },
               { question: "Dividir un problema grande en pasos pequeños se llama ___.", answer: "descomposición" },
               { question: "Relaciona los términos de algoritmos con su significado:", pairs: [ { term: "Algoritmo", definition: "Instrucciones paso a paso" }, { term: "Descomposición", definition: "Dividir tareas en partes pequeñas" }, { term: "Depuración", definition: "Corregir un error en los pasos" } ] },
-              { question: "¿Cuál es la mejor forma de resolver un acertijo matemático enorme y difícil?", options: ["Llorar", "Dividirlo en pasos pequeños y fáciles", "Adivinar", "Rendirse"] }
+              { question: "¿Cuál es la mejor forma de resolver un acertijo matemático enorme y difícil?", options: ["Dividirlo en pasos pequeños y sencillos", "Empezar por la parte más difícil e ir hacia atrás", "Hacerlo entero de cabeza y de una vez", "Saltar al resultado y comprobarlo después"] }
             ]
           }
         ]
@@ -882,9 +885,10 @@ export const contentTranslations = {
             title: "Módulo 1: ¿Qué es el Dinero?",
             desc: "Aprende por qué se inventó el dinero y cómo funcionaba el trueque.",
             contentSections: [
-              { title: "Cambiar Gallinas por Espadas", content: "Hace miles de años, si Sam tenía una gallina y quería una espada, ¡Sam tenía que encontrar a un herrero que quisiera una gallina! Esto se llamaba 'trueque'. Pero ¿y si el herrero solo quería manzanas? ¡El intercambio se volvía imposible! Por eso los humanos inventaron el dinero: algo que todos aceptan como valioso." },
+              { title: "Cambiar Gallinas por Espadas", content: "Sam tenía una gallina y quería una espada, así que tenía que encontrar un herrero que quisiera una gallina. Si el herrero quería manzanas, no había trato. El dinero existe porque eso casi nunca coincidía." },
               { title: "Antes del Dinero: El Trueque", content: "El trueque es intercambiar bienes o servicios directamente sin dinero. El dinero resolvió el trueque porque sirve como medio de intercambio universal." },
               { title: "Dato Curioso: ¡Conchas y Sal como Dinero!", content: "¡Antes del papel moneda, la gente usaba conchas de cauri, piedras gigantes e incluso sal como dinero! ¡De hecho, la palabra 'salario' viene de la palabra latina para sal ('sal')!" },
+              { title: "Pon Precio a Tres Cosas", content: "Elige tres cosas de tu cuarto. Escribe por qué cambiarías cada una si no existiera el dinero. Fíjate en lo difícil que es encontrar un trato justo: ese es el problema que resolvió el dinero." },
               { title: "Resumen del Módulo 1", content: "• Trueque = intercambiar objetos directamente\n• Dinero = medio de intercambio universal\n• ¡El dinero solo funciona porque todos aceptan que tiene valor!" }
             ],
             exercises: [
@@ -901,6 +905,7 @@ export const contentTranslations = {
             contentSections: [
               { title: "Ingresos vs Gastos", content: "• Ingresos = Dinero que ENTRA (paga semanal, regalos de cumpleaños, tareas).\n• Gastos = Dinero que SALE (comprar juguetes, snacks, juegos).\n• Presupuesto = ¡Un plan para asegurar que los Gastos sean MENORES que los Ingresos!" },
               { title: "La Regla 50/30/20", content: "Una forma famosa de hacer un presupuesto:\n• 50% para Necesidades (comida, material escolar)\n• 30% para Deseos (juegos, juguetes)\n• 20% para Ahorros (¡metas futuras!)" },
+              { title: "Haz un Presupuesto Pequeño", content: "Imagina que recibes 10 a la semana. Anota cuánto va a gastar, cuánto a ahorrar y cuánto a dar. Los tres tienen que sumar 10 exactos. Eso es un presupuesto." },
               { title: "Resumen del Módulo 2", content: "• Los ingresos son dinero que entra; los gastos son dinero que sale\n• ¡Gasta siempre menos de lo que ganas para acumular riqueza!" }
             ],
             exercises: [
@@ -917,6 +922,7 @@ export const contentTranslations = {
             contentSections: [
               { title: "Interés sobre Interés", content: "Cuando depositas dinero en un banco, el banco te paga 'Interés'. ¡El interés compuesto significa que ganas interés sobre tu dinero Y sobre el interés que ya has ganado! ¡Se multiplica con el tiempo como una bola de nieve rodando montaña abajo!" },
               { title: "La Cita de Albert Einstein", content: "Albert Einstein llamó célebremente al interés compuesto 'la 8ª maravilla del mundo. ¡Quien lo entiende, lo gana... quien no, lo paga!'" },
+              { title: "Duplícalo Tú Mismo", content: "Empieza con 100. Súmale un 10% y anota el total. Súmale otro 10% al nuevo total, y otra vez, cinco veces. Compara tu resultado con 150 y mira cuánto lo pasaste." },
               { title: "Resumen del Módulo 3", content: "• Interés = bonificación pagada por el banco por ahorrar\n• Interés compuesto = interés sobre el interés\n• ¡El tiempo es el multiplicador secreto!" }
             ],
             exercises: [
@@ -933,10 +939,11 @@ export const contentTranslations = {
             contentSections: [
               { title: "¿Qué es una Acción?", content: "Cuando una empresa (como Apple o Disney) quiere expandirse, divide la propiedad en millones de pequeñas partes llamadas 'Acciones'. ¡Cuando compras una acción, te conviertes en un micro-propietario de esa empresa!" },
               { title: "Diversificación: ¡No pongas todos los huevos en 1 cesta!", content: "Si compras acciones de solo 1 empresa y quiebra, pierdes dinero. ¡Si inviertes en 10 empresas diferentes, estás a salvo si una tiene un mal día!" },
+              { title: "Elige una Acción de Mentira", content: "Escoge una empresa que uses de verdad. Escribe una razón por la que podría valer más dentro de cinco años y otra por la que podría valer menos. Eso es lo que hacen los inversores." },
               { title: "Resumen del Módulo 4", content: "• Acción = pequeña parte de propiedad de una empresa\n• La inversión hace crecer el dinero con el tiempo\n• ¡Diversifica para reducir el riesgo!" }
             ],
             exercises: [
-              { question: "Cuando compras una acción, ¿qué estás comprando en realidad?", options: ["Una hoja de papel", "Una pequeña parte de la propiedad de una empresa real", "Un préstamo al gobierno", "Un producto"] },
+              { question: "Cuando compras una acción, ¿qué estás comprando en realidad?", options: [ "Una promesa de que la empresa te devolverá el dinero", "Una pequeña parte de la propiedad de una empresa real", "Un descuento en todo lo que vende esa empresa", "Un boleto que te deja votar por el director" ] },
               { question: "Invertir no tiene ningún riesgo y siempre garantiza ganancias." },
               { question: "Repartir tus inversiones entre varias empresas se llama ___.", answer: "diversificación" },
               { question: "Relaciona los términos de inversión:", pairs: [ { term: "Acción", definition: "Parte de la propiedad de una empresa" }, { term: "Dividendo", definition: "Ganancia de la empresa repartida a los inversores" }, { term: "Cartera", definition: "Conjunto de todas tus inversiones" } ] },
@@ -962,11 +969,15 @@ export const contentTranslations = {
             title: "Módulo 1: Marca e Identidad",
             desc: "Aprende cómo las empresas construyen personalidades reconocibles.",
             contentSections: [
-              { title: "Más que un logo", content: "Una marca es el sentimiento y la reputación que la gente asocia a una empresa. Los colores provocan emociones: Rojo = emoción/hambre (McDonald's, Netflix), Azul = confianza (Samsung, NASA), Verde = naturaleza/crecimiento (Spotify, Starbucks)." },
-              { title: "Resumen del Módulo 1", content: "• Marca = sentimiento y reputación\n• ¡Los colores y las tipografías crean una conexión emocional!" }
+              { title: "Los Dos Carteles de Sam", content: "Sam hizo dos carteles para la misma venta de pasteles del colegio. Uno en rosa redondeado, otro en negro afilado. Mismas palabras, mismos pasteles. Todos dijeron que el rosa parecía más simpático. Los pasteles no habían cambiado." },
+              { title: "Una Marca Es un Sentimiento", content: "Una marca no es el logo. Es lo que la gente espera antes de haber probado nada. Los colores, las tipografías y el tono fijan esa expectativa, y la fijan en un segundo." },
+              { title: "Por Qué los Bancos Son Azules", content: "Mira logos que conoces:\n\nRojo — apetito y urgencia (McDonald's, Netflix)\nAzul — confianza y calma (Samsung, PayPal)\nVerde — naturaleza y crecimiento (Spotify, Starbucks)\n\nCasi ningún banco usa rojo intenso. Casi ninguna bebida energética usa azul suave. No lo adivinan: eligen primero el sentimiento." },
+              { title: "Elige Primero el Sentimiento", content: "Antes de elegir un color, escribe una palabra sobre cómo quieres que se sienta la gente: segura, emocionada, deportiva, elegante. Elige el color para esa palabra. Hacerlo al revés es por lo que los diseños salen aleatorios." },
+              { title: "Ponle Nombre al Sentimiento", content: "Busca tres logos en cosas que tengas cerca. Para cada uno escribe la primera palabra que se te ocurra y luego su color principal. Busca el patrón entre ambos. Verás las mismas parejas una y otra vez." },
+              { title: "Resumen del Módulo 1", content: "• Una marca es un sentimiento, no un logo\n• El color y la tipografía lo fijan en un segundo\n• El rojo urge, el azul tranquiliza, el verde crece\n• Elige el sentimiento antes que el color" }
             ],
             exercises: [
-              { question: "¿Qué es una marca?", options: ["Solo un logo", "El sentimiento, la personalidad y la reputación de una empresa", "Un edificio de oficinas", "La firma de un director"] },
+              { question: "¿Qué es una marca?", options: [ "La lista de productos que vende hoy una empresa", "El sentimiento, la personalidad y la reputación de una empresa", "El nombre legal con el que se registra la empresa", "La combinación de colores impresa en sus envases" ] },
               { question: "Las empresas eligen los colores al azar sin pensar en las emociones." },
               { question: "El color azul se usa a menudo en los logos para generar ___.", answer: "confianza" },
               { question: "Relaciona los elementos de marca:", pairs: [ { term: "Logo", definition: "Símbolo visual de la marca" }, { term: "Eslogan", definition: "Frase pegadiza (p. ej. Just Do It)" }, { term: "Paleta", definition: "Conjunto específico de colores de la marca" } ] },
@@ -977,8 +988,12 @@ export const contentTranslations = {
             title: "Módulo 2: La Narración en el Marketing",
             desc: "Engancha a tu audiencia con grandes historias.",
             contentSections: [
-              { title: "El Cliente es el Héroe", content: "En marketing, tu cliente es el Héroe (Luke Skywalker) y tu producto es el Guía (Yoda). No hables de ti mismo: ¡muestra cómo tu producto ayuda al cliente a ganar!" },
-              { title: "Resumen del Módulo 2", content: "• Cliente = Héroe, Producto = Guía\n• ¡Engancha a los espectadores en los primeros 3 segundos!" }
+              { title: "Nadie Leyó la Publicación de Sam", content: "Sam escribió sobre la venta de pasteles: cuánto costó organizarla, quién estaba en el comité, cuántas reuniones hubo. La leyeron tres personas. Ninguna fue." },
+              { title: "El Cliente Es el Héroe", content: "Quien lee es el héroe de la historia. Lo tuyo es el guía que le ayuda a ganar. La medalla se la lleva Luke, no Yoda. Escribe sobre lo que consigue, no sobre ti." },
+              { title: "La Misma Venta, Reescrita", content: "Antes: «Nuestro comité pasó seis semanas organizando esto.»\n\nDespués: «Llévate un brownie calentito por 50 céntimos en el recreo, y tu dinero compra libros para la biblioteca.»\n\nLa segunda no habla de Sam. Dice qué consigues y para qué sirve. Esa versión llenó la mesa." },
+              { title: "Cuenta tus Nosotros", content: "Lee lo que escribiste y cuenta cuántas veces dices nosotros, nuestro o yo, y cuántas dices tú. Si gana el primer número, reescríbelo. Esta comprobación arregla casi cualquier publicación floja." },
+              { title: "Dale la Vuelta a una Frase", content: "Busca un anuncio o un cartel cerca de ti. Copia una frase. Ahora reescríbela para que empiece por Tú y diga qué consigue quien lee. Léelas las dos en voz alta." },
+              { title: "Resumen del Módulo 2", content: "• Quien lee es el héroe, lo tuyo es el guía\n• Di qué consigue, no qué hiciste tú\n• Cuenta tus nosotros frente a tus tú\n• La primera línea decide si leen el resto" }
             ],
             exercises: [
               { question: "En la narración de marca, ¿quién es el Héroe?", options: ["El director", "El producto", "El cliente", "El competidor"] },
@@ -992,11 +1007,15 @@ export const contentTranslations = {
             title: "Módulo 3: Ciudadanía Digital y Seguridad",
             desc: "Protege tu huella digital.",
             contentSections: [
-              { title: "La Tinta Permanente de la Web", content: "Tu Huella Digital es el rastro de datos que dejas en línea. ¡Nunca publiques información personal (PII) como tu dirección de casa, número de teléfono o el nombre de tu escuela!" },
-              { title: "Resumen del Módulo 3", content: "• La Huella Digital es permanente\n• ¡Nunca compartas información personal en línea!" }
+              { title: "La Foto Que Sam Borró", content: "Sam publicó una foto del cartel pegado en la verja del colegio. El nombre del centro se leía. Sam la borró una hora después. Dos amigos ya le habían hecho captura." },
+              { title: "Borrar No Es Deshacer", content: "Tu huella digital es todo lo que dejas en línea. Borrar quita tu copia, no la de los demás. Las capturas, los reenvíos y las copias de seguridad sobreviven. Da por hecho que lo que publicas es permanente." },
+              { title: "Qué No Enseñar", content: "Cosas que te identifican en la vida real:\n\nTu dirección o carteles de calles\nEl nombre, el escudo o el uniforme del colegio\nTu teléfono, aunque salga en una foto\nTu horario o tu ruta diaria\n\nCasi todo esto se comparte sin querer, en el fondo de una foto, no escrito a propósito." },
+              { title: "Mira el Fondo", content: "Antes de publicar una foto, mira más allá de ti: números de portal, paradas de autobús, el logo del colegio en una sudadera. El sujeto suele ser seguro. El fondo es lo que te delata." },
+              { title: "Revisa una Foto", content: "Abre una foto del móvil que podrías haber publicado. Anota todo lo que podría decirle a un desconocido dónde vives o dónde estudias. Decide si aun así la publicarías." },
+              { title: "Resumen del Módulo 3", content: "• Tu huella es todo lo que dejas en línea\n• Borrar tu copia no borra la suya\n• Dirección, colegio y horario te identifican\n• Casi todas las filtraciones vienen del fondo" }
             ],
             exercises: [
-              { question: "¿Qué es tu Huella Digital?", options: ["Tu talla de zapato", "El rastro permanente de datos que dejas en línea", "La tinta de la impresora", "El brillo de la pantalla"] },
+              { question: "¿Qué es tu Huella Digital?", options: [ "El espacio que ocupan tus fotos en el móvil", "El rastro permanente de datos que dejas en línea", "La velocidad a la que va tu conexión a internet", "La cantidad de apps instaladas en tu teléfono" ] },
               { question: "Cualquier cosa que publiques en línea se puede borrar fácilmente para siempre." },
               { question: "PII significa Información Personal ___.", answer: "identificable" },
               { question: "Relaciona los términos de seguridad:", pairs: [ { term: "PII (Info personal)", definition: "Dirección, teléfono, nombre completo" }, { term: "Seguro de Compartir", definition: "Dibujos, reseñas, aficiones" }, { term: "Huella Digital", definition: "Rastro del historial en línea" } ] },
@@ -1007,8 +1026,12 @@ export const contentTranslations = {
             title: "Módulo 4: Campañas de Marketing y CTA",
             desc: "Lanza tu gran idea con una llamada a la acción clara.",
             contentSections: [
-              { title: "Llamada a la Acción (CTA)", content: "Una CTA le dice a la audiencia exactamente qué paso dar a continuación: '¡Suscríbete ya!', '¡Haz clic aquí para unirte!', '¡Descarga la app!'." },
-              { title: "Resumen del Módulo 4", content: "• CTA = instrucción clara para el siguiente paso\n• ¡Público objetivo = grupo específico para el que diseñas!" }
+              { title: "Gustó a Todos y No Vino Nadie", content: "El cartel nuevo de Sam quedó genial y se lo dijeron. La mesa siguió vacía. El cartel nunca decía dónde era la venta, a qué hora empezaba ni qué había que hacer. Que guste no es aparecer." },
+              { title: "Diles el Siguiente Paso", content: "Una llamada a la acción es una instrucción clara: qué hacer, dónde y cuándo. Sin ella la gente te da la razón y sigue andando. Que esté bien no es lo mismo que esté claro." },
+              { title: "Vago Frente a Concreto", content: "Vago: «¡Apoya la venta de pasteles!»\n\nConcreto: «Ven al salón de actos el viernes a las 12:45. Trae 50 céntimos.»\n\nLa segunda da un lugar, una hora y una cantidad. Cada una de esas cosas quita una excusa para no ir. La mejor llamada a la acción es la más fácil de obedecer." },
+              { title: "Una Acción, No Cuatro", content: "Síguenos, suscríbete, díselo a un amigo y ven son cuatro tareas, así que casi nadie hace ninguna. Elige la única que de verdad importa y pide solo esa." },
+              { title: "Arregla una Floja", content: "Busca un anuncio que acabe con algo vago como Más información. Reescríbelo con un lugar, una hora y una acción. Léeselo a alguien y pregúntale qué se supone que tiene que hacer." },
+              { title: "Resumen del Módulo 4", content: "• Una llamada a la acción es una instrucción clara\n• Da un lugar, una hora y una cantidad\n• Lo concreto gana a lo entusiasta\n• Pide una cosa, no cuatro" }
             ],
             exercises: [
               { question: "¿Qué significa CTA?", options: ["Llamada a la Acción (Call To Action)", "Alineación central del texto", "Costo de publicidad", "Clic para añadir"] },
@@ -1037,8 +1060,12 @@ export const contentTranslations = {
             title: "Módulo 1: Estructura HTML",
             desc: "El esqueleto de cada sitio web.",
             contentSections: [
-              { title: "Etiquetas y Bloques de Construcción", content: "¡HTML (Lenguaje de Marcado de Hipertexto) usa etiquetas envueltas en corchetes angulares como `<h1>` para Encabezados, `<p>` para Párrafos y `<a>` para Enlaces!" },
-              { title: "Resumen del Módulo 1", content: "• HTML = estructura/esqueleto\n• ¡`<h1>` = encabezado más grande, `<p>` = párrafo!" }
+              { title: "El Borrón Gris de Maya", content: "Maya escribió sus trucos de skate en un archivo y lo abrió en el navegador. Salió un borrón gris. Sin títulos, sin enlaces: el navegador no tenía ni idea de qué era cada cosa." },
+              { title: "Las Etiquetas le Dicen al Navegador Qué Es Cada Cosa", content: "Una etiqueta HTML es un rótulo. Envuelves tu texto en ella y el navegador por fin sabe: esto es un título, eso es un párrafo. Van en pareja: <p> abre, </p> cierra." },
+              { title: "La Página de Maya, Arreglada", content: "Maya envuelve sus palabras en etiquetas:\n\n<h1>Los Trucos de Maya</h1>\n<p>Mi mejor truco es un kickflip.</p>\n<a href=\"tricks.html\">Verlos todos</a>\n\nAhora el navegador sabe qué hacer: un título grande en negrita, un párrafo normal y un enlace azul que puedes pulsar. Las mismas palabras, una página completamente distinta." },
+              { title: "La Primera Web Todavía Funciona", content: "El primer sitio web del mundo se publicó en 1991. Solo texto y enlaces, sin colores ni imágenes. Sigue en línea hoy y carga perfectamente en cualquier navegador moderno." },
+              { title: "Constrúyelo: Te Toca", content: "Crea un archivo llamado me.html. Pon tu nombre en un <h1>, algo que te encante en un <p> y un enlace a cualquier sitio en un <a>. Ábrelo en tu navegador y míralo funcionar." },
+              { title: "Resumen del Módulo 1", content: "• Una etiqueta dice QUÉ es tu contenido\n• Van en pareja: <p> abre, </p> cierra\n• <h1> es el título principal, <p> un párrafo, <a> un enlace\n• El navegador solo sabe lo que tus etiquetas le dicen" }
             ],
             exercises: [
               { question: "¿Qué proporciona HTML a una página web?", options: ["Colores y estilos", "La estructura básica (esqueleto)", "Almacenamiento en base de datos", "El backend del servidor"] },
@@ -1052,8 +1079,12 @@ export const contentTranslations = {
             title: "Módulo 2: Estilo con CSS",
             desc: "Añade colores, fuentes y belleza.",
             contentSections: [
-              { title: "La Ropa sobre el Esqueleto", content: "CSS (Hojas de Estilo en Cascada) controla cómo se ve el HTML. Seleccionas elementos y añades estilos: `color: purple; font-size: 20px; background-color: black;`." },
-              { title: "Resumen del Módulo 2", content: "• CSS = estilo y diseño\n• ¡Usa `color` para el color del texto!" }
+              { title: "La Página de Maya Se Ve Aburrida", content: "La página de Maya ya funciona, pero es texto negro sobre blanco con una fuente antigua. Su amiga le pregunta si es una ficha del colegio. Maya quiere que se vea SUYA." },
+              { title: "CSS Viste al Esqueleto", content: "HTML dice qué son las cosas. CSS dice cómo se ven. Eliges un elemento y le pones propiedades: un color, un tamaño, un fondo. Cada una es propiedad: valor;" },
+              { title: "Tres Líneas Que Lo Cambian Todo", content: "Maya añade un bloque de estilo:\n\nh1 {\n  color: hotpink;\n  font-size: 40px;\n}\n\nTodos los <h1> de la página se vuelven rosa fuerte y crecen. Escribió tres líneas y cambió todos los títulos a la vez: de eso trata CSS." },
+              { title: "El Punto y Coma Pilla a Todo el Mundo", content: "Cada línea de CSS termina en punto y coma. Si olvidas uno, el navegador ignora esa línea y la siguiente sin avisar. Nada se rompe, nada te avisa: tu estilo simplemente no aparece." },
+              { title: "Hazla Tuya", content: "Abre tu me.html y añade un bloque de estilo. Dale a tu <h1> un color que te guste y a tu <p> un font-size de 18px. Recarga la página. Cambia el color tres veces y míralo actualizarse." },
+              { title: "Resumen del Módulo 2", content: "• HTML es QUÉ son las cosas, CSS es cómo SE VEN\n• Las reglas son propiedad: valor;\n• Una regla da estilo a todos los elementos que coinciden\n• Un punto y coma que falta mata la línea en silencio" }
             ],
             exercises: [
               { question: "¿Qué hace CSS?", options: ["Construye las etiquetas HTML básicas", "Da estilo a las páginas con colores y fuentes", "Guarda las cuentas de usuario", "Alimenta las bases de datos"] },
@@ -1067,8 +1098,12 @@ export const contentTranslations = {
             title: "Módulo 3: El Modelo de Caja de CSS",
             desc: "Domina el espaciado: Contenido, Relleno, Borde, Margen.",
             contentSections: [
-              { title: "¡Todo es una Caja Rectangular!", content: "En CSS, cada elemento es una caja. El Modelo de Caja tiene 4 capas:\n1. Contenido (el texto/imagen)\n2. Relleno (Padding) (espacio DENTRO del borde)\n3. Borde (el contorno)\n4. Margen (Margin) (espacio FUERA del borde)" },
-              { title: "Resumen del Módulo 3", content: "• Relleno (Padding) = espaciado interior\n• ¡Margen (Margin) = espaciado exterior!" }
+              { title: "Todo Está Apretujado", content: "El texto de Maya toca el borde de su caja y sus párrafos están pegados entre sí. Se ve apretado. Necesita espacio, pero el espacio por dentro y el de por fuera son dos cosas distintas." },
+              { title: "Cada Elemento Es una Caja", content: "En CSS todo es un rectángulo con cuatro capas: el contenido, el relleno a su alrededor dentro del borde, el borde en sí, y el margen por fuera empujando a los demás." },
+              { title: "Relleno Frente a Margen", content: "Piensa en una foto enmarcada:\n\n.card {\n  padding: 20px;\n  border: 2px solid black;\n  margin: 30px;\n}\n\nEl relleno es el paspartú entre la foto y el marco. El margen es la pared entre este marco y el siguiente. El relleno agranda la caja; el margen separa las cajas." },
+              { title: "Usa el Inspector", content: "Haz clic derecho en cualquier página y elige Inspeccionar. El navegador dibuja el modelo de caja en colores: verde para el relleno, naranja para el margen. Cada sitio que te gusta usa esas mismas cuatro capas." },
+              { title: "Encuentra las Capas", content: "Abre cualquier web, haz clic derecho en un botón y elige Inspeccionar. Busca su padding y su margin en el panel. Cambia el número del padding y mira crecer el botón real de la página." },
+              { title: "Resumen del Módulo 3", content: "• Cada elemento es una caja de cuatro capas\n• El relleno es espacio DENTRO del borde\n• El margen es espacio FUERA, que empuja a los demás\n• Inspeccionar te muestra las capas en cualquier sitio" }
             ],
             exercises: [
               { question: "En el Modelo de Caja de CSS, ¿qué es el espacio DENTRO del borde?", options: ["Margen (Margin)", "Relleno (Padding)", "Contenido (Content)", "Contorno (Outline)"] },
@@ -1082,11 +1117,15 @@ export const contentTranslations = {
             title: "Módulo 4: Despliegue y Alojamiento Web",
             desc: "Comparte tu sitio con el mundo.",
             contentSections: [
-              { title: "Poner tu Sitio en Línea", content: "¡Para que cualquiera pueda visitar tu sitio, subes tus archivos HTML y CSS a un Servidor (alojamiento web). El servidor te da un enlace URL (como misitio.com)!" },
-              { title: "Resumen del Módulo 4", content: "• Despliegue = publicar el sitio en vivo\n• ¡Servidor = computadora de alojamiento web 24/7!" }
+              { title: "Solo Funciona en el Portátil de Maya", content: "Maya le enseña la página a una amiga girando el portátil. Para enviársela le manda el archivo, y se abre sin nada de estilo. Una web que nadie puede visitar no es del todo una web." },
+              { title: "Un Servidor Es una Computadora Que Nunca Duerme", content: "Tu archivo vive en tu portátil, que se apaga y cambia de dirección. Un alojamiento es una computadora que sigue encendida, guarda tus archivos y responde a quien los pida, de día y de noche." },
+              { title: "De Carpeta a Dirección", content: "Maya arrastra su carpeta a un alojamiento gratuito. Contiene:\n\nindex.html\nstyle.css\n\nMinutos después tiene una dirección real que puede mandar a cualquiera. El servidor busca index.html primero: por eso la página de inicio casi siempre se llama así." },
+              { title: "Toda Web Son Solo Archivos", content: "Los sitios más grandes que usas siguen siendo carpetas de archivos en algún servidor. Tienen más archivos y máquinas más rápidas, pero el navegador los pide igual que pide los tuyos." },
+              { title: "Publica la Tuya", content: "Renombra tu me.html a index.html. Ponlo en una carpeta junto a tu archivo CSS. Sube la carpeta a cualquier alojamiento gratuito y manda la dirección a alguien. Tu sitio ya está en internet." },
+              { title: "Resumen del Módulo 4", content: "• Tu portátil no puede alojar un sitio: se apaga\n• Un alojamiento sigue encendido y responde peticiones\n• La página de inicio se llama index.html\n• Toda web son archivos en un servidor" }
             ],
             exercises: [
-              { question: "¿Qué es un servidor web?", options: ["Un camarero", "Una computadora que permanece en línea 24/7 alojando archivos", "Un archivo CSS", "Un navegador"] },
+              { question: "¿Qué es un servidor web?", options: [ "Un programa que convierte el HTML en diseño", "Una computadora que permanece en línea 24/7 alojando archivos", "La carpeta de tu portátil donde viven los archivos", "Una pestaña que mantiene abierta una página web" ] },
               { question: "Desplegar un sitio web significa ponerlo en un servidor para que el mundo pueda visitarlo." },
               { question: "La dirección web que la gente escribe para visitar tu sitio se llama ___.", answer: "url" },
               { question: "Relaciona los términos de alojamiento:", pairs: [ { term: "Servidor", definition: "Computadora en línea 24/7" }, { term: "URL", definition: "Dirección web" }, { term: "Desplegar", definition: "Publicar el código en vivo" } ] },
@@ -1112,8 +1151,12 @@ export const contentTranslations = {
             title: "Módulo 1: Capas y Arte No Destructivo",
             desc: "Dibuja sin miedo a arruinar tu trabajo.",
             contentSections: [
-              { title: "Láminas de Vidrio Transparentes", content: "Las capas digitales son como láminas transparentes apiladas. Dibuja bocetos en la Capa 1, el entintado en la Capa 2, los colores en la Capa 3. ¡Si borras los colores de la Capa 3, tu boceto de debajo queda 100% a salvo!" },
-              { title: "Resumen del Módulo 1", content: "• Capas = láminas transparentes apiladas\n• ¡No destructivo = el boceto está a salvo mientras coloreas!" }
+              { title: "Rhea Borra Dos Horas", content: "Rhea pasó dos horas con un boceto de dragón y empezó a colorear. Un golpe de goma y el ala desapareció: boceto y color a la vez. Lo había dibujado todo en una sola capa." },
+              { title: "Las Capas Son Láminas de Vidrio", content: "Una capa es una lámina transparente sobre tu lienzo. Boceta en la de abajo, entinta en la siguiente, colorea encima. Borra la de arriba y todo lo de debajo queda intacto." },
+              { title: "Las Tres Láminas de Rhea", content: "Rhea rehace el dragón:\n\nCapa 3 — color\nCapa 2 — líneas limpias\nCapa 1 — boceto\n\nOculta la Capa 1 y las líneas del boceto desaparecen de la vista sin borrarse. Puede volver a mostrarlas cuando quiera. Eso es trabajar de forma no destructiva." },
+              { title: "Ponles Nombre Sobre la Marcha", content: "Todas las apps llaman a las capas Capa 1, Capa 2, Capa 3. Con diez dibujadas no recordarás cuál es cuál. Renómbralas en cuanto las crees: boceto, líneas, piel, sombras." },
+              { title: "Compruébalo Tú Misma", content: "Crea dos capas. Garabatea en la de abajo y luego encima en la de arriba. Borra del todo el garabato de arriba. Mira cómo el de abajo sobrevive intacto." },
+              { title: "Resumen del Módulo 1", content: "• Una capa es una lámina transparente sobre el lienzo\n• Borrar una capa nunca toca las de debajo\n• Ocultar una capa no es borrarla\n• Nombra las capas según las creas" }
             ],
             exercises: [
               { question: "¿A qué se parecen las capas del arte digital?", options: ["Rocas pesadas", "Láminas de vidrio transparentes apiladas", "Una sola hoja de papel", "Un pincel"] },
@@ -1127,8 +1170,12 @@ export const contentTranslations = {
             title: "Módulo 2: Teoría del Color y Paletas",
             desc: "¡Elige colores que resalten!",
             contentSections: [
-              { title: "Colores Complementarios", content: "Los colores opuestos en la Rueda de Color (Azul y Naranja, Rojo y Verde, Amarillo y Morado) son Complementarios. ¡Colocados uno al lado del otro, crean un contraste vibrante!" },
-              { title: "Resumen del Módulo 2", content: "• Colores opuestos en la rueda = Complementarios\n• ¡El alto contraste hace que el arte resalte!" }
+              { title: "Todo Se Ve Embarrado", content: "Rhea eligió doce colores que le gustaban para su dragón. Juntos se volvieron un lodo marrón. Su amiga usó tres y quedó mejor. Que te guste un color no significa que encaje ahí." },
+              { title: "Los Opuestos Hacen Que Resalte", content: "En la rueda de color, las parejas opuestas son complementarias: azul y naranja, rojo y verde, amarillo y morado. Uno al lado del otro, cada uno hace que el otro se vea más vivo." },
+              { title: "Por Qué Funcionan los Atardeceres", content: "Mira casi cualquier cartel de cine con un atardecer. Cielo naranja, sombras azules. Los carteles de superproducciones usan tanto esa pareja que tiene apodo: naranja y turquesa. Rhea pinta su dragón azul sobre un cielo naranja y de pronto destaca." },
+              { title: "Tres Colores, No Doce", content: "Elige un color principal, su opuesto para el contraste y uno neutro. Con tres basta para un dibujo entero. Más colores no significan más interesante: casi siempre significan más embarrado." },
+              { title: "Cambia el Fondo", content: "Coge cualquier dibujo tuyo. Rellena el fondo con el color opuesto a tu sujeto en la rueda. Luego prueba con el mismo color que el sujeto. Mira los dos y fíjate a cuál va tu ojo." },
+              { title: "Resumen del Módulo 2", content: "• Los colores opuestos en la rueda son complementarios\n• Juntos hacen que cada uno se vea más vivo\n• Azul y naranja es la pareja más usada en el cine\n• Tres colores ganan a doce" }
             ],
             exercises: [
               { question: "Los colores opuestos en la rueda de color se llaman:", options: ["Análogos", "Complementarios", "Primarios", "Monocromáticos"] },
@@ -1142,8 +1189,12 @@ export const contentTranslations = {
             title: "Módulo 3: Composición y Regla de los Tercios",
             desc: "Organiza los elementos como un director profesional.",
             contentSections: [
-              { title: "El Secreto de la Cuadrícula 3x3", content: "¡No pongas a tu personaje justo en el medio! Divide tu lienzo en una cuadrícula de 3x3. Colocar tu sujeto principal en las líneas de intersección de la cuadrícula crea una composición dinámica y cinematográfica." },
-              { title: "Resumen del Módulo 3", content: "• La Regla de los Tercios usa una cuadrícula de 3x3\n• ¡Las intersecciones crean puntos focales atractivos!" }
+              { title: "En el Centro y Aburrido", content: "Rhea puso el dragón justo en el centro del lienzo, como siempre. Parece una foto de pasaporte de un dragón. Correcta, simétrica y completamente quieta." },
+              { title: "Divide el Lienzo en Nueve", content: "Traza dos líneas horizontales y dos verticales, como un tres en raya. Pon tu sujeto donde se cruzan en vez de en el centro. El dibujo deja de parecer congelado." },
+              { title: "Tu Móvil Ya Lo Hace", content: "Abre la cámara del móvil y activa la cuadrícula en los ajustes. Salen las mismas nueve casillas. Los fotógrafos alinean el horizonte con la línea de abajo y las caras en un cruce. Rhea mueve su dragón al cruce superior izquierdo y le deja espacio para volar." },
+              { title: "Más Antiguo Que las Cámaras", content: "La idea se escribió para pintores de paisajes en 1797, mucho antes de que existiera la fotografía. Pintores, fotógrafos, directores de cine y artistas de videojuegos la siguen usando." },
+              { title: "Mueve Una Sola Cosa", content: "Coge un dibujo con el sujeto en el centro. Activa la cuadrícula de tu app y mueve el sujeto a un cruce. Deja espacio vacío hacia donde mira. Compara los dos." },
+              { title: "Resumen del Módulo 3", content: "• Divide el lienzo en nueve casillas\n• Pon el sujeto en un cruce, no en el centro\n• Deja espacio hacia donde mira\n• Tu cámara tiene esa misma cuadrícula" }
             ],
             exercises: [
               { question: "¿Qué cuadrícula usa la Regla de los Tercios?", options: ["Cuadrícula 2x2", "Cuadrícula 3x3", "Cuadrícula 10x10", "Sin cuadrícula"] },
@@ -1157,15 +1208,19 @@ export const contentTranslations = {
             title: "Módulo 4: Renderizado e Iluminación",
             desc: "Haz que los dibujos planos parezcan 3D con luz y sombra.",
             contentSections: [
-              { title: "Brillos y Sombras", content: "El renderizado consiste en añadir luz y sombra. ¡El lado que mira hacia la fuente de luz recibe un 'Brillo' claro. El lado opuesto recibe una 'Sombra' profunda!" },
-              { title: "Resumen del Módulo 4", content: "• El renderizado añade profundidad 3D\n• ¡Lado iluminado = Brillo, lado oscuro = Sombra!" }
+              { title: "El Dragón Plano", content: "El dragón de Rhea ya tiene color y composición y sigue pareciendo una pegatina. No pesa. Nada le dice a tu ojo si el cuerpo es redondo o plano, porque todo tiene el mismo brillo." },
+              { title: "Decide Dónde Está la Luz", content: "Elige un punto del que venga la luz y mantenlo. Las superficies que miran hacia ella reciben brillo. Las que miran al lado contrario reciben sombra. Esa diferencia es lo que hace que una forma parezca sólida." },
+              { title: "Luz Desde Arriba a la Izquierda", content: "Rhea pone la luz arriba a la izquierda:\n\nArriba a la izquierda de cada escama — lo más claro\nEn medio — el color base\nAbajo a la derecha — sombra\n\nAñade una sombra en el suelo bajo el dragón y deja de flotar. Con tres tonos y una sombra en el suelo ya se lee como sólido." },
+              { title: "Entrecierra los Ojos", content: "Entrecierra los ojos hasta que el dibujo se vuelva borroso. Los colores desaparecen y solo quedan claros y oscuros. Si todo se funde en una papilla gris, tus sombras son demasiado suaves para leerse de lejos." },
+              { title: "Una Bola, Tres Tonos", content: "Dibuja un círculo. Elige una dirección de luz. Rellénalo con un color base, añade una zona más clara hacia la luz y otra más oscura al lado opuesto. Añade una sombra en el suelo. Acabas de dibujar una esfera." },
+              { title: "Resumen del Módulo 4", content: "• Elige una dirección de luz y mantenla\n• Hacia la luz es brillo, al lado contrario es sombra\n• Una sombra en el suelo evita que las cosas floten\n• Entrecierra los ojos para comprobar tus oscuros" }
             ],
             exercises: [
               { question: "¿Qué es el renderizado en el arte digital?", options: ["Añadir luz y sombra para dar profundidad 3D", "Borrar el boceto", "Añadir una firma", "Guardar como JPEG"] },
               { question: "El lado de un objeto que mira hacia el sol recibe una sombra." },
               { question: "El punto luminoso donde la luz incide directamente sobre un objeto se llama ___.", answer: "brillo" },
               { question: "Relaciona los términos de iluminación:", pairs: [ { term: "Fuente de Luz", definition: "De dónde viene la luz (sol/lámpara)" }, { term: "Brillo", definition: "El punto más luminoso del objeto" }, { term: "Sombra", definition: "Zona oscura alejada de la luz" } ] },
-              { question: "¿Qué zona recibe un Brillo?", options: ["El lado opuesto a la luz", "El lado que mira directamente hacia la luz", "Siempre la parte inferior", "En ningún lugar"] }
+              { question: "¿Qué zona recibe un Brillo?", options: [ "El lado que da la espalda a la fuente de luz", "El lado que mira directamente hacia la luz", "La parte más cercana a la sombra del suelo", "El contorno dibujado alrededor de la figura" ] }
             ]
           }
         ]

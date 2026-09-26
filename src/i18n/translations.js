@@ -45,7 +45,7 @@ export const translations = {
       "clearChat": "Clear chat history",
       "poweredBy": "Powered by Google Gemini 2.0 Flash • Kid-Safe AI",
       "chatGreeting": "Hi there! I'm {name}, your {subject} buddy! Ask me anything about this course, and let's learn together!",
-      "launcherTeaser": "Hi! I'm {name}. Stuck on anything? Just ask me.",
+      "launcherTeaser": "Hi! I'm {name}. Stuck? Just ask.",
       "dismissTeaser": "Hide this message"
     },
     nav: {
@@ -424,8 +424,8 @@ export const translations = {
     },
     courseEnter: {
       joining: "Saving your place",
-      unlocking: "Unlocking module 1",
-      ready: "{name} is ready",
+      unlocking: "Waking up {name}, your AI helper",
+      ready: "Ready when you are",
       footer: "Every module you finish earns XP.",
     },
     coursePreview: {
@@ -980,7 +980,7 @@ export const translations = {
       "clearChat": "Limpiar historial de chat",
       "poweredBy": "Desarrollado por Google Gemini 2.0 Flash • IA Segura para Niños",
       "chatGreeting": "¡Hola! Soy {name}, ¡tu compañero de {subject}! Pregúntame lo que quieras sobre este curso, ¡y aprendamos juntos!",
-      "launcherTeaser": "¡Hola! Soy {name}. ¿Te atascas? Solo pregúntame.",
+      "launcherTeaser": "¡Hola! Soy {name}. ¿Dudas? Pregúntame.",
       "dismissTeaser": "Ocultar este mensaje"
     },
     nav: {
@@ -1359,8 +1359,8 @@ export const translations = {
     },
     courseEnter: {
       joining: "Guardando tu lugar",
-      unlocking: "Desbloqueando el módulo 1",
-      ready: "{name} está listo",
+      unlocking: "Despertando a {name}, tu ayudante IA",
+      ready: "Cuando quieras, empezamos",
       footer: "Cada módulo que terminas te da XP.",
     },
     coursePreview: {

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import BotAvatar from "./BotAvatar";
 import Icon from "./ui/Icon";
+import ImageWithSkeleton from "./ui/ImageWithSkeleton";
+import { courseTint } from "../utils/courseTint";
 import { useLanguage } from "../context/LanguageContext";
 import { TUTOR_NAME } from "../config/tutor";
 
@@ -84,8 +85,16 @@ const CourseEnterOverlay = ({ course, ready = false, onDone }) => {
             className="absolute inset-0 animate-tutor-ping rounded-full border border-violet-500/40"
             style={{ animationDelay: "1.4s" }}
           />
-          <span className="animate-tutor-breathe">
-            <BotAvatar size="lg" />
+          {/* The course being entered, not the tutor: this moment is about the
+              course, and every course looks different here. */}
+          <span
+            className={`grid h-24 w-24 animate-tutor-breathe place-items-center rounded-3xl border border-white/[0.06] p-4 shadow-[inset_0_2px_10px_rgba(0,0,0,0.45)] ${courseTint(course)}`}
+          >
+            <ImageWithSkeleton
+              src={course?.image}
+              alt=""
+              imgClassName="max-h-full w-auto object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)]"
+            />
           </span>
         </div>
 

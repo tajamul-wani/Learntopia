@@ -33,12 +33,12 @@ export const COURSES = [
           {
             type: "story",
             title: "Meet Alex the Inventor",
-            content: "Alex is 11 years old and loves video games. One day Alex thought: 'What if I could BUILD my own game instead of just playing them?' Alex's teacher said: 'You can! All you need is a language called Python.' This is YOUR story too — by the end of this course, you'll build your very own game from scratch!"
+            content: "Alex is 11 and loves games. One day Alex thought: what if I could BUILD one instead of just playing it? Alex's teacher said you can — you just need Python. This is your story too."
           },
           {
             type: "concept",
             title: "What is Python?",
-            content: "Python is a programming language — a special set of words and rules you use to talk to computers. Imagine you have a robot friend, but it only understands one language: Python! If you want the robot to dance, draw, or solve math problems, you have to write instructions in Python. The best part? Python was designed to look almost like regular English, so it's one of the easiest languages to learn."
+            content: "Python is a language for telling computers what to do. Imagine a robot friend that only understands Python. Want it to draw, dance or do maths? Write the instructions in Python. It reads almost like English."
           },
           {
             type: "fact",
@@ -63,14 +63,19 @@ export const COURSES = [
           {
             type: "recap",
             title: "Module 1 Recap",
-            content: "Let's review what you learned:\n\n• Python is a programming language used to give instructions to computers\n• It was named after a comedy show, not the snake!\n• The print() command displays text on screen\n• Text must be wrapped in quotes (single or double)\n• You just wrote your first real code — you're officially a coder!"
+            content: "• Python is a language for giving computers instructions\n• Named after a comedy show, not the snake\n• print() shows text on the screen\n• Text needs quotes around it\n• You just wrote real code"
           }
         ],
         exercises: [
           {
             type: "mcq",
             question: "What is Python?",
-            options: ["A type of snake", "A programming language for talking to computers", "A video game engine", "A web browser"],
+            options: [
+              "A drawing app for making game artwork",
+              "A programming language for talking to computers",
+              "A type of computer that runs games",
+              "A website where you download games"
+            ],
             answer: "A programming language for talking to computers"
           },
           {
@@ -113,12 +118,12 @@ export const COURSES = [
           {
             type: "concept",
             title: "What is a Variable?",
-            content: "Think of a variable as a labeled box where you can keep things. If you have a box labeled 'score' and you put the number 10 inside it, your variable score is now equal to 10!\n\nIn Python, you create a variable like this:\nscore = 10\nplayer_name = 'Alex'\n\nThe = sign doesn't mean 'equals' in math — it means 'put this value into this box'. So score = 10 means 'create a box called score and put 10 inside it'."
+            content: "A variable is a labelled box. Put 10 in a box called score and score now holds 10.\n\nscore = 10\nplayer_name = 'Alex'\n\nThe = does not mean equals. It means put this value in this box."
           },
           {
             type: "concept",
             title: "Different Types of Data",
-            content: "Computers are picky — they need to know what KIND of stuff is in each box:\n\n• Integers (int): Whole numbers like 5, 42, or 1000. Great for scores!\n• Strings (str): Text wrapped in quotes like 'Hello' or 'Alex'. Used for names and messages!\n• Floats (float): Decimal numbers like 3.14 or 99.9. Used for prices and precise measurements!\n• Booleans (bool): Just True or False. Like a light switch — on or off!\n\nPython is smart enough to figure out the type automatically when you create a variable."
+            content: "Computers need to know what KIND of thing is in each box:\n\nint — whole numbers: 5, 42\nstr — text in quotes: 'Alex'\nfloat — decimals: 3.14\nbool — True or False\n\nPython works out the type for you."
           },
           {
             type: "example",
@@ -128,17 +133,17 @@ export const COURSES = [
           {
             type: "fact",
             title: "Your Brain is Full of Variables!",
-            content: "Your brain works just like a computer with variables! Right now, your brain has a variable called 'my_name' storing your name, a variable called 'my_age' storing your age, and a variable called 'favorite_color' storing your favorite color. You just don't think about them as 'variables' — but that's exactly what they are!"
+            content: "Your brain does this too. It holds a box called my_name with your name in it, one called my_age, one for your favourite colour. You just never called them variables."
           },
           {
-            type: "tip",
-            title: "Naming Your Variables",
-            content: "Good variable names describe what's inside the box:\n\nGood: player_score, user_name, lives_remaining\nBad: x, thing, abc123\n\nRules for Python variable names:\n• No spaces! Use underscores: player_name (not player name)\n• Can't start with a number: 1score is wrong, score1 is fine\n• Python is case-sensitive: Score and score are DIFFERENT variables!"
+            type: "activity",
+            title: "Name These Boxes",
+            content: "Write a good variable name for each: the player's best score, how many lives are left, whether the game is over. Then check them — no spaces, never start with a number, and score is not the same as Score."
           },
           {
             type: "recap",
             title: "Module 2 Recap",
-            content: "Let's review what you learned:\n\n• Variables are labeled boxes that store data\n• The = sign means 'put this value in the box'\n• Integers are whole numbers, Strings are text, Floats are decimals, Booleans are True/False\n• You can update a variable: score = score + 10\n• Use descriptive names: player_score is better than x\n• Python is case-sensitive: score and Score are different!"
+            content: "• Variables are labelled boxes that hold data\n• = puts a value into the box\n• int, str, float and bool are the main types\n• score = score + 10 updates a box\n• Score and score are two different boxes"
           }
         ],
         exercises: [
@@ -184,22 +189,22 @@ export const COURSES = [
           {
             type: "story",
             title: "Alex's Game Needs a Brain",
-            content: "Alex's game can store scores now — awesome! But there's a new problem. When a player reaches 100 points, the game should say 'YOU WIN!' And when the player loses all their lives, it should say 'GAME OVER'. But how does the computer know WHEN to do these things? It needs the ability to make decisions. That's what if-statements are for!"
+            content: "Alex's game can store a score but it cannot react. Guess right and nothing happens. The game needs to make a decision, and that is exactly what an if-statement is for."
           },
           {
             type: "concept",
             title: "Making Choices with 'if'",
-            content: "An if-statement lets your code make decisions, just like your brain does every day!\n\nIn real life: 'IF it's raining, THEN take an umbrella.'\nIn Python: if score > 100:\n              print('You win!')\n\nThe computer checks the condition (is score greater than 100?). If it's TRUE, it runs the code below. If it's FALSE, it skips it entirely."
+            content: "An if-statement runs code only when something is true:\n\nif score > 100:\n    print('You win!')\n\nThe indented line runs only when the score really is over 100. Otherwise Python skips straight past it."
           },
           {
             type: "concept",
             title: "Adding 'else' and 'elif'",
-            content: "What if you want to do something DIFFERENT when the condition is false?\n\nif score > 100:\n    print('You win!')\nelse:\n    print('Keep trying!')\n\nAnd what if you have MULTIPLE conditions?\n\nif score > 100:\n    print('Amazing!')\nelif score > 50:\n    print('Getting close!')\nelse:\n    print('Keep going!')\n\n'elif' is short for 'else if' — it checks another condition if the first one was false."
+            content: "else catches everything the if missed. elif checks another condition first:\n\nif score > 100:\n    print('Amazing!')\nelif score > 50:\n    print('Close!')\nelse:\n    print('Keep going!')"
           },
           {
             type: "fact",
             title: "If-Statements Are EVERYWHERE!",
-            content: "Video games use MILLIONS of if-statements!\n\n• IF Mario hits a Goomba → he loses a life\n• IF Mario grabs a mushroom → he grows big\n• IF the timer reaches zero → Game Over!\n• IF the player presses the jump button → Mario jumps\n\nEvery single thing that happens in a game is controlled by if-statements working together!"
+            content: "Every app you use runs on these. Wrong password? An if-statement. Low battery warning? An if-statement. Game over screen? An if-statement checking whether your lives have hit zero."
           },
           {
             type: "example",
@@ -207,14 +212,14 @@ export const COURSES = [
             content: "To write conditions, you need comparison operators:\n\n>  means 'greater than'       (10 > 5 is True)\n<  means 'less than'          (3 < 7 is True)\n== means 'equal to'           (5 == 5 is True)\n!= means 'not equal to'       (5 != 3 is True)\n>= means 'greater or equal'   (10 >= 10 is True)\n<= means 'less or equal'      (4 <= 9 is True)\n\nNotice: Checking equality uses == (double equals), NOT = (single equals). Single = is for assigning variables!"
           },
           {
-            type: "tip",
-            title: "The Colon is Crucial!",
-            content: "Every if, elif, and else line MUST end with a colon (:)\n\nCorrect: if score > 10:\nWrong:   if score > 10\n\nAlso, the code that runs inside the if-statement must be indented (pushed to the right with spaces). Python uses indentation to know which code belongs inside the if-statement!"
+            type: "activity",
+            title: "Spot the Bug",
+            content: "One of these lines will not run:\n\nif score > 10\n    print('Win')\n\nFind what is missing from the end of the first line. Python needs it to know a block is about to start."
           },
           {
             type: "recap",
             title: "Module 3 Recap",
-            content: "Let's review what you learned:\n\n• If-statements let code make decisions based on conditions\n• Use 'else' when you want something to happen when the condition is false\n• Use 'elif' to check multiple conditions\n• Comparison operators: > < == != >= <=\n• Double equals (==) checks equality, single equals (=) assigns variables\n• Always end if/elif/else with a colon (:)\n• Indent the code inside your if-statement!"
+            content: "• if runs code only when something is true\n• else catches everything if missed\n• elif checks another condition\n• The colon and the indent are both required\n• Every app you use is full of these"
           }
         ],
         exercises: [
@@ -260,17 +265,17 @@ export const COURSES = [
           {
             type: "story",
             title: "Alex's Big Moment",
-            content: "The day has finally come. Alex knows about print(), variables, and if-statements. Now it's time to combine ALL of these skills to build a real, playable game! The game is called 'Guess the Number' — the computer picks a secret number, and the player has to guess it. After each guess, the computer gives hints: 'Too High!' or 'Too Low!' Let's build it!"
+            content: "Alex has variables, if-statements and a plan: a guessing game. The computer picks a number, you guess, it says higher or lower. Everything from the last three modules, in one game."
           },
           {
             type: "concept",
             title: "What Are Loops?",
-            content: "A loop lets you run the same code over and over again. Without a loop, the player would only get ONE guess — that's no fun!\n\nThe 'while' loop keeps running as long as a condition is True:\n\nwhile guess != secret:\n    guess = input('Try again: ')\n\nThis keeps asking for guesses until the player gets it right. When they finally guess correctly, the loop stops!"
+            content: "A loop repeats code so you do not write it twenty times:\n\nwhile guess != answer:\n    guess = int(input('Guess: '))\n\nThis keeps asking until the guess is right. != means not equal to."
           },
           {
             type: "concept",
             title: "Getting User Input",
-            content: "The input() command lets the player type something into the game:\n\nguess = input('Enter your guess: ')\n\nWhatever the player types gets stored in the variable 'guess'. There's one tricky thing though — input() always gives you a String (text), even if the player types a number! To turn it into a number for comparison, we use int():\n\nguess = int(input('Enter your guess: '))"
+            content: "input() waits for the player to type something and hands it back as text:\n\nname = input('Your name: ')\n\nAlways text. To do maths with it, wrap it in int(): int(input('Guess: '))"
           },
           {
             type: "example",
@@ -280,7 +285,7 @@ export const COURSES = [
           {
             type: "fact",
             title: "Random Numbers in Games",
-            content: "The random.randint(1, 20) function picks a random number between 1 and 20. Every game you've ever played uses random numbers! Minecraft uses them to generate worlds, Pokémon uses them to decide if you catch a Pokémon, and card games use them to shuffle the deck. Randomness makes games exciting because you never know what will happen!"
+            content: "import random gives you random.randint(1, 100) — a different number every run. Without it the answer would be the same every game, and nobody would play twice."
           },
           {
             type: "activity",
@@ -290,7 +295,7 @@ export const COURSES = [
           {
             type: "recap",
             title: "Course Complete Recap!",
-            content: "Congratulations — you've learned all the fundamentals of Python!\n\n• print() displays text on screen\n• Variables store data in labeled boxes\n• Data types: Integers, Strings, Floats, Booleans\n• If/elif/else make decisions based on conditions\n• Comparison operators: > < == != >= <=\n• While loops repeat code until a condition is false\n• input() gets information from the user\n• int() converts text to a number\n• random.randint() generates random numbers\n\nYou're ready to build your own games — the sky is the limit!"
+            content: "• Variables hold your data\n• if, elif and else make decisions\n• Loops repeat work for you\n• input() reads what the player types\n• random picks a new number each game\n• You built a real, playable game"
           }
         ],
         exercises: [
@@ -302,7 +307,12 @@ export const COURSES = [
           {
             type: "mcq",
             question: "Why do we use a 'while' loop in the guessing game?",
-            options: ["To make the screen colorful", "To let the player guess multiple times until they're right", "To stop the game immediately", "To make the game harder to read"],
+            options: [
+              "To make the computer pick a new number each turn",
+              "To let the player guess multiple times until they're right",
+              "To show the player every possible answer at the start",
+              "To end the game as soon as the first guess is wrong"
+            ],
             answer: "To let the player guess multiple times until they're right"
           },
           {
@@ -357,12 +367,12 @@ export const COURSES = [
           {
             type: "story",
             title: "The Codebreaker's Secret",
-            content: "Agent Maya found an ancient chest locked with a secret combination: 2, 4, 6, 8, __. The guards were baffled, but Maya smiled: 'It's just a pattern! Add 2 each time.' She typed 10, and the chest popped open! Math isn't just about big numbers — it's about seeing secret rules that unlock mysteries!"
+            content: "The chest was locked with a code: 2, 4, 6, 8, __. The guards were stuck. Maya grinned — add 2 each time. She typed 10 and it clicked open. Patterns are rules in disguise."
           },
           {
             type: "concept",
             title: "The Magic of Sequences",
-            content: "A sequence is a list of numbers that follows a clear rule. When you know the rule, you can predict what comes next! For example:\n\n• Rule (+5): 5, 10, 15, 20, 25...\n• Rule (×2): 2, 4, 8, 16, 32...\n• Rule (-3): 20, 17, 14, 11, 8..."
+            content: "A sequence follows one rule. Find the rule and you can predict the next number:\n\n+5: 5, 10, 15, 20...\n×2: 2, 4, 8, 16...\n-3: 20, 17, 14, 11..."
           },
           {
             type: "fact",
@@ -455,6 +465,11 @@ export const COURSES = [
             content: "A 3D cube has 6 flat square faces, 8 corners (vertices), and 12 straight edges!"
           },
           {
+            type: "activity",
+            title: "Hunt for Shapes",
+            content: "Find five 3D shapes in your home: a can, a box, a ball, a cone, a pyramid. For each, name the 2D shape you would see if you sliced straight through it."
+          },
+          {
             type: "recap",
             title: "Module 2 Recap",
             content: "• 2D = flat (length & width), 3D = solid (length, width & depth)\n• Hexagons have 6 sides, Octagons have 8\n• 90° angles are Right Angles\n• Cubes have 6 faces, 8 vertices, 12 edges!"
@@ -521,6 +536,11 @@ export const COURSES = [
             content: "When solving logic puzzles with people and items, make a grid with checkmarks and X's to cross out impossible options."
           },
           {
+            type: "activity",
+            title: "Trap a Friend",
+            content: "Write a riddle where the obvious answer is wrong. Try it on someone. If they answer too fast and get it wrong, your misdirection worked."
+          },
+          {
             type: "recap",
             title: "Module 3 Recap",
             content: "• Logic uses facts to reach 100% certain conclusions\n• Deduction eliminates wrong options step-by-step\n• Order clues help arrange items from largest to smallest!"
@@ -568,7 +588,7 @@ export const COURSES = [
           {
             type: "story",
             title: "Robot Peanut Butter Sandwich",
-            content: "Imagine commanding a robot to make a sandwich. If you say 'Put peanut butter on bread', the robot might smash the unopened jar onto the loaf! You have to say: 1) Open jar. 2) Pick up knife. 3) Scoop peanut butter. 4) Spread on bread. That step-by-step recipe is an algorithm!"
+            content: "Tell a robot to put peanut butter on bread and it may smash the closed jar onto the loaf. You have to say: open jar, pick up knife, scoop, spread. That exact order is an algorithm."
           },
           {
             type: "concept",
@@ -579,6 +599,11 @@ export const COURSES = [
             type: "fact",
             title: "Decomposition: Breaking Big Tasks Down",
             content: "When faced with a giant problem (like building a rocket or building a game), experts use Decomposition — breaking 1 huge problem into 10 tiny, easy steps!"
+          },
+          {
+            type: "activity",
+            title: "Instruct a Human Robot",
+            content: "Write steps for someone to draw a square without saying the word square. Read them out exactly. Every place they go wrong is a step you left out."
           },
           {
             type: "recap",
@@ -615,7 +640,12 @@ export const COURSES = [
           {
             type: "mcq",
             question: "What is the best way to solve a massive, hard math puzzle?",
-            options: ["Cry", "Break it down into tiny, easy steps", "Guess", "Give up"],
+            options: [
+              "Break it down into tiny, easy steps",
+              "Start at the hardest part and work backwards",
+              "Do the whole thing in your head at once",
+              "Skip ahead and check the answer later"
+            ],
             answer: "Break it down into tiny, easy steps"
           }
         ]
@@ -649,7 +679,7 @@ export const COURSES = [
           {
             type: "story",
             title: "Trading Chickens for Swords",
-            content: "Thousands of years ago, if Sam had a chicken and wanted a sword, Sam had to find a blacksmith who wanted a chicken! This was called 'bartering'. But what if the blacksmith only wanted apples? Trading became impossible! That's why humans invented money — something everyone agrees is valuable."
+            content: "Sam had a chicken and wanted a sword, so Sam had to find a blacksmith who wanted a chicken. If the blacksmith wanted apples, no deal. Money exists because that almost never matched up."
           },
           {
             type: "concept",
@@ -660,6 +690,11 @@ export const COURSES = [
             type: "fact",
             title: "Fun Fact: Shells & Salt as Money!",
             content: "Before paper money, people used cowrie shells, giant stones, and even salt as money! In fact, the word 'salary' comes from the Latin word for salt ('sal')!"
+          },
+          {
+            type: "activity",
+            title: "Price Three Things",
+            content: "Pick three things in your room. Write what you would swap each one for if money did not exist. Notice how hard it is to find a fair trade — that is the problem money solved."
           },
           {
             type: "recap",
@@ -715,6 +750,11 @@ export const COURSES = [
             type: "tip",
             title: "The 50/30/20 Rule",
             content: "A famous way to budget:\n• 50% for Needs (food, school supplies)\n• 30% for Wants (games, toys)\n• 20% for Savings (future goals!)"
+          },
+          {
+            type: "activity",
+            title: "Build a Tiny Budget",
+            content: "Imagine you get 10 a week. Write down how much goes to spending, saving and giving. The three must add up to 10 exactly. That is a budget."
           },
           {
             type: "recap",
@@ -773,6 +813,11 @@ export const COURSES = [
             content: "Albert Einstein famously called compound interest 'the 8th wonder of the world. He who understands it, earns it... he who doesn't, pays it!'"
           },
           {
+            type: "activity",
+            title: "Double It Yourself",
+            content: "Start with 100. Add 10% and write the total. Add 10% to the new total, and again, five times over. Compare your answer to 150 and see how far past it you got."
+          },
+          {
             type: "recap",
             title: "Module 3 Recap",
             content: "• Interest = bonus paid by bank for saving\n• Compound Interest = interest on interest\n• Time is the secret multiplier!"
@@ -828,6 +873,11 @@ export const COURSES = [
             content: "If you buy stock in only 1 company and it fails, you lose money. If you invest in 10 different companies, you stay safe if one has a bad day!"
           },
           {
+            type: "activity",
+            title: "Pick a Pretend Share",
+            content: "Choose a company you actually use. Write one reason it might be worth more in five years, and one reason it might be worth less. That is what investors do all day."
+          },
+          {
             type: "recap",
             title: "Module 4 Recap",
             content: "• Stock = tiny ownership slice of a company\n• Investing grows money over time\n• Diversify to lower risk!"
@@ -837,7 +887,12 @@ export const COURSES = [
           {
             type: "mcq",
             question: "When you buy a stock, what are you actually buying?",
-            options: ["A piece of paper", "A tiny slice of ownership in a real company", "A loan to government", "A product"],
+            options: [
+              "A promise the company pays you back later",
+              "A tiny slice of ownership in a real company",
+              "A discount on everything that company sells",
+              "A ticket that lets you vote for the CEO"
+            ],
             answer: "A tiny slice of ownership in a real company"
           },
           {
@@ -895,20 +950,45 @@ export const COURSES = [
         contentSections: [
           {
             type: "concept",
-            title: "More than a logo",
-            content: "A brand is the feeling and reputation people connect to a company. Colors trigger emotions: Red = excitement/hunger (McDonald's, Netflix), Blue = trust (Samsung, NASA), Green = nature/growth (Spotify, Starbucks)."
+            title: "Sam's Two Posters",
+            content: "Sam made two posters for the same school bake sale. One in bubbly pink, one in sharp black. Same words, same cakes. Everyone said the pink one looked friendlier. Nothing about the cakes had changed."
+          },
+          {
+            type: "concept",
+            title: "A Brand Is a Feeling",
+            content: "A brand is not the logo. It is what people expect before they have tried anything. Colours, fonts and tone set that expectation, and they set it in about a second."
+          },
+          {
+            type: "example",
+            title: "Why Banks Are Blue",
+            content: "Look at logos you know:\n\nRed — appetite and urgency (McDonald's, Netflix)\nBlue — trust and calm (Samsung, PayPal)\nGreen — nature and growth (Spotify, Starbucks)\n\nAlmost no bank uses bright red. Almost no energy drink uses soft blue. They are not guessing — they are picking the feeling first."
+          },
+          {
+            type: "tip",
+            title: "Pick a Feeling First",
+            content: "Before choosing any colour, write down one word for how you want people to feel: safe, excited, sporty, expensive. Choose the colour to fit that word. Doing it the other way round is why designs feel random."
+          },
+          {
+            type: "activity",
+            title: "Name the Feeling",
+            content: "Find three logos on things around you. For each, write the first word that comes to mind, then the main colour. Look for a pattern between the two. You will see the same pairings again and again."
           },
           {
             type: "recap",
             title: "Module 1 Recap",
-            content: "• Brand = feeling & reputation\n• Colors & fonts build emotional connection!"
+            content: "• A brand is a feeling, not a logo\n• Colour and font set it in about a second\n• Red urges, blue reassures, green grows\n• Choose the feeling before the colour"
           }
         ],
         exercises: [
           {
             type: "mcq",
             question: "What is a brand?",
-            options: ["Just a logo", "The feeling, personality, and reputation of a company", "An office building", "A CEO's signature"],
+            options: [
+              "The list of products a company sells today",
+              "The feeling, personality, and reputation of a company",
+              "The legal name a company registers under",
+              "The colour scheme printed on its packaging"
+            ],
             answer: "The feeling, personality, and reputation of a company"
           },
           {
@@ -945,13 +1025,33 @@ export const COURSES = [
         contentSections: [
           {
             type: "concept",
-            title: "The Customer is the Hero",
-            content: "In marketing, your customer is the Hero (Luke Skywalker), and your product is the Guide (Yoda). Don't talk about yourself — show how your product empowers the customer to win!"
+            title: "Nobody Read Sam's Post",
+            content: "Sam wrote a post about the bake sale: how long it took to organise, who was on the committee, how many meetings there were. Three people read it. None of them came."
+          },
+          {
+            type: "concept",
+            title: "The Customer Is the Hero",
+            content: "The person reading is the hero of the story. Your thing is the guide that helps them win. Luke gets the medal, not Yoda. Write about what they get, not about you."
+          },
+          {
+            type: "example",
+            title: "Same Sale, Rewritten",
+            content: "Before: \"Our committee spent six weeks planning this event.\"\n\nAfter: \"Get a warm brownie for 50p at break, and your money buys books for the library.\"\n\nThe second one says nothing about Sam. It tells the reader what they get and what it does. That version filled the table."
+          },
+          {
+            type: "tip",
+            title: "Count Your Yous",
+            content: "Read what you wrote and count how many times you say we, our or I, then how many times you say you. If the first number is bigger, rewrite it. This one check fixes most weak posts."
+          },
+          {
+            type: "activity",
+            title: "Flip a Sentence",
+            content: "Find an advert or a poster near you. Write down one sentence from it. Now rewrite it so it starts with the word You and says what the reader gets. Read both out loud."
           },
           {
             type: "recap",
             title: "Module 2 Recap",
-            content: "• Customer = Hero, Product = Guide\n• Hook viewers in the first 3 seconds!"
+            content: "• The reader is the hero, your thing is the guide\n• Say what they get, not what you did\n• Count your we against your you\n• The first line decides if they read the rest"
           }
         ],
         exercises: [
@@ -995,20 +1095,45 @@ export const COURSES = [
         contentSections: [
           {
             type: "concept",
-            title: "The Permanent Ink of the Web",
-            content: "Your Digital Footprint is the trail of data you leave behind online. Never post PII (Personally Identifiable Information) like home address, phone number, or school name!"
+            title: "The Photo Sam Deleted",
+            content: "Sam posted a photo of the bake sale poster taped to the school gate. The school name was readable. Sam deleted it an hour later. Two friends had already screenshotted it."
+          },
+          {
+            type: "concept",
+            title: "Deleting Is Not Undoing",
+            content: "Your digital footprint is everything you leave online. Delete removes your copy, not anyone else's. Screenshots, reposts and backups all survive. Assume anything you post is permanent."
+          },
+          {
+            type: "example",
+            title: "What Not To Show",
+            content: "Things that identify you in real life:\n\nHome address or street signs\nSchool name, crest or uniform\nPhone number, even in a photo\nYour timetable or daily route\n\nMost of these get shared by accident, in the background of a picture, rather than typed out on purpose."
+          },
+          {
+            type: "tip",
+            title: "Check the Background",
+            content: "Before posting a photo, look past yourself at everything else in frame: door numbers, bus stops, school logos on a jumper. The subject is usually safe. The background is what gives you away."
+          },
+          {
+            type: "activity",
+            title: "Audit One Photo",
+            content: "Open a photo on your phone you might have posted. List everything in it that could tell a stranger where you live or go to school. Decide whether you would still post it."
           },
           {
             type: "recap",
             title: "Module 3 Recap",
-            content: "• Digital Footprint is permanent\n• Never share PII online!"
+            content: "• Your footprint is everything you leave online\n• Deleting your copy does not delete theirs\n• Address, school and timetable identify you\n• Most leaks come from the background"
           }
         ],
         exercises: [
           {
             type: "mcq",
             question: "What is your Digital Footprint?",
-            options: ["Your shoe size", "The permanent trail of data you leave online", "Printer ink", "Screen brightness"],
+            options: [
+              "The amount of storage your photos take up",
+              "The permanent trail of data you leave online",
+              "The speed your internet connection runs at",
+              "The number of apps installed on your phone"
+            ],
             answer: "The permanent trail of data you leave online"
           },
           {
@@ -1045,13 +1170,33 @@ export const COURSES = [
         contentSections: [
           {
             type: "concept",
-            title: "Call to Action (CTA)",
-            content: "A CTA tells the audience exactly what step to take next: 'Subscribe Now!', 'Click Here to Join!', 'Download the App!'."
+            title: "Everyone Liked It, Nobody Came",
+            content: "Sam's new poster looked great and people said so. Still a quiet table. The poster never said where the sale was, when it started, or what to do next. Liking is not turning up."
+          },
+          {
+            type: "concept",
+            title: "Tell Them the Next Step",
+            content: "A call to action is one clear instruction: what to do, where, and when. Without it people agree with you and then carry on walking. Good is not the same as clear."
+          },
+          {
+            type: "example",
+            title: "Vague Against Specific",
+            content: "Vague: \"Support the bake sale!\"\n\nSpecific: \"Come to the hall at 12:45 on Friday. Bring 50p.\"\n\nThe second gives a place, a time and an amount. Every one of those removes a reason to do nothing. The best call to action is the easiest one to obey."
+          },
+          {
+            type: "tip",
+            title: "One Action, Not Four",
+            content: "Follow us, subscribe, tell a friend and come along is four jobs, so most people do none. Pick the single thing that matters most and ask for only that."
+          },
+          {
+            type: "activity",
+            title: "Fix a Weak One",
+            content: "Find an advert with a vague ending like Learn more. Rewrite it with a place, a time and one action. Read it to someone and ask them what they are meant to do."
           },
           {
             type: "recap",
             title: "Module 4 Recap",
-            content: "• CTA = clear instruction for next step\n• Target Audience = specific group you design for!"
+            content: "• A call to action is one clear instruction\n• Give a place, a time and an amount\n• Specific beats enthusiastic\n• Ask for one thing, not four"
           }
         ],
         exercises: [
@@ -1115,14 +1260,34 @@ export const COURSES = [
         xpReward: 50,
         contentSections: [
           {
+            type: "story",
+            title: "Maya's Grey Blob",
+            content: "Maya typed her skate tricks into a file and opened it in a browser. She got one grey blob. No headings, no links — the browser had no idea what any of it was meant to be."
+          },
+          {
             type: "concept",
-            title: "Tags & Building Blocks",
-            content: "HTML (HyperText Markup Language) uses tags wrapped in angle brackets like `<h1>` for Headings, `<p>` for Paragraphs, and `<a>` for Links!"
+            title: "Tags Tell the Browser What Things Are",
+            content: "An HTML tag is a label. You wrap your text in one and the browser finally knows: this is a heading, that is a paragraph. Tags come in pairs — <p> opens, </p> closes."
+          },
+          {
+            type: "example",
+            title: "Maya's Page, Fixed",
+            content: "Maya wraps her words in tags:\n\n<h1>Maya's Skate Tricks</h1>\n<p>My best one is a kickflip.</p>\n<a href=\"tricks.html\">See them all</a>\n\nNow the browser knows what to do: a big bold title, a normal paragraph, and a blue link you can click. Same words, completely different page."
+          },
+          {
+            type: "fact",
+            title: "The First Website Still Works",
+            content: "The world's first website went live in 1991. Plain text and links, no colours, no pictures. It is still online today, and it still loads perfectly in every modern browser."
+          },
+          {
+            type: "activity",
+            title: "Build It: Your Turn",
+            content: "Make a file called me.html. Put your name in an <h1>, one thing you love in a <p>, and a link to any site in an <a>. Open the file in your browser and see it work."
           },
           {
             type: "recap",
             title: "Module 1 Recap",
-            content: "• HTML = structure/skeleton\n• `<h1>` = biggest heading, `<p>` = paragraph!"
+            content: "• A tag labels what your content IS\n• Tags come in pairs: <p> opens, </p> closes\n• <h1> is the main heading, <p> a paragraph, <a> a link\n• The browser only knows what your tags tell it"
           }
         ],
         exercises: [
@@ -1166,14 +1331,34 @@ export const COURSES = [
         xpReward: 50,
         contentSections: [
           {
+            type: "story",
+            title: "Maya's Page Looks Boring",
+            content: "Maya's page works now, but it is black text on white with a Times New Roman font. Her friend asks if it is a school worksheet. Maya wants it to look like HERS."
+          },
+          {
             type: "concept",
-            title: "The Clothes on the Skeleton",
-            content: "CSS (Cascading Style Sheets) controls how HTML looks. You select elements and add styles: `color: purple; font-size: 20px; background-color: black;`."
+            title: "CSS Dresses the Skeleton",
+            content: "HTML says what things are. CSS says how they look. You pick an element, then set properties on it: a colour, a size, a background. Each one is property: value;"
+          },
+          {
+            type: "example",
+            title: "Three Lines That Change Everything",
+            content: "Maya adds a style block:\n\nh1 {\n  color: hotpink;\n  font-size: 40px;\n}\n\nEvery <h1> on the page turns hot pink and grows. She wrote three lines and changed every heading at once — that is the whole point of CSS."
+          },
+          {
+            type: "tip",
+            title: "The Semicolon Catches Everyone",
+            content: "Every CSS line ends in a semicolon. Miss one and the browser quietly ignores that line and the next one. Nothing breaks, nothing warns you — your style just does not show up."
+          },
+          {
+            type: "activity",
+            title: "Make It Yours",
+            content: "Open your me.html and add a style block. Give your <h1> a colour you like and your <p> a font-size of 18px. Reload the page. Change the colour three times and watch it update."
           },
           {
             type: "recap",
             title: "Module 2 Recap",
-            content: "• CSS = styling & design\n• Use `color` for text color!"
+            content: "• HTML is what things ARE, CSS is how they LOOK\n• Style rules are property: value;\n• One rule styles every matching element at once\n• A missing semicolon silently kills the line"
           }
         ],
         exercises: [
@@ -1216,14 +1401,34 @@ export const COURSES = [
         xpReward: 50,
         contentSections: [
           {
+            type: "story",
+            title: "Everything Is Squashed Together",
+            content: "Maya's text now touches the edge of its box and her paragraphs are stuck to each other. It looks cramped. She needs space — but space on the inside and the outside are two different things."
+          },
+          {
             type: "concept",
-            title: "Everything is a Rectangular Box!",
-            content: "In CSS, every single element is a box. The Box Model has 4 layers:\n1. Content (the text/image)\n2. Padding (space INSIDE border)\n3. Border (the outline)\n4. Margin (space OUTSIDE border)"
+            title: "Every Element Is a Box",
+            content: "In CSS everything is a rectangle with four layers: the content, padding around it inside the border, the border itself, and margin outside pushing other things away."
+          },
+          {
+            type: "example",
+            title: "Padding Versus Margin",
+            content: "Think of a framed photo:\n\n.card {\n  padding: 20px;\n  border: 2px solid black;\n  margin: 30px;\n}\n\nPadding is the white mount between the photo and the frame. Margin is the wall space between this frame and the next one. Padding grows the box; margin pushes boxes apart."
+          },
+          {
+            type: "tip",
+            title: "Use the Inspector",
+            content: "Right-click anything on a webpage and choose Inspect. The browser draws the box model in colour: green for padding, orange for margin. Every site you like was built with the same four layers."
+          },
+          {
+            type: "activity",
+            title: "Find the Layers",
+            content: "Open any website, right-click a button and choose Inspect. Find its padding and margin in the panel. Change the padding number and watch the real button on the page grow."
           },
           {
             type: "recap",
             title: "Module 3 Recap",
-            content: "• Padding = inside spacing\n• Margin = outside spacing!"
+            content: "• Every element is a box with four layers\n• Padding is space INSIDE the border\n• Margin is space OUTSIDE, pushing others away\n• Inspect shows you the layers on any site"
           }
         ],
         exercises: [
@@ -1267,21 +1472,46 @@ export const COURSES = [
         xpReward: 50,
         contentSections: [
           {
+            type: "story",
+            title: "It Only Works on Maya's Laptop",
+            content: "Maya shows her page to a friend by turning her laptop around. To send it, she emails the file — and it opens with all the styling gone. A website nobody can visit is not really a website."
+          },
+          {
             type: "concept",
-            title: "Putting Your Site Online",
-            content: "To let anyone visit your site, you upload your HTML & CSS files to a Server (web host). The server gives you a URL link (like mysite.com)!"
+            title: "A Server Is a Computer That Never Sleeps",
+            content: "Your file lives on your laptop, which sleeps and changes address. A host is a computer that stays on, holds your files and answers anyone who asks for them, day or night."
+          },
+          {
+            type: "example",
+            title: "From Folder to Address",
+            content: "Maya drags her folder onto a free host. It contains:\n\nindex.html\nstyle.css\n\nMinutes later she has a real address she can text to anyone. The host looks for index.html first — that is why the home page is almost always called that."
+          },
+          {
+            type: "fact",
+            title: "Every Site Is Just Files",
+            content: "The biggest sites you use are still folders of files on a server somewhere. They have more of them, and faster machines, but a browser asks for a file exactly the way it asks for yours."
+          },
+          {
+            type: "activity",
+            title: "Publish Yours",
+            content: "Rename your me.html to index.html. Put it in a folder with your CSS file. Upload the folder to any free host and send the address to someone. Your site is now live on the internet."
           },
           {
             type: "recap",
             title: "Module 4 Recap",
-            content: "• Deployment = publishing site live\n• Server = 24/7 web host computer!"
+            content: "• Your laptop cannot host a site — it sleeps\n• A host stays on and answers requests\n• The home page is called index.html\n• Every website is just files on a server"
           }
         ],
         exercises: [
           {
             type: "mcq",
             question: "What is a web server?",
-            options: ["A waiter", "A computer that stays online 24/7 hosting files", "A CSS file", "A browser"],
+            options: [
+              "A program that turns HTML into a design",
+              "A computer that stays online 24/7 hosting files",
+              "The folder on your laptop where files live",
+              "A browser tab that keeps a website open"
+            ],
             answer: "A computer that stays online 24/7 hosting files"
           },
           {
@@ -1338,14 +1568,34 @@ export const COURSES = [
         xpReward: 50,
         contentSections: [
           {
+            type: "story",
+            title: "Rhea Erases Two Hours",
+            content: "Rhea spent two hours on a dragon sketch, then started colouring. One wrong swipe of the eraser and the wing was gone — sketch and colour together. She had drawn everything on one layer."
+          },
+          {
             type: "concept",
-            title: "Clear Sheets of Glass",
-            content: "Digital layers are like stacked transparent sheets. Draw sketches on Layer 1, line art on Layer 2, colors on Layer 3. If you erase colors on Layer 3, your sketch underneath stays 100% safe!"
+            title: "Layers Are Sheets of Glass",
+            content: "A layer is a clear sheet stacked over your canvas. Sketch on the bottom one, ink on the next, colour on top. Erase the top sheet and everything underneath is untouched."
+          },
+          {
+            type: "example",
+            title: "Rhea's Three Sheets",
+            content: "Rhea rebuilds the dragon:\n\nLayer 3 — colour\nLayer 2 — clean outlines\nLayer 1 — rough sketch\n\nShe hides Layer 1 and the sketch lines vanish from view without being deleted. She can turn them back on any time. This is what non-destructive means."
+          },
+          {
+            type: "tip",
+            title: "Name Them As You Go",
+            content: "Every app calls new layers Layer 1, Layer 2, Layer 3. By drawing ten you will not remember which is which. Rename them the moment you make them: sketch, lines, skin, shadows."
+          },
+          {
+            type: "activity",
+            title: "Prove It To Yourself",
+            content: "Make two layers. Scribble on the bottom one, then scribble over it on the top one. Erase the top scribble completely. Watch the bottom one survive untouched."
           },
           {
             type: "recap",
             title: "Module 1 Recap",
-            content: "• Layers = stacked transparent sheets\n• Non-destructive = sketch is safe while coloring!"
+            content: "• A layer is a clear sheet over the canvas\n• Erasing one layer never touches the ones below\n• Hiding a layer is not deleting it\n• Name layers as you make them"
           }
         ],
         exercises: [
@@ -1388,14 +1638,34 @@ export const COURSES = [
         xpReward: 50,
         contentSections: [
           {
+            type: "story",
+            title: "Everything Looks Muddy",
+            content: "Rhea picked twelve colours she liked for her dragon. Together they turned into brown sludge. Her friend used three colours and it looked better. Liking a colour is not the same as it belonging."
+          },
+          {
             type: "concept",
-            title: "Complementary Colors",
-            content: "Colors opposite each other on the Color Wheel (Blue & Orange, Red & Green, Yellow & Purple) are Complementary. Placed side-by-side, they create vibrant contrast!"
+            title: "Opposites Make Things Pop",
+            content: "On the colour wheel, opposite pairs are complementary: blue and orange, red and green, yellow and purple. Side by side each makes the other look brighter."
+          },
+          {
+            type: "example",
+            title: "Why Sunsets Work",
+            content: "Look at almost any film poster with a sunset. Orange sky, blue shadow. Blockbuster posters use that pair so often it has a nickname: orange and teal. Rhea paints her dragon blue and puts it against an orange sky. Suddenly it stands out."
+          },
+          {
+            type: "tip",
+            title: "Three Colours, Not Twelve",
+            content: "Pick one main colour, one opposite for contrast, and one neutral. Three is enough for a whole picture. More colours do not mean more interesting — usually they mean muddier."
+          },
+          {
+            type: "activity",
+            title: "Swap the Background",
+            content: "Take any drawing you have. Fill the background with the colour opposite your subject on the wheel. Then try the same colour as your subject. Look at both and see which one your eye goes to."
           },
           {
             type: "recap",
             title: "Module 2 Recap",
-            content: "• Opposite colors on wheel = Complementary\n• High contrast makes art pop!"
+            content: "• Opposite colours on the wheel are complementary\n• Side by side they make each other brighter\n• Blue and orange is the most used pair in film\n• Three colours beat twelve"
           }
         ],
         exercises: [
@@ -1438,14 +1708,34 @@ export const COURSES = [
         xpReward: 50,
         contentSections: [
           {
+            type: "story",
+            title: "Dead Centre and Dead Boring",
+            content: "Rhea put the dragon exactly in the middle of the canvas, like she always does. It looks like a passport photo of a dragon. Correct, symmetrical, and completely still."
+          },
+          {
             type: "concept",
-            title: "The 3x3 Grid Secret",
-            content: "Don't put your character dead in the middle! Divide your canvas into a 3x3 grid. Placing your main subject on the grid intersection lines creates dynamic, cinematic composition."
+            title: "Split the Canvas Into Nine",
+            content: "Draw two lines across and two down, like a noughts and crosses board. Put your subject where the lines cross instead of in the middle. The picture stops feeling frozen."
+          },
+          {
+            type: "example",
+            title: "Your Phone Already Does This",
+            content: "Open your phone camera and turn on the grid in settings. You get the same nine boxes. Photographers line up horizons along the lower line and faces on a crossing point. Rhea moves her dragon onto the top-left crossing and leaves space for it to fly into."
+          },
+          {
+            type: "fact",
+            title: "Older Than Cameras",
+            content: "The idea was written down for landscape painters in 1797, long before photography existed. Painters, photographers, film directors and game artists have all kept using it since."
+          },
+          {
+            type: "activity",
+            title: "Move One Thing",
+            content: "Take a drawing where your subject sits in the middle. Turn on your app's grid and move the subject onto a crossing point. Leave empty space in the direction it faces. Compare the two."
           },
           {
             type: "recap",
             title: "Module 3 Recap",
-            content: "• Rule of Thirds uses a 3x3 grid\n• Intersections create appealing focal points!"
+            content: "• Split the canvas into nine boxes\n• Put the subject on a crossing, not the centre\n• Leave space in the direction it faces\n• Your phone camera has the same grid"
           }
         ],
         exercises: [
@@ -1488,14 +1778,34 @@ export const COURSES = [
         xpReward: 50,
         contentSections: [
           {
+            type: "story",
+            title: "The Flat Dragon",
+            content: "Rhea's dragon is coloured, composed and still looks like a sticker. It has no weight. Nothing tells your eye whether the body is round or flat, because every part is exactly the same brightness."
+          },
+          {
             type: "concept",
-            title: "Highlights and Shadows",
-            content: "Rendering is adding light and shade. The side facing the light source gets a bright 'Highlight'. The side facing away gets a deep 'Shadow'!"
+            title: "Pick Where the Light Is",
+            content: "Decide one spot the light comes from and stay with it. Surfaces turned toward it get a highlight. Surfaces turned away get shadow. That difference is what makes a shape look solid."
+          },
+          {
+            type: "example",
+            title: "Light From the Top Left",
+            content: "Rhea puts her light at the top left:\n\nTop-left of each scale — lightest\nMiddle — the base colour\nBottom-right — shadow\n\nShe adds one shadow on the ground under the dragon and it stops floating. Three values and a ground shadow is enough to read as solid."
+          },
+          {
+            type: "tip",
+            title: "Squint At It",
+            content: "Squint until the picture blurs. Colours disappear and only light and dark remain. If everything blurs into one grey mush, your shadows are too weak to read from across the room."
+          },
+          {
+            type: "activity",
+            title: "One Ball, Three Values",
+            content: "Draw a circle. Pick a light direction. Fill it with a base colour, add a lighter patch facing the light and a darker one opposite. Add a shadow on the ground. You just drew a sphere."
           },
           {
             type: "recap",
             title: "Module 4 Recap",
-            content: "• Rendering adds 3D depth\n• Light side = Highlight, Dark side = Shadow!"
+            content: "• Choose one light direction and keep it\n• Facing the light is a highlight, away is shadow\n• A ground shadow stops things floating\n• Squint to check your darks are strong enough"
           }
         ],
         exercises: [
@@ -1527,7 +1837,12 @@ export const COURSES = [
           {
             type: "mcq",
             question: "What area receives a Highlight?",
-            options: ["The side facing away from light", "The side facing directly toward the light", "The bottom always", "Nowhere"],
+            options: [
+              "The side turned away from the light source",
+              "The side facing directly toward the light",
+              "The part closest to the ground shadow",
+              "The outline drawn around the whole shape"
+            ],
             answer: "The side facing directly toward the light"
           }
         ]

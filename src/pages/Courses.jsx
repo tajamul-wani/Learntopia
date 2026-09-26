@@ -16,6 +16,7 @@ import { COURSES } from "../data/coursesData";
 import { getLocalizedCourse } from "../utils/localizationUtils";
 import { courseFacts } from "../utils/courseFacts";
 import { courseTint } from "../utils/courseTint";
+import { progressPercent } from "../utils/enrollmentState";
 
 const Courses = () => {
   const navigate = useNavigate();
@@ -30,6 +31,9 @@ const Courses = () => {
   // Finished and left courses are still a learner's own history, so they get
   // their own tabs instead of sitting in the catalog with a badge on them.
   const [tab, setTab] = useState("all");
+  // How far into each course a learner is, so an enrolled card can show it
+  // rather than only saying "Continue" with no sense of where they are.
+  const [progress, setProgress] = useState({});
 
   useEffect(() => {
     if (currentUser) {
@@ -39,8 +43,10 @@ const Courses = () => {
           const active = [];
           const left = [];
           const finished = [];
+          const done = {};
           snap.docs.forEach((d) => {
             const data = d.data();
+            done[d.id] = data;
             if (data.unenrolled) return left.push(d.id);
             if (data.completed) finished.push(d.id);
             return active.push(d.id);
@@ -48,6 +54,7 @@ const Courses = () => {
           setEnrolledIds(active);
           setUnenrolledIds(left);
           setCompletedIds(finished);
+          setProgress(done);
         } catch (e) {
           console.error("Error fetching enrolled courses", e);
         }
@@ -175,6 +182,7 @@ const Courses = () => {
             const isRejoin = !isEnrolled && unenrolledIds.includes(course.id.toString());
             const isCompleted = completedIds.includes(course.id.toString());
             const facts = courseFacts(course);
+            const pct = progressPercent(progress[course.id.toString()], facts.modules);
 
             return (
               <Card key={course.id} hoverable className="group flex flex-col p-5">
@@ -215,7 +223,22 @@ const Courses = () => {
                 <h3 className="text-lg font-bold leading-snug text-ink-hi">{course.title}</h3>
                 <p className="mt-2 mb-6 text-xs leading-relaxed text-ink-low line-clamp-2">{course.desc}</p>
 
-                <div className="mt-auto flex items-center justify-between gap-3 border-t border-white/[0.07] pt-5">
+                {isEnrolled && !isCompleted && (
+                  <div className="mt-auto pt-1">
+                    <div className="mb-1.5 flex items-center justify-between text-xs font-semibold text-ink-low">
+                      <span>{t("coursePreview.yourProgress")}</span>
+                      <span className="tabular-nums text-ink-hi">{pct}%</span>
+                    </div>
+                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-surface-3">
+                      <div
+                        className="h-full rounded-full bg-gradient-to-r from-violet-500 to-sky transition-[width] duration-500"
+                        style={{ width: `${pct}%` }}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                <div className={`flex items-center justify-between gap-3 border-t border-white/[0.07] pt-5 ${isEnrolled && !isCompleted ? "mt-5" : "mt-auto"}`}>
                   {/* What a learner actually needs to choose: how much there
                       is, how long it takes, how hard it is and what it pays.
                       Every number is counted from the course itself. */}

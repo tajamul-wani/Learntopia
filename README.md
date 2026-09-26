@@ -55,11 +55,14 @@ translated into English and Spanish.
 
 ## Features
 
-- **Courses**: multi-module tracks with lessons, exercises (multiple choice,
-  true/false, fill in the blank, matching pairs) and a syllabus map.
+- **Courses**: multi-module tracks on a syllabus map. Each module opens with a
+  short read, then exercises (multiple choice, true/false, fill in the blank,
+  matching pairs) and a hands-on activity. That shape is enforced by a test, so
+  a new course cannot ship as reading alone.
 - **Quizzes**: timed, scored, with a leaderboard per quiz.
 - **AI tutor**: Leo, one assistant across every course, on Google Gemini with
-  the key held in a Cloudflare Worker.
+  the key held in a Cloudflare Worker. Each request carries the course and the
+  module the learner is on, so answers stay on topic.
 - **Progress**: XP, levels, badges, daily streaks, a global leaderboard, and a
   dashboard covering courses and quiz history.
 - **Accounts**: email and password or Google sign-in, 26 built-in avatars,
@@ -147,10 +150,12 @@ them pass.
 | **Unit and component** (`npm run test:unit`, Vitest) | Pure helpers and React components with no browser or database: identity and name rules, level maths, the legacy-name scrub's decisions, and component behaviour through Testing Library |
 | **Static** (`npm run lint`, `npm run build`, `npm run test:palette`) | Lint errors, build breakage, and colours outside the design system |
 
-Two guards run inside the unit layer and will fail a pull request on their own:
-`test/palette.test.js` rejects a colour that is not a design token, and
+Three guards run inside the unit layer and will fail a pull request on their
+own: `test/palette.test.js` rejects a colour that is not a design token,
 `test/no-untranslated-ui.test.js` rejects a string written into JSX instead of
-`src/i18n/translations.js`.
+`src/i18n/translations.js`, and `test/course-content-standard.test.js` holds
+course content to the shape every course shares and checks that the Spanish
+lesson content still lines up with the English index for index.
 
 **No credentials, and no internet.** The app under test talks to the local
 Firebase Auth and Firestore emulators under the emulator-only
@@ -332,6 +337,10 @@ above all: a change ships with the tests that prove it.
 8. Put every string a learner reads in `src/i18n/translations.js` under English
    and Spanish, and render it with `t()`. The i18n guard fails the build on
    hardcoded text.
+9. Course content is translated by array index. Adding, removing or reordering a
+   lesson section in `src/data/coursesData.js` means doing the same in
+   `src/i18n/contentTranslations.js`, or the Spanish text lands on the wrong
+   block. The content guard fails the build when the two drift.
 
 ---
 
