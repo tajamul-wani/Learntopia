@@ -3,6 +3,7 @@ import Icon from "./ui/Icon";
 import ImageWithSkeleton from "./ui/ImageWithSkeleton";
 import { courseTint } from "../utils/courseTint";
 import { useLanguage } from "../context/LanguageContext";
+import { useSound } from "../context/SoundContext";
 import { TUTOR_NAME } from "../config/tutor";
 
 /**
@@ -32,6 +33,7 @@ const MAX_WAIT_MS = 12000;
 
 const CourseEnterOverlay = ({ course, ready = false, onDone }) => {
   const { t } = useLanguage();
+  const { playCourseEnter } = useSound();
   // How far the timed beats have got. The final beat is not one of these — it
   // belongs to `ready`, because claiming the course is open while it is still
   // being written would be the same lie the old spinner told.
@@ -45,11 +47,16 @@ const CourseEnterOverlay = ({ course, ready = false, onDone }) => {
   );
 
   useEffect(() => {
+    // Once, as the doorway opens. The mute toggle is respected inside playSound,
+    // so nothing here has to check it.
+    playCourseEnter();
     const timers = [setTimeout(() => setGaveUp(true), MAX_WAIT_MS)];
     if (!reduced) {
       BEATS.slice(0, -1).forEach((_, i) => timers.push(setTimeout(() => setTick(i), i * BEAT_MS)));
     }
     return () => timers.forEach(clearTimeout);
+    // playCourseEnter is stable from the provider; the sound must fire once.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reduced]);
 
   const beatsDone = reduced || tick >= BEATS.length - 2;
@@ -101,7 +108,7 @@ const CourseEnterOverlay = ({ course, ready = false, onDone }) => {
         <p className="mt-7 text-xs font-bold uppercase tracking-[0.14em] text-sky">
           {t(`courseEnter.${BEATS[beat]}`, { name: TUTOR_NAME })}
         </p>
-        <h2 className="mt-2.5 text-xl font-extrabold leading-snug text-ink-hi sm:text-2xl">
+        <h2 className="mt-2.5 text-xl/snug font-extrabold text-ink-hi sm:text-2xl/snug">
           {course?.title}
         </h2>
 

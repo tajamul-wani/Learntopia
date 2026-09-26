@@ -83,8 +83,13 @@ describe("Spanish course content lines up with English", () => {
   const es = contentTranslations.es?.courseData || {};
 
   test.each(COURSES.map((c) => [c.title, c]))("%s", (_title, course) => {
+    // Both languages are live app-wide, so a course with no Spanish at all is a
+    // course half shipped. English fallback hides it — the catalog still renders,
+    // just in the wrong language — which is exactly why this has to be asserted
+    // rather than left to be noticed.
     const translated = es[course.id];
-    if (!translated) return; // untranslated courses fall back to English, which is fine
+    expect(translated, `${course.title} has no Spanish content at all`).toBeTruthy();
+    if (!translated) return;
     const problems = [];
 
     modulesOf(course).forEach((module, i) => {

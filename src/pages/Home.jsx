@@ -151,7 +151,7 @@ const Home = () => {
               <div className={`grid h-28 place-items-center overflow-hidden rounded-2xl border border-white/5 p-6 shadow-[inset_0_2px_10px_rgba(0,0,0,0.45)] ${courseTint(c)}`}>
                 <img src={c.image} alt="" className="max-h-16 w-auto object-contain" />
               </div>
-              <h3 className="line-clamp-2 text-base font-bold text-ink-hi">{c.title}</h3>
+              <h3 className="line-clamp-2 text-base font-bold leading-snug text-ink-hi">{c.title}</h3>
               <p className="line-clamp-2 text-sm leading-relaxed text-ink-low">{c.desc}</p>
               <div className="mt-auto flex items-center justify-between gap-3 pt-1">
                 <span className="inline-flex min-w-0 items-center gap-1.5 rounded-full bg-surface-2 px-3 py-1.5 text-xs font-extrabold text-state-success shadow-clay-sm">

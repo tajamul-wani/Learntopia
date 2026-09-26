@@ -136,5 +136,74 @@ export const quizzes = [
       { id: 14, questionText: "What does 'value' mean in color theory?", options: ["How much a painting costs", "How light or dark a color is", "How many colors you use", "How big the brush is"], correctAnswer: "How light or dark a color is" },
       { id: 15, questionText: "Where does 'Ambient Occlusion' happen?", options: ["In direct sunlight", "In deep crevices where light can't reach", "In the sky", "On the highlight"], correctAnswer: "In deep crevices where light can't reach" }
     ]
+  },
+  {
+    id: "computer",
+    title: "Computer Confident",
+    subject: "Computer Skills",
+    description: "Operating systems, shortcuts, how the web reaches you, and email that gets read.",
+    questions: [
+      { id: 1, questionText: "What is an operating system responsible for?", options: ["Storing your photos safely", "Running every other program", "Connecting you to the internet", "Adjusting the screen brightness"], correctAnswer: "Running every other program" },
+      { id: 2, questionText: "Which operating system runs most of the servers behind websites?", options: ["Windows", "macOS", "Linux", "Android"], correctAnswer: "Linux" },
+      { id: 3, questionText: "Why do a Mac and an iPhone feel similar to use?", options: ["They are built in one factory", "Their systems share the same roots", "They both need constant internet", "They launched in the same year"], correctAnswer: "Their systems share the same roots" },
+      { id: 4, questionText: "What does Ctrl+Z do?", options: ["Saves your file", "Undoes the last thing you did", "Closes the window", "Selects everything"], correctAnswer: "Undoes the last thing you did" },
+      { id: 5, questionText: "Which key replaces Ctrl on a Mac?", options: ["Alt", "Shift", "Cmd", "Fn"], correctAnswer: "Cmd" },
+      { id: 6, questionText: "Which shortcut finds a word on the page you are reading?", options: ["Ctrl+F", "Ctrl+S", "Ctrl+A", "Ctrl+V"], correctAnswer: "Ctrl+F" },
+      { id: 7, questionText: "You delete a paragraph by mistake. What is the fastest fix?", options: ["Close without saving", "Press Ctrl+Z", "Retype it from memory", "Restart the computer"], correctAnswer: "Press Ctrl+Z" },
+      { id: 8, questionText: "What happens when you type a web address and press enter?", options: ["Your browser requests it from a server", "The page is built on your computer", "Your provider picks a site for you", "The browser searches your files"], correctAnswer: "Your browser requests it from a server" },
+      { id: 9, questionText: "What does the padlock in the address bar tell you?", options: ["The site is honest", "The connection is encrypted", "The page loads faster", "The site has no adverts"], correctAnswer: "The connection is encrypted" },
+      { id: 10, questionText: "In https://example.com/photos, which part picks the page?", options: ["https", "example.com", "/photos", "The padlock"], correctAnswer: "/photos" },
+      { id: 11, questionText: "Every site fails to load. Where is the problem most likely?", options: ["That one website", "Your own connection", "The address bar", "Your keyboard"], correctAnswer: "Your own connection" },
+      { id: 12, questionText: "Why does a clear subject line matter?", options: ["It makes email arrive faster", "People decide from it whether to open it", "Email will not send without one", "It stops messages reaching spam"], correctAnswer: "People decide from it whether to open it" },
+      { id: 13, questionText: "What does putting someone in Cc do?", options: ["Hides them from everyone else", "Keeps them in the loop, visibly", "Sends the email to them first", "Stops them replying to it"], correctAnswer: "Keeps them in the loop, visibly" },
+      { id: 14, questionText: "An email asks for your password or it will close your account. What do you do?", options: ["Reply quickly so nothing is lost", "Show an adult and send nothing", "Send it if the logo looks right", "Forward it to all your friends"], correctAnswer: "Show an adult and send nothing" },
+      { id: 15, questionText: "Which of these is a file sent along with an email?", options: ["A subject", "An attachment", "A signature", "A recipient"], correctAnswer: "An attachment" }
+    ]
+  },
+  {
+    id: "nutrition",
+    title: "Food Scientist",
+    subject: "Health",
+    description: "Calories, the big three macros, the tiny micros, and why nobody needs the same amount.",
+    questions: [
+      { id: 1, questionText: "What does a calorie measure?", options: ["How much sugar is in a food", "How much energy a food gives you", "How heavy a portion is", "How long food takes to digest"], correctAnswer: "How much energy a food gives you" },
+      { id: 2, questionText: "Roughly how much of your daily energy does your brain use?", options: ["About two percent", "About twenty percent", "About half", "Almost none"], correctAnswer: "About twenty percent" },
+      { id: 3, questionText: "Most of the energy you use each day goes on what?", options: ["Sport and exercise", "Living and growing", "Digesting your food", "Keeping your phone charged"], correctAnswer: "Living and growing" },
+      { id: 4, questionText: "What does macro mean in macronutrient?", options: ["Big", "Rare", "Sweet", "Cooked"], correctAnswer: "Big" },
+      { id: 5, questionText: "Which macronutrient mainly builds and repairs muscle?", options: ["Carbohydrate", "Protein", "Fat", "Fibre"], correctAnswer: "Protein" },
+      { id: 6, questionText: "Which macronutrient gives you the quickest energy?", options: ["Carbohydrate", "Protein", "Fat", "Calcium"], correctAnswer: "Carbohydrate" },
+      { id: 7, questionText: "What does fat do in your body?", options: ["Nothing useful at all", "Slow energy and protection", "Only makes food taste good", "Replaces the need for protein"], correctAnswer: "Slow energy and protection" },
+      { id: 8, questionText: "How many of the three macronutrients does a healthy body need?", options: ["Only one", "Two of them", "All three", "None of them"], correctAnswer: "All three" },
+      { id: 9, questionText: "What do vitamins and minerals give you?", options: ["Energy for running", "Tools for jobs like building bone", "Extra body weight", "Water for hydration"], correctAnswer: "Tools for jobs like building bone" },
+      { id: 10, questionText: "Which mineral carries oxygen in your blood?", options: ["Calcium", "Iron", "Sodium", "Zinc"], correctAnswer: "Iron" },
+      { id: 11, questionText: "Which vitamin can your own skin make from sunlight?", options: ["Vitamin A", "Vitamin C", "Vitamin D", "Vitamin K"], correctAnswer: "Vitamin D" },
+      { id: 12, questionText: "Why did sailors on long voyages get ill despite plenty of food?", options: ["They ate too little protein", "They were missing vitamin C", "They drank too much water", "They ate only at night"], correctAnswer: "They were missing vitamin C" },
+      { id: 13, questionText: "Which mineral mainly builds bones and teeth?", options: ["Iron", "Calcium", "Vitamin C", "Protein"], correctAnswer: "Calcium" },
+      { id: 14, questionText: "What changes how much energy a person needs in a day?", options: ["Only their weight", "Their size, age and activity", "Only the sport they play", "The season of the year"], correctAnswer: "Their size, age and activity" },
+      { id: 15, questionText: "Who should answer a question about your own eating?", options: ["A doctor", "A search engine", "A social media video", "Whoever posts most often"], correctAnswer: "A doctor" }
+    ]
+  },
+  {
+    id: "ai",
+    title: "AI Explained",
+    subject: "AI Literacy",
+    description: "How AI learns, why it is confidently wrong, where unfairness gets in, and how to use it well.",
+    questions: [
+      { id: 1, questionText: "How does modern AI mostly learn to tell things apart?", options: ["A person writes a rule for each case", "It finds patterns in many examples", "It looks the answer up online", "It asks a human every time"], correctAnswer: "It finds patterns in many examples" },
+      { id: 2, questionText: "What did older programs rely on instead?", options: ["Rules written by a person", "Patterns found in photos", "Questions asked of users", "Random guessing each time"], correctAnswer: "Rules written by a person" },
+      { id: 3, questionText: "Does an image model understand a cat the way you do?", options: ["Yes, exactly the same way", "No, it only recognises patterns", "Yes, once it has seen enough", "Only for animals it has met"], correctAnswer: "No, it only recognises patterns" },
+      { id: 4, questionText: "Why can an AI invent a book that does not exist?", options: ["Its library is out of date", "It predicts likely words, it does not look up", "Someone deleted the real record", "It is deliberately misleading you"], correctAnswer: "It predicts likely words, it does not look up" },
+      { id: 5, questionText: "How does AI sound when its answer is wrong?", options: ["Noticeably unsure of itself", "Exactly as confident as usual", "It refuses to answer at all", "It warns you before answering"], correctAnswer: "Exactly as confident as usual" },
+      { id: 6, questionText: "Which of these is AI weakest at?", options: ["Explaining an idea again", "Exact dates and sources", "Suggesting a starting point", "Rewording something simply"], correctAnswer: "Exact dates and sources" },
+      { id: 7, questionText: "An AI gives you a fact for homework. What next?", options: ["Use it, it sounded certain", "Check it in another source", "Ask the same AI to confirm", "Use it only if it is short"], correctAnswer: "Check it in another source" },
+      { id: 8, questionText: "Why might an AI keep drawing the same kind of person for a job?", options: ["It decided who belongs there", "Its examples mostly showed that person", "It is copying another AI", "Other people are harder to draw"], correctAnswer: "Its examples mostly showed that person" },
+      { id: 9, questionText: "Where does bias in an AI system usually come from?", options: ["The examples it learned from", "The opinions of the computer", "The country it is used in", "The time of day it runs"], correctAnswer: "The examples it learned from" },
+      { id: 10, questionText: "What is a quick way to spot that kind of unfairness?", options: ["Ask who is missing from the picture", "Run the same question once", "Check how fast it answered", "Count the words it used"], correctAnswer: "Ask who is missing from the picture" },
+      { id: 11, questionText: "What makes AI bias a bigger problem than one person's view?", options: ["Machines cannot be corrected", "It repeats at huge speed and scale", "It only ever affects images", "Nobody is able to notice it"], correctAnswer: "It repeats at huge speed and scale" },
+      { id: 12, questionText: "Which is the better way to use AI for homework?", options: ["Ask it to write the whole answer", "Ask it to explain the confusing part", "Copy it and change a few words", "Use it when you feel tired"], correctAnswer: "Ask it to explain the confusing part" },
+      { id: 13, questionText: "Which question leaves the thinking with you?", options: ["Write my essay on volcanoes", "Explain why magma rises", "Give me the final answer", "Do this maths problem"], correctAnswer: "Explain why magma rises" },
+      { id: 14, questionText: "Which of these should never go into an AI chat?", options: ["A question about your homework", "Your address and passwords", "A word you do not understand", "A topic you are curious about"], correctAnswer: "Your address and passwords" },
+      { id: 15, questionText: "Why does doing the thinking yourself matter?", options: ["It is faster than using AI", "The struggle is what teaches you", "Teachers can always tell", "AI is not allowed at school"], correctAnswer: "The struggle is what teaches you" }
+    ]
   }
 ];

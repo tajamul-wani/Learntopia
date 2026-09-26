@@ -100,6 +100,21 @@ export const soundEffects = {
     playTone({ freq: 174.61, duration: 0.18, type: 'triangle', startGain: 0.2, delay: 0.1 });
   },
 
+  // Three rising notes as a course opens. Deliberately quieter and shorter than
+  // moduleComplete: this marks arriving somewhere, not finishing something.
+  courseEnter() {
+    const notes = [392.00, 523.25, 659.25]; // G4, C5, E5
+    notes.forEach((freq, idx) => {
+      playTone({
+        freq,
+        duration: 0.22,
+        type: 'sine',
+        startGain: 0.22,
+        delay: idx * 0.12,
+      });
+    });
+  },
+
   // Upbeat 4-note victory chord on module completion
   moduleComplete() {
     const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
