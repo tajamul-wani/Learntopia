@@ -242,8 +242,7 @@ worker-sentry-linear/   Cloudflare Worker: Sentry error triage
 
 ## Environment variables
 
-Create `.env` in the project root. It is listed in `.gitignore` and must never
-be committed. `.env.example` is the template.
+Create `.env` in the project root. `.env.example` is the template.
 
 ```env
 # Firebase: Console > Project settings > SDK setup and configuration
