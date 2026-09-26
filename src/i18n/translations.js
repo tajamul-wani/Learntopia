@@ -45,7 +45,7 @@ export const translations = {
       "clearChat": "Clear chat history",
       "poweredBy": "Powered by Google Gemini 2.0 Flash • Kid-Safe AI",
       "chatGreeting": "Hi there! I'm {name}, your {subject} buddy! Ask me anything about this course, and let's learn together!",
-      "launcherTeaser": "Hi! I'm {name}. Stuck on anything? Just ask me.",
+      "launcherTeaser": "Hi! I'm {name}. Stuck? Just ask.",
       "dismissTeaser": "Hide this message"
     },
     nav: {
@@ -980,7 +980,7 @@ export const translations = {
       "clearChat": "Limpiar historial de chat",
       "poweredBy": "Desarrollado por Google Gemini 2.0 Flash • IA Segura para Niños",
       "chatGreeting": "¡Hola! Soy {name}, ¡tu compañero de {subject}! Pregúntame lo que quieras sobre este curso, ¡y aprendamos juntos!",
-      "launcherTeaser": "¡Hola! Soy {name}. ¿Te atascas? Solo pregúntame.",
+      "launcherTeaser": "¡Hola! Soy {name}. ¿Dudas? Pregúntame.",
       "dismissTeaser": "Ocultar este mensaje"
     },
     nav: {

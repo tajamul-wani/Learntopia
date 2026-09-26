@@ -420,15 +420,16 @@ const CourseDetails = () => {
             <h1 className="mt-4 text-3xl font-extrabold tracking-tight text-ink-hi md:text-4xl lg:text-5xl">{course.title}</h1>
             <p className="mt-4 text-lg leading-relaxed text-ink-low">{course.desc}</p>
             
-            {/* Same four facts, same tiles as the preview — counted from the
-                course, so neither can drift from what is inside it. */}
-            <CourseFactTiles
-              course={course}
-              gridClassName="grid-cols-2"
-              className="mt-6 text-left"
-            />
           </div>
         </div>
+        )}
+
+        {/* Full content width rather than the column beside the artwork: that
+            column tops out around 600px, which is not enough for four tiles
+            without the values wrapping. Same four facts as the preview,
+            counted from the course so neither can drift. */}
+        {activeTab !== "syllabus" && (
+          <CourseFactTiles course={course} className="-mt-4 mb-10 text-left" />
         )}
 
         {/* On the curriculum, this one line is all the orientation needed. */}

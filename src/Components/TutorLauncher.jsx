@@ -95,29 +95,29 @@ const TutorLauncher = ({ onOpen, courseId }) => {
     // Above the mobile bottom nav (z-40) and clear of it; below the drawer
     // (z-60/70) so opening the chat covers the launcher rather than fighting it.
     <div
-      className={`fixed right-4 z-50 flex flex-col items-end gap-2.5 md:bottom-6 md:right-6 ${
+      className={`fixed right-4 z-50 flex items-center gap-2.5 md:bottom-6 md:right-6 ${
         immersive ? "bottom-[calc(1rem+env(safe-area-inset-bottom))]" : "bottom-[calc(4.75rem+env(safe-area-inset-bottom))]"
       }`}
     >
       {showBubble && (
         <div
-          className="max-w-[16rem] animate-fade-up rounded-2xl rounded-br-md border border-white/10 bg-surface px-4 py-3 shadow-clay sm:max-w-xs"
+          className="flex animate-fade-up items-center gap-2 whitespace-nowrap rounded-2xl rounded-br-md border border-white/10 bg-surface py-2.5 pl-4 pr-2.5 shadow-clay"
           data-testid="tutor-teaser"
         >
+          {/* The typed text is decorative duplication for anyone using a screen
+              reader — the launcher button beside it already says what this is. */}
+          <p aria-hidden="true" className="text-[13px] font-medium leading-none text-ink">
+            {typed}
+            <span className="ml-0.5 inline-block h-3 w-[2px] translate-y-[3px] animate-pulse bg-sky align-baseline" />
+          </p>
           <button
             type="button"
             onClick={dismiss}
             aria-label={t("aiTutor.dismissTeaser")}
-            className="float-right -mr-1 -mt-1 ml-2 grid h-6 w-6 flex-none place-items-center rounded-lg text-ink-faint transition-colors hover:bg-white/5 hover:text-ink-hi"
+            className="grid h-5 w-5 flex-none place-items-center rounded-md text-ink-faint transition-colors hover:bg-white/5 hover:text-ink-hi"
           >
-            <Icon name="x" size={13} />
+            <Icon name="x" size={12} />
           </button>
-          {/* The typed text is decorative duplication for anyone using a screen
-              reader — the launcher button below already says what this is. */}
-          <p aria-hidden="true" className="text-sm leading-relaxed text-ink">
-            {typed}
-            <span className="ml-0.5 inline-block h-3.5 w-[2px] translate-y-0.5 animate-pulse bg-sky align-middle" />
-          </p>
         </div>
       )}
 
