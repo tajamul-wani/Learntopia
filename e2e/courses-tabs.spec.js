@@ -29,9 +29,14 @@ test.describe("course tabs", () => {
     const tablist = page.getByRole("tablist", { name: /your courses/i });
     await expect(tablist).toBeVisible({ timeout: 20000 });
 
-    // All six courses on the catalog tab.
+    // The catalog tab carries its own count, so compare the cards against that
+    // rather than a number typed in here. Adding a course cannot break it, and
+    // it also catches the tab and the grid disagreeing.
     const cards = page.locator("main").getByRole("heading", { level: 3 });
-    await expect.poll(async () => cards.count(), { timeout: 10000 }).toBe(6);
+    const allTab = tablist.getByRole("tab", { name: /all courses/i });
+    const total = Number((await allTab.innerText()).match(/\d+/)[0]);
+    expect(total, "the catalog tab shows no count").toBeGreaterThan(0);
+    await expect.poll(async () => cards.count(), { timeout: 10000 }).toBe(total);
 
     // Completed holds only the finished one.
     await tablist.getByRole("tab", { name: /completed/i }).click();
@@ -44,8 +49,8 @@ test.describe("course tabs", () => {
     await expect(page.getByRole("button", { name: /^rejoin$/i })).toBeVisible();
 
     // And back to the full catalog.
-    await tablist.getByRole("tab", { name: /all courses/i }).click();
-    await expect.poll(async () => cards.count()).toBe(6);
+    await allTab.click();
+    await expect.poll(async () => cards.count()).toBe(total);
   });
 
   test("a learner with no history sees no tabs", async ({ page, learner }) => {
