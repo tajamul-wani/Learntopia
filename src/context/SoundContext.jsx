@@ -39,6 +39,7 @@ export const SoundProvider = ({ children }) => {
   const playClick = useCallback(() => playSound('click'), [playSound]);
   const playCorrect = useCallback(() => playSound('correct'), [playSound]);
   const playIncorrect = useCallback(() => playSound('incorrect'), [playSound]);
+  const playCourseEnter = useCallback(() => playSound('courseEnter'), [playSound]);
   const playModuleComplete = useCallback(() => playSound('moduleComplete'), [playSound]);
   const playLevelUp = useCallback(() => playSound('levelUp'), [playSound]);
   const playBadgeUnlock = useCallback(() => playSound('badgeUnlock'), [playSound]);
@@ -54,6 +55,7 @@ export const SoundProvider = ({ children }) => {
         toggleMute,
         playSound,
         playClick,
+        playCourseEnter,
         playCorrect,
         playIncorrect,
         playModuleComplete,
