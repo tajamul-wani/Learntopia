@@ -424,8 +424,8 @@ export const translations = {
     },
     courseEnter: {
       joining: "Saving your place",
-      unlocking: "Unlocking module 1",
-      ready: "{name} is ready",
+      unlocking: "Waking up {name}, your AI helper",
+      ready: "Ready when you are",
       footer: "Every module you finish earns XP.",
     },
     coursePreview: {
@@ -1359,8 +1359,8 @@ export const translations = {
     },
     courseEnter: {
       joining: "Guardando tu lugar",
-      unlocking: "Desbloqueando el módulo 1",
-      ready: "{name} está listo",
+      unlocking: "Despertando a {name}, tu ayudante IA",
+      ready: "Cuando quieras, empezamos",
       footer: "Cada módulo que terminas te da XP.",
     },
     coursePreview: {
