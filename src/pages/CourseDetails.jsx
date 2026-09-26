@@ -44,7 +44,6 @@ const CourseDetails = () => {
     return c ? getLocalizedCourse(c, t) : null;
   }, [id, t]);
 
-  const facts = useMemo(() => courseFacts(course), [course]);
   const topics = useMemo(() => courseSkills(course), [course]);
 
   const [completedModules, setCompletedModules] = useState([]);
@@ -514,15 +513,15 @@ const CourseDetails = () => {
 
         {/* Tab Content: OVERVIEW */}
         {activeTab === "overview" && (
-          <div className="grid gap-10 md:grid-cols-3 animate-fade-in">
-            <div className="space-y-10 md:col-span-2">
+          <div className="animate-fade-in">
+            <div className="space-y-10">
               <section>
-                <h3 className="mb-5 text-2xl font-bold text-ink-hi">{t("courseDetails.takeaways")}</h3>
+                <h3 className="mb-5 text-2xl font-bold leading-snug text-ink-hi">{t("courseDetails.takeaways")}</h3>
                 <div className="grid gap-4 sm:grid-cols-2">
                   {course.learningObjectives?.map((obj, i) => (
-                    <div key={i} className="flex items-start gap-3 rounded-2xl border border-white/10 bg-surface p-5 shadow-clay transition-colors hover:bg-surface-2">
-                      <Icon name="check-circle" size={20} className="mt-0.5 flex-none text-sky" />
-                      <span className="text-sm font-medium leading-relaxed text-ink-low">{obj}</span>
+                    <div key={i} className="flex items-start gap-3 rounded-2xl border border-white/10 bg-surface p-5 shadow-clay transition-colors hover:bg-surface-2 lg:gap-4 lg:p-6">
+                      <Icon name="check-circle" size={20} className="mt-0.5 flex-none text-sky lg:h-6 lg:w-6" />
+                      <span className="text-[0.9375rem] font-medium leading-relaxed text-ink-low lg:text-[1.0625rem]">{obj}</span>
                     </div>
                   ))}
                 </div>
@@ -530,12 +529,12 @@ const CourseDetails = () => {
 
               {topics.length > 0 && (
                 <section>
-                  <h3 className="mb-5 text-2xl font-bold text-ink-hi">{t("courseDetails.topics")}</h3>
+                  <h3 className="mb-5 text-2xl font-bold leading-snug text-ink-hi">{t("courseDetails.topics")}</h3>
                   <div className="flex flex-wrap gap-2">
                     {topics.map((topic) => (
                       <span
                         key={topic}
-                        className="rounded-full border border-violet-500/25 bg-violet-500/10 px-3.5 py-1.5 text-sm font-semibold text-violet-300"
+                        className="rounded-full border border-violet-500/25 bg-violet-500/10 px-3 py-1.5 text-[0.8125rem] font-semibold text-violet-300 tablets:px-3.5 tablets:text-sm"
                       >
                         {topic}
                       </span>
@@ -545,10 +544,10 @@ const CourseDetails = () => {
               )}
 
               <section>
-                <h3 className="mb-5 text-2xl font-bold text-ink-hi">{t("courseDetails.prerequisites")}</h3>
+                <h3 className="mb-5 text-2xl font-bold leading-snug text-ink-hi">{t("courseDetails.prerequisites")}</h3>
                 <ul className="space-y-3 rounded-2xl border border-white/10 bg-surface p-6 shadow-clay">
                   {course.prerequisites?.map((req, i) => (
-                    <li key={i} className="flex items-center gap-3 text-sm font-medium text-ink-low">
+                    <li key={i} className="flex items-center gap-3 text-[0.9375rem] font-medium text-ink-low">
                       <div className="h-1.5 w-1.5 flex-none rounded-full bg-violet-500 shadow-[0_0_8px_rgba(139,124,246,0.8)]" />
                       {req}
                     </li>
@@ -557,27 +556,6 @@ const CourseDetails = () => {
               </section>
             </div>
 
-            <div className="space-y-6">
-
-              {course.badge?.name && (
-                <Card className="p-6 sticky top-24">
-                  <h4 className="mb-4 text-xs font-bold uppercase tracking-[0.1em] text-gold-400">
-                    {t("courseDetails.reward")}
-                  </h4>
-                  <div className="flex items-center gap-3.5">
-                    <span className="grid h-12 w-12 flex-none place-items-center rounded-xl border border-gold-500/25 bg-gold-500/10 text-gold-400 shadow-clay-sm">
-                      <Icon name={course.badge.icon || "award"} size={22} />
-                    </span>
-                    <div className="min-w-0">
-                      <p className="truncate text-base font-extrabold text-ink-hi">{course.badge.name}</p>
-                      <p className="mt-0.5 text-xs text-ink-low">
-                        {t("courseDetails.rewardSub", { xp: facts.xp })}
-                      </p>
-                    </div>
-                  </div>
-                </Card>
-              )}
-            </div>
           </div>
         )}
 
@@ -586,7 +564,7 @@ const CourseDetails = () => {
           <div className="space-y-5 animate-fade-in">
             <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <h3 className="text-2xl font-bold text-ink-hi">{t("courseDetails.courseModules")}</h3>
+                <h3 className="text-2xl font-bold leading-snug text-ink-hi">{t("courseDetails.courseModules")}</h3>
                 <p className="mt-1 text-sm text-ink-low">{t("courseDetails.moduleUnlockHint")}</p>
               </div>
             </div>
@@ -636,7 +614,7 @@ const CourseDetails = () => {
                       className={`flex w-full items-start justify-between gap-3 pt-1.5 text-left ${locked ? "cursor-not-allowed" : ""}`}
                     >
                       <div className="min-w-0">
-                        <h3 className={`text-lg font-bold ${locked ? "text-ink-low" : "text-ink-hi"}`}>{module.title}</h3>
+                        <h3 className={`text-lg font-bold leading-snug ${locked ? "text-ink-low" : "text-ink-hi"}`}>{module.title}</h3>
                         <p className="mt-1 line-clamp-1 text-sm text-ink-low">
                           {locked ? t("courseDetails.completePreviousToUnlock") : module.desc}
                         </p>
@@ -724,7 +702,7 @@ const CourseDetails = () => {
                     <Icon name="graduation-cap" size={22} />
                   </div>
                   <div className="min-w-0 flex-1 pt-1.5 sm:pt-2.5">
-                    <h3 className={`text-lg font-bold ${isCompleted ? "text-ink-hi" : "text-ink-low"}`}>{t("courseDetails.certificate")}</h3>
+                    <h3 className={`text-lg font-bold leading-snug ${isCompleted ? "text-ink-hi" : "text-ink-low"}`}>{t("courseDetails.certificate")}</h3>
                     <p className="mt-1 text-sm text-ink-low">
                       {isCompleted ? t("courseDetails.certificateEarned") : t("courseDetails.certificateLocked")}
                     </p>
