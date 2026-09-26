@@ -129,11 +129,13 @@ npm run lint           # ESLint
 npm run test:e2e       # Playwright suite against the emulators
 npm run test:e2e:ui    # Playwright watch mode (run npm run emulators first)
 npm run emulators      # Auth + Firestore emulators, for iterating on tests
+npm run sandbox        # the app on :5175 against the emulators, for hand-checking
+npm run sandbox:seed   # put the sandbox learner into a named state
 npm run test:rules:ci  # Firestore rules tests in the emulator
 npm run test:palette   # fails on colours outside the design system
 npm run test:unit      # Vitest: logic and component tests
 npm run test:watch     # Vitest in watch mode
-npm run gen:avatars    # regenerate the 16 character avatar SVGs
+npm run gen:avatars    # regenerate the 26 character avatar SVGs
 ```
 
 ---
@@ -174,6 +176,29 @@ npm run emulators         # terminal 1
 npx playwright test --ui  # terminal 2
 ```
 
+**Checking something by hand.** Screens like the first-time course preview or
+the moment a certificate unlocks can only be reached once per account. The
+sandbox serves the same app against the emulators on port 5175 and seeds a
+learner into any state, so those are repeatable:
+
+```bash
+npm run sandbox                 # terminal 1
+npm run sandbox:seed            # terminal 2: lists the states
+npm run sandbox:seed -- fresh   # no courses yet; re-run it to reset
+```
+
+Run `npm run sandbox:seed` with no argument to list the states: `fresh`,
+`learning`, `nearly`, `completed`, `paused`, `veteran` and `wipe`.
+
+Ports are deliberately separate — 5173 is `npm run dev` against the real
+project, 5174 is Playwright, 5175 is the sandbox — so a dev server can keep
+running and a stale tab cannot be mistaken for the other.
+
+The sandbox cannot reach production: it runs against the local emulators under
+the project id `demo-learntopia`, which Firebase refuses to use against real
+services. To confirm it, open DevTools on port 5175 and check that every
+Firebase request goes to `127.0.0.1`.
+
 Locally the suite runs three tests at a time; CI runs one. Override with
 `npx playwright test --workers=N`. Run one suite at a time: two runs share the
 same ports and will interrupt each other.
@@ -205,6 +230,7 @@ src/
 └── main.jsx            Entry point
 
 e2e/                    Playwright specs, with shared setup in support/
+                        support/emulator-api.js is shared with the sandbox
 test/                   Firestore rules tests, the palette guard and the i18n guard
 scripts/                Brand and avatar generation, build checks
 public/                 Brand SVG sources and generated PNGs
