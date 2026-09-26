@@ -4,6 +4,9 @@ import finance from "../assets/CourseImg/finance-3.png";
 import Dmarket from "../assets/CourseImg/Dmarket.png";
 import coding from "../assets/CourseImg/coding.png";
 import python from "../assets/CourseImg/python.png";
+import computer from "../assets/CourseImg/computer.png";
+import nutrition from "../assets/CourseImg/nutrition.png";
+import ai from "../assets/CourseImg/ai.png";
 
 export const COURSES = [
   {
@@ -1848,5 +1851,824 @@ export const COURSES = [
         ]
       }
     ]
-  }
+  },
+  {
+    id: 7,
+    category: "Computer Skills",
+    title: "Computer Confident: Own the Machine",
+    image: computer,
+    desc: "Understand the computer you use every day: its operating system, the shortcuts that save you hours, how the internet reaches you, and how to send email that gets read.",
+    duration: "4 hours",
+    difficulty: "Beginner",
+    prerequisites: ["A computer or tablet you can use"],
+    learningObjectives: [
+      "Recognise the main operating systems and what they do",
+      "Use the shortcuts that save the most time",
+      "Explain how a page travels from a server to your screen",
+      "Write an email people actually read"
+    ],
+    xpPerModule: 50,
+    totalXP: 300,
+    badge: { name: "Computer Confident", icon: "cpu" },
+    syllabus: [
+      {
+        title: "Module 1: The Boss of the Machine",
+        desc: "What an operating system is and why yours looks the way it does.",
+        xpReward: 50,
+        contentSections: [
+          {
+            type: "story",
+            title: "Zara's Borrowed Laptop",
+            content: "Zara borrowed her cousin's laptop and nothing was where she expected. The buttons sat on the wrong side. Closing a window did not close the program. Same kind of machine, completely different rules."
+          },
+          {
+            type: "concept",
+            title: "The Operating System Runs Everything",
+            content: "An operating system is the program in charge of all the others. It starts your apps, remembers your files, and draws everything you see. Every app has to ask it for permission."
+          },
+          {
+            type: "example",
+            title: "The Ones You Will Meet",
+            content: "Windows — most laptops and PCs\nmacOS — Apple computers\nLinux — most of the servers behind websites\nAndroid and iOS — phones and tablets\n\nAndroid is built on Linux and iOS shares its roots with macOS, which is why a Mac and an iPhone feel like relatives."
+          },
+          {
+            type: "fact",
+            title: "You Already Use Several",
+            content: "A phone, a laptop, a games console and a smart TV each run their own operating system. Most people use three or four every day without ever naming one of them."
+          },
+          {
+            type: "activity",
+            title: "Find Out What You Are Running",
+            content: "On Windows press the Windows key and type About. On a Mac click the apple menu then About This Mac. On a phone open Settings and look for About. Write down the name and the version number."
+          },
+          {
+            type: "recap",
+            title: "Module 1 Recap",
+            content: "• The operating system is in charge of every other program\n• Windows, macOS and Linux run computers; Android and iOS run phones\n• Android is built on Linux; iOS is related to macOS\n• You use several operating systems every day"
+          }
+        ],
+        exercises: [
+          {
+            type: "mcq",
+            question: "What is an operating system responsible for?",
+            options: ["Only storing your photos safely", "Running every other program on the device", "Connecting your device to the internet", "Making the screen brighter or dimmer"],
+            answer: "Running every other program on the device"
+          },
+          { type: "true-false", question: "A phone runs an operating system, just like a laptop does.", answer: true },
+          { type: "fill-blank", question: "Most of the servers that host websites run the ___ operating system.", answer: "Linux" },
+          {
+            type: "match",
+            question: "Match each operating system to where you find it:",
+            pairs: [
+              { term: "Windows", definition: "Most laptops and PCs" },
+              { term: "macOS", definition: "Apple computers" },
+              { term: "Android", definition: "Most phones and tablets" },
+              { term: "Linux", definition: "Servers behind websites" }
+            ]
+          },
+          {
+            type: "mcq",
+            question: "Why do a Mac and an iPhone feel similar to use?",
+            options: ["They are made in the same factory", "Their operating systems share the same roots", "They both need a constant internet connection", "They were released in the very same year"],
+            answer: "Their operating systems share the same roots"
+          }
+        ]
+      },
+      {
+        title: "Module 2: Shortcuts That Buy You Time",
+        desc: "The handful of key presses that replace a hundred mouse trips.",
+        xpReward: 50,
+        contentSections: [
+          {
+            type: "story",
+            title: "Forty Minutes of Dragging",
+            content: "Zara moved fifty photos into a folder one at a time, dragging each one. Her cousin did the next fifty in under a minute. He had not worked harder. He knew three key presses."
+          },
+          {
+            type: "concept",
+            title: "A Shortcut Is the Same Command, Faster",
+            content: "Menus and shortcuts do exactly the same thing. The menu is easier to find; the shortcut is faster once you know it. Learning five is worth more than learning fifty."
+          },
+          {
+            type: "example",
+            title: "The Five Worth Knowing",
+            content: "Ctrl+C copy, Ctrl+V paste\nCtrl+Z undo, Ctrl+Y redo\nCtrl+A select everything\nCtrl+S save\nCtrl+F find on this page\n\nOn a Mac, swap Ctrl for Cmd. Ctrl+Z is the most forgiving key on any keyboard."
+          },
+          {
+            type: "tip",
+            title: "Undo Goes Back Further Than You Think",
+            content: "Undo is not one step. Press it again and again and most programs will keep walking backwards through what you did. Deleting something by accident is almost never permanent."
+          },
+          {
+            type: "activity",
+            title: "Race Yourself",
+            content: "Open any document. Select all the text and copy it using only the menus, and count the seconds. Do it again with Ctrl+A and Ctrl+C. Try Ctrl+F to find a word on this page."
+          },
+          {
+            type: "recap",
+            title: "Module 2 Recap",
+            content: "• A shortcut and a menu run the same command\n• Copy, paste, undo, select all, save and find cover most of it\n• Mac uses Cmd where Windows uses Ctrl\n• Undo keeps going back, so mistakes are rarely permanent"
+          }
+        ],
+        exercises: [
+          {
+            type: "mcq",
+            question: "What does Ctrl+Z do?",
+            options: ["Saves the file you are working on", "Undoes the last thing you did", "Closes the window immediately", "Selects everything on the page"],
+            answer: "Undoes the last thing you did"
+          },
+          { type: "true-false", question: "On a Mac you usually press Cmd where Windows uses Ctrl.", answer: true },
+          { type: "fill-blank", question: "The shortcut for finding a word on the current page is Ctrl+___.", answer: "F" },
+          {
+            type: "match",
+            question: "Match each shortcut to what it does:",
+            pairs: [
+              { term: "Ctrl+C", definition: "Copy" },
+              { term: "Ctrl+V", definition: "Paste" },
+              { term: "Ctrl+A", definition: "Select everything" },
+              { term: "Ctrl+S", definition: "Save" }
+            ]
+          },
+          {
+            type: "mcq",
+            question: "You delete a paragraph by mistake. What is the fastest fix?",
+            options: ["Close without saving and start again", "Press Ctrl+Z to undo it", "Retype the paragraph from memory", "Restart the computer completely"],
+            answer: "Press Ctrl+Z to undo it"
+          }
+        ]
+      },
+      {
+        title: "Module 3: How a Page Reaches You",
+        desc: "What happens between typing an address and seeing the page.",
+        xpReward: 50,
+        contentSections: [
+          {
+            type: "story",
+            title: "The Homework That Vanished",
+            content: "Zara's page would not load, so she blamed the website. Her cousin asked one question: does anything else load? Nothing did. The website was fine. Her wifi had dropped."
+          },
+          {
+            type: "concept",
+            title: "Your Browser Asks, a Server Answers",
+            content: "Typing an address sends a request across the internet to a computer that holds the page. That computer sends the files back and your browser draws them. Every page you open is that round trip."
+          },
+          {
+            type: "example",
+            title: "Reading a Web Address",
+            content: "https://www.example.com/photos\n\nhttps — the connection is encrypted\nwww.example.com — which computer to ask\n/photos — which page on it\n\nThe padlock means nobody in between can read what you send. It does not promise the site itself is honest."
+          },
+          {
+            type: "tip",
+            title: "Work Out Where It Broke",
+            content: "When one page fails, try a second site. If everything fails it is your connection. If only one fails it is that site. One extra tab tells you which, before you restart anything."
+          },
+          {
+            type: "activity",
+            title: "Take an Address Apart",
+            content: "Look at the address bar right now. Find the https, the site name and the part after the slash. Open a different site and compare the two. Spot which part changes as you click around."
+          },
+          {
+            type: "recap",
+            title: "Module 3 Recap",
+            content: "• Your browser requests a page and a server sends it back\n• https means the connection is encrypted\n• The part after the slash picks the page\n• If every site fails, the problem is your connection"
+          }
+        ],
+        exercises: [
+          {
+            type: "mcq",
+            question: "What happens when you type a web address and press enter?",
+            options: ["Your browser requests the page from a server", "The page is built fresh on your own computer", "Your internet provider chooses a site for you", "The browser searches files stored on your device"],
+            answer: "Your browser requests the page from a server"
+          },
+          { type: "true-false", question: "The padlock means your connection is encrypted, not that the site is trustworthy.", answer: true },
+          { type: "fill-blank", question: "In https://example.com/photos, the part that picks which page to show is ___.", answer: "/photos" },
+          {
+            type: "match",
+            question: "Match each part of a web address to its job:",
+            pairs: [
+              { term: "https", definition: "The connection is encrypted" },
+              { term: "example.com", definition: "Which computer to ask" },
+              { term: "/photos", definition: "Which page on that computer" },
+              { term: "Browser", definition: "Draws the page for you" }
+            ]
+          },
+          {
+            type: "mcq",
+            question: "One site will not load but every other site works. What is most likely?",
+            options: ["Your wifi has stopped working", "Something is wrong with that one site", "Your computer needs to be restarted", "Your browser needs reinstalling today"],
+            answer: "Something is wrong with that one site"
+          }
+        ]
+      },
+      {
+        title: "Module 4: Email People Actually Read",
+        desc: "How email works, and how to write one that gets a reply.",
+        xpReward: 50,
+        contentSections: [
+          {
+            type: "story",
+            title: "No Subject, No Reply",
+            content: "Zara emailed her teacher with an empty subject line and one word in the body: question. Three days passed with no answer. The teacher had over two hundred unread emails and no reason to open that one."
+          },
+          {
+            type: "concept",
+            title: "The Subject Line Does the Work",
+            content: "Most people decide whether to open an email from the subject alone. A good one says what it is about and what you need. Vague subjects get skipped, not refused."
+          },
+          {
+            type: "example",
+            title: "The Same Email, Twice",
+            content: "Subject: question\nBody: I have a question\n\nSubject: Science homework — can I hand it in Friday?\nBody: Hi Ms Diaz, I was ill on Tuesday and missed the notes. Could I hand the report in on Friday? Thank you, Zara\n\nThe second one can be answered in four seconds."
+          },
+          {
+            type: "tip",
+            title: "Check the Address Before the Words",
+            content: "An email that looks official can still come from anyone. Read the address itself, not the display name. Anything asking for a password or a code is worth showing to an adult before you reply."
+          },
+          {
+            type: "activity",
+            title: "Rewrite a Weak Subject",
+            content: "Write a subject line for: asking to join the football team, asking about a lost jumper, thanking someone for help. Each one should say the topic and what you want in under ten words."
+          },
+          {
+            type: "recap",
+            title: "Module 4 Recap",
+            content: "• People decide from the subject line whether to open it\n• Say the topic and what you need\n• Cc copies someone in; everyone can see who\n• Read the real address, and never send a password"
+          }
+        ],
+        exercises: [
+          {
+            type: "mcq",
+            question: "Why does a clear subject line matter so much?",
+            options: ["It makes the email arrive more quickly", "People decide from it whether to open it", "Email will not send without one", "It stops the message going to spam"],
+            answer: "People decide from it whether to open it"
+          },
+          { type: "true-false", question: "Everyone in the To and Cc fields can see who else received the email.", answer: true },
+          { type: "fill-blank", question: "To copy someone into an email without making them the main recipient, put them in ___.", answer: "Cc" },
+          {
+            type: "match",
+            question: "Match each email field to what it is for:",
+            pairs: [
+              { term: "To", definition: "Who the email is for" },
+              { term: "Cc", definition: "Someone kept in the loop" },
+              { term: "Subject", definition: "What it is about" },
+              { term: "Attachment", definition: "A file sent along with it" }
+            ]
+          },
+          {
+            type: "mcq",
+            question: "An email says your account will close unless you send your password. What should you do?",
+            options: ["Reply quickly so nothing is lost", "Show an adult and send nothing", "Send it only if the logo looks right", "Forward it to everyone as a warning"],
+            answer: "Show an adult and send nothing"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 8,
+    category: "Health",
+    title: "Food Scientist: What Your Body Does With Food",
+    image: nutrition,
+    desc: "Find out what a calorie really is, what carbs, protein and fat each do inside you, and why a footballer and a toddler need completely different amounts.",
+    duration: "3 hours",
+    difficulty: "Beginner",
+    prerequisites: ["Curiosity about what is on your plate"],
+    learningObjectives: [
+      "Explain what a calorie measures",
+      "Describe what carbs, protein and fat each do",
+      "Say why vitamins and minerals matter in tiny amounts",
+      "Explain why different people need different amounts of food"
+    ],
+    xpPerModule: 50,
+    totalXP: 300,
+    badge: { name: "Nutrition Navigator", icon: "zap" },
+    syllabus: [
+      {
+        title: "Module 1: What a Calorie Actually Is",
+        desc: "A unit of energy, not a score you are winning or losing.",
+        xpReward: 50,
+        contentSections: [
+          {
+            type: "story",
+            title: "Theo Reads the Box",
+            content: "Theo turned over his cereal box and found a number: 380 calories. He had heard people say calories were bad. But cereal is not bad. He wanted to know what the number actually meant."
+          },
+          {
+            type: "concept",
+            title: "A Calorie Measures Energy",
+            content: "A calorie is a unit, like a centimetre or a litre. It measures how much energy a food can give your body. More calories means more energy, the way a bigger tank holds more fuel."
+          },
+          {
+            type: "example",
+            title: "What Your Body Spends It On",
+            content: "Running and football — the part everyone thinks of\nBreathing, pumping blood, staying warm\nGrowing taller and building muscle\nThinking, all day, at school\n\nMost of the energy you use goes on staying alive and growing, not on exercise."
+          },
+          {
+            type: "fact",
+            title: "Your Brain Is Hungry",
+            content: "Your brain is about two percent of your weight but uses around twenty percent of your energy. Sitting still and concentrating hard genuinely costs fuel."
+          },
+          {
+            type: "activity",
+            title: "Hunt for the Number",
+            content: "Find three packets in your kitchen. Write down the calories per 100 grams for each. Put them in order, then ask yourself which one surprised you and why."
+          },
+          {
+            type: "recap",
+            title: "Module 1 Recap",
+            content: "• A calorie is a unit of energy, like a centimetre is a unit of length\n• It is not a good or bad score\n• Most of your energy goes on living and growing\n• Your brain alone uses about a fifth of it"
+          }
+        ],
+        exercises: [
+          {
+            type: "mcq",
+            question: "What does a calorie measure?",
+            options: ["How much sugar a food holds", "How much energy a food can give you", "How heavy a portion of food is", "How long a food takes to digest"],
+            answer: "How much energy a food can give you"
+          },
+          { type: "true-false", question: "Most of the energy you use each day goes on exercise.", answer: false },
+          { type: "fill-blank", question: "A calorie is a unit of ___.", answer: "energy" },
+          {
+            type: "match",
+            question: "Match each job to what it needs energy for:",
+            pairs: [
+              { term: "Breathing", definition: "Running your body at rest" },
+              { term: "Growing", definition: "Building new bone and muscle" },
+              { term: "Thinking", definition: "Powering your brain" },
+              { term: "Running", definition: "Moving your muscles hard" }
+            ]
+          },
+          {
+            type: "mcq",
+            question: "Roughly how much of your energy does your brain use?",
+            options: ["About two percent", "About twenty percent", "About half of it", "Almost none of it"],
+            answer: "About twenty percent"
+          }
+        ]
+      },
+      {
+        title: "Module 2: The Big Three",
+        desc: "Carbohydrate, protein and fat, and what each one is for.",
+        xpReward: 50,
+        contentSections: [
+          {
+            type: "story",
+            title: "Theo's Flat Afternoon",
+            content: "Theo had toast and jam for breakfast and felt great, then ran out of steam by second lesson. His friend had eggs on toast and was still going. Same amount of food, very different afternoon."
+          },
+          {
+            type: "concept",
+            title: "Three Kinds of Fuel",
+            content: "Macronutrients are the three things your body needs in large amounts. Carbohydrate is quick energy, protein is building material, fat is long-lasting energy and protection. Macro just means big."
+          },
+          {
+            type: "example",
+            title: "What Each One Does",
+            content: "Carbohydrate — bread, rice, fruit. Fast energy for right now.\nProtein — eggs, beans, fish, lentils. Builds and repairs muscle.\nFat — nuts, olive oil, cheese. Slow energy, protects your organs, helps your brain.\n\nA meal with all three keeps you going far longer than one with only carbs."
+          },
+          {
+            type: "tip",
+            title: "No Macro Is the Villain",
+            content: "People take turns blaming fat, then carbs, then something else. Your body needs all three. A body with no fat or no carbohydrate does not run better, it runs worse."
+          },
+          {
+            type: "activity",
+            title: "Sort Your Lunch",
+            content: "Think of the last meal you ate. Write each part under carbohydrate, protein or fat. Some foods land in two columns. Notice whether any column was empty."
+          },
+          {
+            type: "recap",
+            title: "Module 2 Recap",
+            content: "• Macro means big: the three you need most of\n• Carbohydrate is quick energy\n• Protein builds and repairs you\n• Fat is slow energy and protection\n• You need all three, not two of them"
+          }
+        ],
+        exercises: [
+          {
+            type: "mcq",
+            question: "Which macronutrient is mainly used to build and repair muscle?",
+            options: ["Carbohydrate", "Protein", "Fat", "Water"],
+            answer: "Protein"
+          },
+          { type: "true-false", question: "A healthy body needs carbohydrate, protein and fat, not just two of them.", answer: true },
+          { type: "fill-blank", question: "The word macro in macronutrient means ___.", answer: "big" },
+          {
+            type: "match",
+            question: "Match each macronutrient to its main job:",
+            pairs: [
+              { term: "Carbohydrate", definition: "Quick energy" },
+              { term: "Protein", definition: "Building and repairing" },
+              { term: "Fat", definition: "Slow energy and protection" },
+              { term: "All three", definition: "A meal that lasts" }
+            ]
+          },
+          {
+            type: "mcq",
+            question: "Why did Theo run out of energy before his friend did?",
+            options: ["He ate far too little food", "His meal was almost all carbohydrate", "He ate too much protein at once", "He drank no water with breakfast"],
+            answer: "His meal was almost all carbohydrate"
+          }
+        ]
+      },
+      {
+        title: "Module 3: Tiny Amounts, Big Jobs",
+        desc: "Vitamins and minerals, and why the amount is no measure of importance.",
+        xpReward: 50,
+        contentSections: [
+          {
+            type: "story",
+            title: "The Sailors Who Ate Limes",
+            content: "Long sea voyages used to leave sailors exhausted with bleeding gums. Plenty of food, plenty of energy. What they were missing weighed almost nothing: vitamin C. Limes fixed it."
+          },
+          {
+            type: "concept",
+            title: "Micronutrients Are Tools, Not Fuel",
+            content: "Vitamins and minerals give you no energy at all. Your body uses them to do jobs: build bone, carry oxygen, heal cuts. Micro means small, and you need only tiny amounts."
+          },
+          {
+            type: "example",
+            title: "A Few and What They Do",
+            content: "Iron — carries oxygen in your blood\nCalcium — builds bones and teeth\nVitamin C — heals wounds, helps you absorb iron\nVitamin D — lets your body use calcium\n\nVitamin C helps you absorb iron, so beans with tomatoes beat beans alone."
+          },
+          {
+            type: "fact",
+            title: "Sunlight Makes One of Them",
+            content: "Vitamin D is the odd one out: your skin makes it from sunlight. It is the only vitamin your body can produce itself, which is why it runs low in long dark winters."
+          },
+          {
+            type: "activity",
+            title: "Colour Count",
+            content: "Count how many different colours of fruit and vegetable you ate yesterday. Different colours usually mean different micronutrients. Aim to add one new colour tomorrow."
+          },
+          {
+            type: "recap",
+            title: "Module 3 Recap",
+            content: "• Micronutrients give no energy; they let your body do jobs\n• Iron carries oxygen, calcium builds bone\n• Vitamin C helps you absorb iron\n• Your skin makes vitamin D from sunlight"
+          }
+        ],
+        exercises: [
+          {
+            type: "mcq",
+            question: "What do vitamins and minerals give your body?",
+            options: ["Energy to run and play", "Tools to do jobs like building bone", "Extra weight to grow taller", "Water to keep you hydrated"],
+            answer: "Tools to do jobs like building bone"
+          },
+          { type: "true-false", question: "Vitamin D is the one vitamin your own skin can make, using sunlight.", answer: true },
+          { type: "fill-blank", question: "The mineral that carries oxygen around in your blood is ___.", answer: "iron" },
+          {
+            type: "match",
+            question: "Match each micronutrient to its job:",
+            pairs: [
+              { term: "Iron", definition: "Carries oxygen in your blood" },
+              { term: "Calcium", definition: "Builds bones and teeth" },
+              { term: "Vitamin C", definition: "Heals cuts and helps absorb iron" },
+              { term: "Vitamin D", definition: "Lets your body use calcium" }
+            ]
+          },
+          {
+            type: "mcq",
+            question: "Why does micro appear in the word micronutrient?",
+            options: ["They are found only in small foods", "You need them in tiny amounts", "They were discovered most recently", "They are the least important ones"],
+            answer: "You need them in tiny amounts"
+          }
+        ]
+      },
+      {
+        title: "Module 4: Why Nobody Needs the Same Amount",
+        desc: "Age, size and how you spend your day all change the answer.",
+        xpReward: 50,
+        contentSections: [
+          {
+            type: "story",
+            title: "Three Plates at One Table",
+            content: "Theo's family sat down together: his baby sister, his uncle who runs marathons, and his grandmother. Three very different plates, and every one of them was right for the person eating it."
+          },
+            {
+            type: "concept",
+            title: "Your Body Sets the Amount",
+            content: "How much energy someone needs depends on their size, their age, and how they spend their day. A bigger body costs more to run. A growing body costs more still."
+          },
+          {
+            type: "example",
+            title: "Same Family, Different Needs",
+            content: "A marathon runner spends hours moving, so needs a lot.\nA toddler is small but growing fast, so needs a surprising amount for their size.\nAn older person who moves less needs less.\n\nNone of these is better than another. They are answers to different questions."
+          },
+          {
+            type: "tip",
+            title: "There Is No Right Number for a Child",
+            content: "Growing bodies need plenty, and appetite changes week to week, which is normal. Nobody your age should be counting or limiting. If you ever wonder about your own eating, a doctor is who answers that, not the internet."
+          },
+          {
+            type: "activity",
+            title: "Guess the Bigger Need",
+            content: "For each pair, say who likely needs more energy in a day and why: a swimmer training daily or someone resting with a broken leg; a teenager mid-growth-spurt or a smaller adult. Say your reason out loud."
+          },
+          {
+            type: "recap",
+            title: "Module 4 Recap",
+            content: "• Size, age and activity all change how much energy someone needs\n• Growing bodies need a lot for their size\n• Different needs are not better or worse\n• There is no correct number for a child, and a doctor answers that question"
+          }
+        ],
+        exercises: [
+          {
+            type: "mcq",
+            question: "Which of these changes how much energy a person needs in a day?",
+            options: ["Only how much they weigh", "Their size, age and how active they are", "Only the sports they play", "The time of year it happens to be"],
+            answer: "Their size, age and how active they are"
+          },
+          { type: "true-false", question: "A toddler needs a surprising amount of energy for their size, because they are growing fast.", answer: true },
+          { type: "fill-blank", question: "If you have a question about your own eating, the person to ask is a ___.", answer: "doctor" },
+          {
+            type: "match",
+            question: "Match each person to why their needs differ:",
+            pairs: [
+              { term: "Marathon runner", definition: "Hours of hard movement" },
+              { term: "Toddler", definition: "Small, but growing fast" },
+              { term: "Older adult", definition: "Usually moves less" },
+              { term: "Teenager", definition: "Growing quickly and active" }
+            ]
+          },
+          {
+            type: "mcq",
+            question: "Two people eat very different amounts. What does that tell you?",
+            options: ["One of them is eating wrongly", "Their bodies need different amounts", "The bigger plate is always better", "They should swap their meals over"],
+            answer: "Their bodies need different amounts"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 9,
+    category: "AI Literacy",
+    title: "AI Explained: How It Learns and Where It Fails",
+    image: ai,
+    desc: "Understand how AI learns from examples, why it sounds certain even when it is wrong, how it picks up unfairness, and how to use it without handing over your thinking.",
+    duration: "4 hours",
+    difficulty: "Beginner",
+    prerequisites: ["No experience needed"],
+    learningObjectives: [
+      "Explain how a machine learns from examples",
+      "Say why AI can be confidently wrong",
+      "Recognise where unfairness gets into a system",
+      "Use AI as a helper without letting it think for you"
+    ],
+    xpPerModule: 50,
+    totalXP: 300,
+    badge: { name: "Clear Thinker", icon: "cpu" },
+    syllabus: [
+      {
+        title: "Module 1: Learning From Examples",
+        desc: "How machines got from fixed rules to spotting patterns.",
+        xpReward: 50,
+        contentSections: [
+          {
+            type: "story",
+            title: "Nia Tries to Write the Rules",
+            content: "Nia tried to write instructions for telling a cat from a dog. Four legs, fur, whiskers, tail. Every rule she wrote matched both. After an hour she had no rule that worked."
+          },
+            {
+            type: "concept",
+            title: "Show It, Do Not Tell It",
+            content: "Older programs followed rules a person wrote. Modern AI is shown thousands of examples instead and works out the pattern itself. Nobody tells it what a whisker is."
+          },
+          {
+            type: "example",
+            title: "Three Eras, Same Question",
+            content: "Rules — a person writes: if it barks, it is a dog. Breaks on a quiet dog.\nLearning — show it many labelled photos. It finds the pattern.\nGenerating — after enough examples, it can produce new text or pictures too.\n\nEach step needed more examples and more computing power, not a cleverer rule."
+          },
+          {
+            type: "fact",
+            title: "It Has Never Seen a Cat",
+            content: "An image model has no idea what fur feels like or that cats purr. It has only ever seen numbers describing pixels. It recognises the pattern without understanding the animal."
+          },
+          {
+            type: "activity",
+            title: "Try Writing the Rules",
+            content: "Write instructions for telling a cup from a bowl, precise enough for someone who has never seen either. Test them on five real objects. Count how many your rules get wrong."
+          },
+          {
+            type: "recap",
+            title: "Module 1 Recap",
+            content: "• Old programs followed rules a person wrote\n• Modern AI learns the pattern from many examples\n• More examples and power, not cleverer rules\n• Recognising a pattern is not understanding it"
+          }
+        ],
+        exercises: [
+          {
+            type: "mcq",
+            question: "How does modern AI mostly learn to tell things apart?",
+            options: ["A person writes rules for every case", "It finds patterns in many examples", "It looks the answer up online", "It asks a human each time"],
+            answer: "It finds patterns in many examples"
+          },
+          { type: "true-false", question: "An image model understands what a cat is in the way a person does.", answer: false },
+          { type: "fill-blank", question: "Instead of being given rules, modern AI is given many ___ to learn from.", answer: "examples" },
+          {
+            type: "match",
+            question: "Match each approach to what it does:",
+            pairs: [
+              { term: "Rules", definition: "A person writes every instruction" },
+              { term: "Learning", definition: "Finds patterns in examples" },
+              { term: "Generating", definition: "Produces new text or pictures" },
+              { term: "Examples", definition: "What the learning is built from" }
+            ]
+          },
+          {
+            type: "mcq",
+            question: "Why did Nia's cat-and-dog rules keep failing?",
+            options: ["She did not write enough of them", "Nearly every rule matched both animals", "Her computer was too slow to run them", "Cats and dogs are actually identical"],
+            answer: "Nearly every rule matched both animals"
+          }
+        ]
+      },
+      {
+        title: "Module 2: Confidently Wrong",
+        desc: "Why AI invents things, and why it never sounds unsure.",
+        xpReward: 50,
+        contentSections: [
+          {
+            type: "story",
+            title: "The Book That Did Not Exist",
+            content: "Nia asked an AI for books about volcanoes. It gave five titles with authors and years. Her librarian found four. The fifth did not exist and never had, but it had looked exactly as real as the others."
+          },
+          {
+            type: "concept",
+            title: "It Predicts, It Does Not Look Up",
+            content: "A language model guesses what words usually come next. It is not searching a library. A made-up title fits the pattern of real titles perfectly, so it comes out sounding just as convincing."
+          },
+          {
+            type: "example",
+            title: "Where It Is Weakest",
+            content: "Exact numbers and dates\nWho said or wrote what\nAnything very recent\nLinks and references\n\nThese are the details a pattern cannot supply. It produces something shaped correctly rather than something checked."
+          },
+          {
+            type: "tip",
+            title: "Confidence Is Not Evidence",
+            content: "AI writes a wrong answer in the same calm, tidy voice as a right one. There is no wobble to warn you. Anything that matters gets checked somewhere else, every time."
+          },
+          {
+            type: "activity",
+            title: "Catch One Out",
+            content: "Ask an AI about something you know well: a local place, your favourite sport, a family hobby. Look for the detail it gets slightly wrong. Notice how certain it sounds while doing it."
+          },
+          {
+            type: "recap",
+            title: "Module 2 Recap",
+            content: "• A language model predicts likely words, it does not look things up\n• Invented facts look exactly like real ones\n• Numbers, dates, sources and recent events are weakest\n• Sounding certain is not the same as being right"
+          }
+        ],
+        exercises: [
+          {
+            type: "mcq",
+            question: "Why can an AI invent a book that does not exist?",
+            options: ["Its library is out of date", "It predicts likely words rather than looking up", "Somebody deleted the real record", "It is deliberately trying to mislead"],
+            answer: "It predicts likely words rather than looking up"
+          },
+          { type: "true-false", question: "AI usually sounds less confident when its answer is wrong.", answer: false },
+          { type: "fill-blank", question: "A language model works by predicting which ___ come next.", answer: "words" },
+          {
+            type: "match",
+            question: "Match each thing to how much checking it needs:",
+            pairs: [
+              { term: "An exact date", definition: "Check it elsewhere" },
+              { term: "A source or link", definition: "Check it elsewhere" },
+              { term: "Explaining an idea", definition: "Usually safer ground" },
+              { term: "Very recent news", definition: "Check it elsewhere" }
+            ]
+          },
+          {
+            type: "mcq",
+            question: "An AI gives you a fact for your homework. What is the sensible next step?",
+            options: ["Use it, it sounded sure", "Check it in another source", "Ask the same AI again", "Only use it if it is short"],
+            answer: "Check it in another source"
+          }
+        ]
+      },
+      {
+        title: "Module 3: Where Unfairness Gets In",
+        desc: "A system learns whatever the examples contain, including the unfair parts.",
+        xpReward: 50,
+        contentSections: [
+          {
+            type: "story",
+            title: "The Drawing That Was Always the Same",
+            content: "Nia asked an AI to draw a scientist ten times. Every picture was an older man in a white coat. Nia's own science teacher is a young woman. The machine was not being unkind; it was repeating what it had been shown."
+          },
+          {
+            type: "concept",
+            title: "The Examples Carry the Bias",
+            content: "A model can only learn from what it is given. If the examples over-represent one kind of person, the output does too. The unfairness came in with the data, not from an opinion."
+          },
+          {
+            type: "example",
+            title: "Where It Shows Up",
+            content: "Pictures that always show one kind of person in a job\nVoice tools that struggle with some accents\nTranslations that guess a gender that was never stated\n\nEach one is a pattern from the examples, repeated back and now much faster and at much larger scale."
+          },
+          {
+            type: "tip",
+            title: "Ask Who Is Missing",
+            content: "When AI describes a group of people, ask who is not in the picture. The gap is usually a gap in the examples, and it is far easier to spot from outside than from inside."
+          },
+          {
+            type: "activity",
+            title: "Run the Test Yourself",
+            content: "Ask an image tool for a nurse, a chef and a pilot several times each. Tally what you get. Compare it with people doing those jobs where you actually live."
+          },
+          {
+            type: "recap",
+            title: "Module 3 Recap",
+            content: "• A model learns only from the examples it is given\n• Unfair examples produce unfair output\n• It repeats patterns rather than holding opinions\n• Asking who is missing is the quickest check"
+          }
+        ],
+        exercises: [
+          {
+            type: "mcq",
+            question: "Why might an AI keep drawing the same kind of person for one job?",
+            options: ["It has decided who belongs there", "Its examples mostly showed that person", "It is copying another AI system", "Pictures of other people are harder"],
+            answer: "Its examples mostly showed that person"
+          },
+          { type: "true-false", question: "Bias in AI usually comes from the examples it learned from.", answer: true },
+          { type: "fill-blank", question: "When AI shows a group of people, a good question is who is ___.", answer: "missing" },
+          {
+            type: "match",
+            question: "Match each example to the gap behind it:",
+            pairs: [
+              { term: "Always the same scientist", definition: "Narrow picture examples" },
+              { term: "Struggles with an accent", definition: "Narrow voice examples" },
+              { term: "Guesses a gender", definition: "Patterns in old text" },
+              { term: "Who is missing", definition: "The question that finds it" }
+            ]
+          },
+          {
+            type: "mcq",
+            question: "What makes this kind of unfairness a bigger problem than one person's opinion?",
+            options: ["Machines are impossible to correct", "It repeats at enormous speed and scale", "It only ever affects pictures", "It cannot be noticed by anyone"],
+            answer: "It repeats at enormous speed and scale"
+          }
+        ]
+      },
+      {
+        title: "Module 4: Using It Without Outsourcing Your Brain",
+        desc: "Where AI genuinely helps, and where using it costs you the learning.",
+        xpReward: 50,
+        contentSections: [
+          {
+            type: "story",
+            title: "Two Ways to Hand In an Essay",
+            content: "Nia asked an AI to write her essay and handed it in. Her friend asked it to explain the confusing part, then wrote his own. Both handed in work. Only one of them could answer a question about it afterwards."
+          },
+          {
+            type: "concept",
+            title: "A Helper, Not a Replacement",
+            content: "AI is good at explaining something a second way, suggesting a starting point, or checking your spelling. It is a poor substitute for the thinking, because the thinking is the part that changes you."
+          },
+          {
+            type: "example",
+            title: "Good Question, Poor Question",
+            content: "Poor: write my essay about volcanoes\nGood: explain why magma rises, as if I am twelve\n\nPoor: solve this maths problem\nGood: I got 42 and the answer is 36, where did I go wrong?\n\nThe good ones leave the work with you and use the AI for the stuck part."
+          },
+          {
+            type: "tip",
+            title: "Never Feed It Private Things",
+            content: "Your full name, address, school, passwords and photos of other people do not belong in a chat box. Treat anything you type as something you would be comfortable reading aloud."
+          },
+          {
+            type: "activity",
+            title: "Turn a Poor Question Good",
+            content: "Take something you found hard this week. Write the lazy version of the question, then rewrite it so the AI explains and you still do the work. Notice which one teaches you more."
+          },
+          {
+            type: "recap",
+            title: "Module 4 Recap",
+            content: "• AI explains and suggests well; it thinks for you badly\n• Ask it to explain, not to replace the work\n• The struggle is the part that teaches you\n• Private details never go into a chat box"
+          }
+        ],
+        exercises: [
+          {
+            type: "mcq",
+            question: "Which is the better way to use AI for homework?",
+            options: ["Ask it to write the whole answer", "Ask it to explain the confusing part", "Copy it and change a few words", "Use it only when you are tired"],
+            answer: "Ask it to explain the confusing part"
+          },
+          { type: "true-false", question: "Your address, school and passwords should never be typed into an AI chat.", answer: true },
+          { type: "fill-blank", question: "AI is a good ___, but a poor replacement for your own thinking.", answer: "helper" },
+          {
+            type: "match",
+            question: "Match each use to whether it helps you learn:",
+            pairs: [
+              { term: "Explain this again", definition: "Helps you learn" },
+              { term: "Write it for me", definition: "Skips the learning" },
+              { term: "Where did I go wrong", definition: "Helps you learn" },
+              { term: "Give me the answer", definition: "Skips the learning" }
+            ]
+          },
+          {
+            type: "mcq",
+            question: "Why could Nia's friend answer questions about his essay when she could not?",
+            options: ["He is naturally better at writing", "He did the thinking himself", "His essay happened to be longer", "He picked an easier subject"],
+            answer: "He did the thinking himself"
+          }
+        ]
+      }
+    ]
+  },
 ];

@@ -680,7 +680,73 @@ export const contentTranslations = {
           { questionText: "¿Dónde ocurre la 'Oclusión Ambiental'?", options: ["A la luz directa del sol", "En hendiduras profundas donde la luz no llega", "En el cielo", "En el brillo"] }
         ]
       }
-    },
+    ,
+      computer: {
+        title: "Computadora con Confianza",
+        subject: "Informática",
+        description: "Sistemas operativos, atajos, cómo llega la web hasta ti y correos que sí se leen.",
+        questions: [
+          { questionText: "¿De qué se encarga un sistema operativo?", options: ["Guardar tus fotos a salvo", "Hacer funcionar todos los demás programas", "Conectarte a internet", "Ajustar el brillo de la pantalla"] },
+          { questionText: "¿Qué sistema operativo usan casi todos los servidores de las webs?", options: ["Windows", "macOS", "Linux", "Android"] },
+          { questionText: "¿Por qué un Mac y un iPhone se sienten parecidos?", options: ["Se fabrican en una sola planta", "Sus sistemas comparten las mismas raíces", "Los dos necesitan internet constante", "Salieron el mismo año"] },
+          { questionText: "¿Qué hace Ctrl+Z?", options: ["Guarda tu archivo", "Deshace lo último que hiciste", "Cierra la ventana", "Selecciona todo"] },
+          { questionText: "¿Qué tecla sustituye a Ctrl en un Mac?", options: ["Alt", "Shift", "Cmd", "Fn"] },
+          { questionText: "¿Qué atajo busca una palabra en la página que lees?", options: ["Ctrl+F", "Ctrl+S", "Ctrl+A", "Ctrl+V"] },
+          { questionText: "Borras un párrafo sin querer. ¿Cuál es la solución más rápida?", options: ["Cerrar sin guardar", "Pulsar Ctrl+Z", "Reescribirlo de memoria", "Reiniciar la computadora"] },
+          { questionText: "¿Qué ocurre cuando escribes una dirección web y pulsas enter?", options: ["Tu navegador la pide a un servidor", "La página se construye en tu computadora", "Tu proveedor elige un sitio por ti", "El navegador busca en tus archivos"] },
+          { questionText: "¿Qué te dice el candado de la barra de direcciones?", options: ["Que el sitio es honesto", "Que la conexión va cifrada", "Que la página carga más rápido", "Que el sitio no tiene anuncios"] },
+          { questionText: "En https://ejemplo.com/fotos, ¿qué parte elige la página?", options: ["https", "ejemplo.com", "/fotos", "El candado"] },
+          { questionText: "Ninguna web carga. ¿Dónde está el problema, seguramente?", options: ["En esa web concreta", "En tu propia conexión", "En la barra de direcciones", "En tu teclado"] },
+          { questionText: "¿Por qué importa un asunto claro?", options: ["Hace que el correo llegue antes", "La gente decide por él si lo abre", "El correo no se envía sin asunto", "Evita que acabe en spam"] },
+          { questionText: "¿Qué hace poner a alguien en Cc?", options: ["Lo oculta de los demás", "Lo mantiene al tanto, a la vista", "Le envía el correo primero", "Le impide responder"] },
+          { questionText: "Un correo pide tu contraseña o cerrarán tu cuenta. ¿Qué haces?", options: ["Responder rápido para no perder nada", "Enseñárselo a un adulto y no enviar nada", "Enviarla si el logo parece correcto", "Reenviarlo a todos tus amigos"] },
+          { questionText: "¿Cuál de estos es un archivo enviado junto a un correo?", options: ["Un asunto", "Un adjunto", "Una firma", "Un destinatario"] }
+        ]
+      },
+      nutrition: {
+        title: "Científico de la Comida",
+        subject: "Salud",
+        description: "Calorías, los tres grandes macros, los micros diminutos y por qué nadie necesita lo mismo.",
+        questions: [
+          { questionText: "¿Qué mide una caloría?", options: ["Cuánto azúcar lleva un alimento", "Cuánta energía te da un alimento", "Cuánto pesa una ración", "Cuánto tarda en digerirse"] },
+          { questionText: "¿Más o menos cuánta energía diaria usa tu cerebro?", options: ["Alrededor del dos por ciento", "Alrededor del veinte por ciento", "Más o menos la mitad", "Casi nada"] },
+          { questionText: "¿En qué se va casi toda la energía que usas cada día?", options: ["Deporte y ejercicio", "Vivir y crecer", "Digerir la comida", "Cargar el teléfono"] },
+          { questionText: "¿Qué significa macro en macronutriente?", options: ["Grande", "Raro", "Dulce", "Cocinado"] },
+          { questionText: "¿Qué macronutriente construye y repara músculo sobre todo?", options: ["Carbohidrato", "Proteína", "Grasa", "Fibra"] },
+          { questionText: "¿Qué macronutriente da la energía más rápida?", options: ["Carbohidrato", "Proteína", "Grasa", "Calcio"] },
+          { questionText: "¿Qué hace la grasa en tu cuerpo?", options: ["Nada útil", "Energía lenta y protección", "Solo dar sabor a la comida", "Sustituir a la proteína"] },
+          { questionText: "¿Cuántos de los tres macronutrientes necesita un cuerpo sano?", options: ["Solo uno", "Dos de ellos", "Los tres", "Ninguno"] },
+          { questionText: "¿Qué te dan las vitaminas y los minerales?", options: ["Energía para correr", "Herramientas para tareas como formar hueso", "Peso corporal extra", "Agua para hidratarte"] },
+          { questionText: "¿Qué mineral transporta oxígeno en tu sangre?", options: ["Calcio", "Hierro", "Sodio", "Zinc"] },
+          { questionText: "¿Qué vitamina puede fabricar tu piel con el sol?", options: ["Vitamina A", "Vitamina C", "Vitamina D", "Vitamina K"] },
+          { questionText: "¿Por qué enfermaban los marineros pese a tener comida de sobra?", options: ["Tomaban poca proteína", "Les faltaba vitamina C", "Bebían demasiada agua", "Solo comían de noche"] },
+          { questionText: "¿Qué mineral forma sobre todo huesos y dientes?", options: ["Hierro", "Calcio", "Vitamina C", "Proteína"] },
+          { questionText: "¿Qué cambia la energía que alguien necesita al día?", options: ["Solo su peso", "Su tamaño, edad y actividad", "Solo el deporte que hace", "La estación del año"] },
+          { questionText: "¿Quién debería responder una duda sobre tu propia alimentación?", options: ["Un médico", "Un buscador", "Un vídeo de redes", "Quien publique más"] }
+        ]
+      },
+      ai: {
+        title: "La IA Explicada",
+        subject: "Alfabetización en IA",
+        description: "Cómo aprende la IA, por qué se equivoca con seguridad, por dónde entra la injusticia y cómo usarla bien.",
+        questions: [
+          { questionText: "¿Cómo aprende sobre todo la IA moderna a distinguir cosas?", options: ["Una persona escribe una regla por caso", "Encuentra patrones en muchos ejemplos", "Busca la respuesta en internet", "Pregunta a un humano cada vez"] },
+          { questionText: "¿En qué se apoyaban los programas antiguos?", options: ["Reglas escritas por una persona", "Patrones hallados en fotos", "Preguntas hechas a los usuarios", "Adivinar al azar cada vez"] },
+          { questionText: "¿Entiende un modelo de imágenes a un gato como tú?", options: ["Sí, exactamente igual", "No, solo reconoce patrones", "Sí, si ha visto suficientes", "Solo los animales que ha conocido"] },
+          { questionText: "¿Por qué puede una IA inventarse un libro que no existe?", options: ["Su biblioteca está anticuada", "Predice palabras probables, no consulta", "Alguien borró el registro real", "Quiere engañarte a propósito"] },
+          { questionText: "¿Cómo suena la IA cuando su respuesta es incorrecta?", options: ["Claramente insegura", "Igual de segura que siempre", "Se niega a responder", "Te avisa antes de responder"] },
+          { questionText: "¿En qué es más débil la IA?", options: ["Explicar una idea otra vez", "Fechas y fuentes exactas", "Sugerir un punto de partida", "Reformular algo de forma simple"] },
+          { questionText: "Una IA te da un dato para los deberes. ¿Y ahora?", options: ["Úsalo, sonaba seguro", "Compruébalo en otra fuente", "Pregúntale lo mismo otra vez", "Úsalo solo si es corto"] },
+          { questionText: "¿Por qué dibuja una IA siempre al mismo tipo de persona en un oficio?", options: ["Ha decidido quién encaja", "Sus ejemplos mostraban sobre todo a esa persona", "Copia a otra IA", "Los demás son más difíciles de dibujar"] },
+          { questionText: "¿De dónde suele venir el sesgo de un sistema de IA?", options: ["De los ejemplos con los que aprendió", "De las opiniones de la computadora", "Del país donde se usa", "De la hora a la que funciona"] },
+          { questionText: "¿Cuál es una forma rápida de detectar esa injusticia?", options: ["Preguntar quién falta en la foto", "Hacer la pregunta una sola vez", "Mirar lo rápido que respondió", "Contar las palabras que usó"] },
+          { questionText: "¿Qué hace que el sesgo de la IA sea mayor problema que la opinión de una persona?", options: ["Las máquinas no se corrigen", "Se repite a enorme velocidad y escala", "Solo afecta a las imágenes", "Nadie puede notarlo"] },
+          { questionText: "¿Cuál es la mejor forma de usar la IA para los deberes?", options: ["Pedirle toda la respuesta", "Pedirle que explique la parte confusa", "Copiarla cambiando palabras", "Usarla cuando estés cansado"] },
+          { questionText: "¿Qué pregunta te deja a ti el trabajo de pensar?", options: ["Escríbeme el trabajo sobre volcanes", "Explícame por qué sube el magma", "Dame la respuesta final", "Resuélveme este problema"] },
+          { questionText: "¿Qué no debería entrar nunca en un chat de IA?", options: ["Una duda sobre tus deberes", "Tu dirección y tus contraseñas", "Una palabra que no entiendes", "Un tema que te da curiosidad"] },
+          { questionText: "¿Por qué importa hacer tú el trabajo de pensar?", options: ["Es más rápido que usar la IA", "El esfuerzo es lo que te enseña", "Los profesores siempre lo notan", "La IA no se permite en clase"] }
+        ]
+      }},
     courseData: {
       "1": {
         title: "Python para Niños: ¡Crea tu Primer Juego!",
@@ -1224,7 +1290,280 @@ export const contentTranslations = {
             ]
           }
         ]
-      }
+      },
+        "7": {
+          title: "Computadora con Confianza: Domina la Máquina",
+          desc: "Entiende la computadora que usas cada día: su sistema operativo, los atajos que te ahorran horas, cómo llega internet hasta ti y cómo escribir correos que sí se leen.",
+          category: "Informática",
+          difficulty: "Principiante",
+          learningObjectives: [
+            "Reconocer los principales sistemas operativos y qué hacen",
+            "Usar los atajos que más tiempo ahorran",
+            "Explicar cómo viaja una página desde un servidor hasta tu pantalla",
+            "Escribir un correo que la gente sí lee"
+          ],
+          prerequisites: ["Una computadora o tablet que puedas usar"],
+          modules: [
+            {
+              title: "Módulo 1: El Jefe de la Máquina",
+              desc: "Qué es un sistema operativo y por qué el tuyo se ve así.",
+              contentSections: [
+                { title: "El Portátil Prestado de Zara", content: "Zara tomó prestado el portátil de su primo y nada estaba donde esperaba. Los botones estaban al otro lado. Cerrar una ventana no cerraba el programa. La misma clase de máquina, reglas completamente distintas." },
+                { title: "El Sistema Operativo Manda en Todo", content: "Un sistema operativo es el programa que manda sobre los demás. Abre tus apps, recuerda tus archivos y dibuja todo lo que ves. Cada app tiene que pedirle permiso." },
+                { title: "Los Que Vas a Encontrar", content: "Windows — la mayoría de portátiles y PCs\\nmacOS — computadoras de Apple\\nLinux — casi todos los servidores detrás de las webs\\nAndroid e iOS — teléfonos y tablets\\n\\nAndroid está construido sobre Linux e iOS comparte raíces con macOS: por eso un Mac y un iPhone se sienten parientes." },
+                { title: "Ya Usas Varios", content: "Un teléfono, un portátil, una consola y una tele inteligente llevan cada uno su propio sistema operativo. Casi todo el mundo usa tres o cuatro al día sin nombrar ninguno." },
+                { title: "Descubre Cuál Tienes", content: "En Windows pulsa la tecla Windows y escribe Acerca de. En un Mac abre el menú de la manzana y luego Acerca de este Mac. En el móvil entra en Ajustes y busca Acerca de. Anota el nombre y la versión." },
+                { title: "Resumen del Módulo 1", content: "• El sistema operativo manda sobre todos los demás programas\\n• Windows, macOS y Linux llevan computadoras; Android e iOS, teléfonos\\n• Android se apoya en Linux; iOS es pariente de macOS\\n• Usas varios sistemas operativos cada día" }
+              ],
+              exercises: [
+                { question: "¿De qué se encarga un sistema operativo?", options: ["Solo de guardar tus fotos a salvo", "De hacer funcionar todos los demás programas", "De conectar el aparato a internet", "De subir o bajar el brillo de la pantalla"] },
+                { question: "Un teléfono lleva un sistema operativo, igual que un portátil." },
+                { question: "Casi todos los servidores que alojan webs usan el sistema operativo ___.", answer: "Linux" },
+                { question: "Relaciona cada sistema operativo con dónde se encuentra:", pairs: [ { term: "Windows", definition: "La mayoría de portátiles y PCs" }, { term: "macOS", definition: "Computadoras de Apple" }, { term: "Android", definition: "La mayoría de teléfonos y tablets" }, { term: "Linux", definition: "Servidores detrás de las webs" } ] },
+                { question: "¿Por qué un Mac y un iPhone se sienten parecidos?", options: ["Se fabrican en la misma planta", "Sus sistemas operativos comparten las mismas raíces", "Los dos necesitan internet todo el tiempo", "Salieron a la venta el mismo año"] }
+              ]
+            },
+            {
+              title: "Módulo 2: Atajos Que Te Regalan Tiempo",
+              desc: "Las pocas teclas que sustituyen cien viajes del ratón.",
+              contentSections: [
+                { title: "Cuarenta Minutos Arrastrando", content: "Zara movió cincuenta fotos a una carpeta de una en una, arrastrándolas. Su primo hizo las cincuenta siguientes en menos de un minuto. No trabajó más duro: se sabía tres teclas." },
+                { title: "Un Atajo Es la Misma Orden, Más Rápida", content: "Los menús y los atajos hacen exactamente lo mismo. El menú es más fácil de encontrar; el atajo es más rápido cuando ya lo sabes. Aprender cinco vale más que aprender cincuenta." },
+                { title: "Los Cinco Que Valen la Pena", content: "Ctrl+C copiar, Ctrl+V pegar\\nCtrl+Z deshacer, Ctrl+Y rehacer\\nCtrl+A seleccionar todo\\nCtrl+S guardar\\nCtrl+F buscar en esta página\\n\\nEn un Mac cambia Ctrl por Cmd. Ctrl+Z es la tecla más indulgente de cualquier teclado." },
+                { title: "Deshacer Llega Más Atrás de lo Que Crees", content: "Deshacer no es un solo paso. Púlsalo otra vez y otra y casi todos los programas seguirán caminando hacia atrás. Borrar algo sin querer casi nunca es definitivo." },
+                { title: "Compite Contigo Mismo", content: "Abre cualquier documento. Selecciona todo el texto y cópialo usando solo los menús, contando los segundos. Hazlo otra vez con Ctrl+A y Ctrl+C. Prueba Ctrl+F para buscar una palabra en esta página." },
+                { title: "Resumen del Módulo 2", content: "• Un atajo y un menú ejecutan la misma orden\\n• Copiar, pegar, deshacer, seleccionar todo, guardar y buscar cubren casi todo\\n• Mac usa Cmd donde Windows usa Ctrl\\n• Deshacer sigue yendo atrás, así que los errores rara vez son definitivos" }
+              ],
+              exercises: [
+                { question: "¿Qué hace Ctrl+Z?", options: ["Guarda el archivo en el que trabajas", "Deshace lo último que hiciste", "Cierra la ventana de inmediato", "Selecciona todo lo de la página"] },
+                { question: "En un Mac normalmente pulsas Cmd donde Windows usa Ctrl." },
+                { question: "El atajo para buscar una palabra en la página actual es Ctrl+___.", answer: "F" },
+                { question: "Relaciona cada atajo con lo que hace:", pairs: [ { term: "Ctrl+C", definition: "Copiar" }, { term: "Ctrl+V", definition: "Pegar" }, { term: "Ctrl+A", definition: "Seleccionar todo" }, { term: "Ctrl+S", definition: "Guardar" } ] },
+                { question: "Borras un párrafo sin querer. ¿Cuál es la solución más rápida?", options: ["Cerrar sin guardar y empezar de nuevo", "Pulsar Ctrl+Z para deshacerlo", "Volver a escribirlo de memoria", "Reiniciar la computadora entera"] }
+              ]
+            },
+            {
+              title: "Módulo 3: Cómo Llega una Página Hasta Ti",
+              desc: "Qué pasa entre escribir una dirección y ver la página.",
+              contentSections: [
+                { title: "Los Deberes Que Desaparecieron", content: "La página de Zara no cargaba, así que culpó a la web. Su primo hizo una sola pregunta: ¿carga alguna otra cosa? Ninguna. La web estaba bien. Se le había caído el wifi." },
+                { title: "Tu Navegador Pide, un Servidor Responde", content: "Escribir una dirección envía una petición por internet a una computadora que guarda la página. Esa computadora devuelve los archivos y tu navegador los dibuja. Cada página que abres es ese viaje de ida y vuelta." },
+                { title: "Leer una Dirección Web", content: "https://www.ejemplo.com/fotos\\n\\nhttps — la conexión va cifrada\\nwww.ejemplo.com — a qué computadora preguntar\\n/fotos — qué página de ella\\n\\nEl candado significa que nadie por el camino puede leer lo que envías. No promete que el sitio sea honesto." },
+                { title: "Averigua Dónde Falló", content: "Cuando una página no carga, prueba con otra web. Si fallan todas, es tu conexión. Si falla solo una, es esa web. Una pestaña más te lo dice antes de reiniciar nada." },
+                { title: "Desarma una Dirección", content: "Mira la barra de direcciones ahora mismo. Encuentra el https, el nombre del sitio y la parte después de la barra. Abre otra web y compara las dos. Fíjate en qué parte cambia al navegar." },
+                { title: "Resumen del Módulo 3", content: "• Tu navegador pide una página y un servidor la envía\\n• https significa que la conexión va cifrada\\n• La parte después de la barra elige la página\\n• Si fallan todas las webs, el problema es tu conexión" }
+              ],
+              exercises: [
+                { question: "¿Qué ocurre cuando escribes una dirección web y pulsas enter?", options: ["Tu navegador pide la página a un servidor", "La página se construye en tu propia computadora", "Tu proveedor de internet elige un sitio por ti", "El navegador busca en los archivos de tu aparato"] },
+                { question: "El candado significa que la conexión va cifrada, no que el sitio sea de fiar." },
+                { question: "En https://ejemplo.com/fotos, la parte que elige qué página mostrar es ___.", answer: "/fotos" },
+                { question: "Relaciona cada parte de una dirección web con su función:", pairs: [ { term: "https", definition: "La conexión va cifrada" }, { term: "ejemplo.com", definition: "A qué computadora preguntar" }, { term: "/fotos", definition: "Qué página de esa computadora" }, { term: "Navegador", definition: "Dibuja la página para ti" } ] },
+                { question: "Una web no carga pero todas las demás funcionan. ¿Qué es lo más probable?", options: ["Tu wifi ha dejado de funcionar", "Algo va mal en esa web concreta", "Hay que reiniciar la computadora", "Hay que reinstalar el navegador hoy"] }
+              ]
+            },
+            {
+              title: "Módulo 4: Correos Que Sí Se Leen",
+              desc: "Cómo funciona el correo y cómo escribir uno que reciba respuesta.",
+              contentSections: [
+                { title: "Sin Asunto, Sin Respuesta", content: "Zara escribió a su profesora con el asunto vacío y una palabra en el cuerpo: pregunta. Pasaron tres días sin respuesta. La profesora tenía más de doscientos correos sin leer y ningún motivo para abrir ese." },
+                { title: "El Asunto Hace el Trabajo", content: "Casi todo el mundo decide si abre un correo solo por el asunto. Uno bueno dice de qué va y qué necesitas. Los asuntos vagos se saltan, no se rechazan." },
+                { title: "El Mismo Correo, Dos Veces", content: "Asunto: pregunta\\nCuerpo: Tengo una pregunta\\n\\nAsunto: Trabajo de ciencias — ¿puedo entregarlo el viernes?\\nCuerpo: Hola profesora Díaz, estuve enferma el martes y me perdí los apuntes. ¿Podría entregar el informe el viernes? Gracias, Zara\\n\\nEl segundo se responde en cuatro segundos." },
+                { title: "Mira la Dirección Antes Que las Palabras", content: "Un correo que parece oficial puede venir de cualquiera. Lee la dirección real, no el nombre que se muestra. Cualquier cosa que pida una contraseña o un código merece enseñársela a un adulto antes de responder." },
+                { title: "Reescribe un Asunto Flojo", content: "Escribe un asunto para: pedir entrar en el equipo de fútbol, preguntar por una sudadera perdida, dar las gracias por una ayuda. Cada uno debe decir el tema y qué quieres en menos de diez palabras." },
+                { title: "Resumen del Módulo 4", content: "• La gente decide por el asunto si lo abre\\n• Di el tema y qué necesitas\\n• Cc copia a alguien; todos ven a quién\\n• Lee la dirección real y nunca envíes una contraseña" }
+              ],
+              exercises: [
+                { question: "¿Por qué importa tanto un asunto claro?", options: ["Hace que el correo llegue más rápido", "La gente decide por él si lo abre", "El correo no se envía sin asunto", "Evita que el mensaje acabe en spam"] },
+                { question: "Todos los que están en Para y en Cc pueden ver quién más recibió el correo." },
+                { question: "Para copiar a alguien en un correo sin que sea el destinatario principal, ponlo en ___.", answer: "Cc" },
+                { question: "Relaciona cada campo del correo con su función:", pairs: [ { term: "Para", definition: "A quién va dirigido" }, { term: "Cc", definition: "Alguien a quien se mantiene al tanto" }, { term: "Asunto", definition: "De qué trata" }, { term: "Adjunto", definition: "Un archivo enviado con él" } ] },
+                { question: "Un correo dice que tu cuenta se cerrará si no envías tu contraseña. ¿Qué haces?", options: ["Responder rápido para no perder nada", "Enseñárselo a un adulto y no enviar nada", "Enviarla solo si el logo parece correcto", "Reenviarlo a todos como aviso"] }
+              ]
+            }
+          ]
+        },
+        "8": {
+          title: "Científico de la Comida: Qué Hace tu Cuerpo con Ella",
+          desc: "Descubre qué es de verdad una caloría, qué hacen dentro de ti los carbohidratos, las proteínas y las grasas, y por qué un futbolista y un bebé necesitan cantidades completamente distintas.",
+          category: "Salud",
+          difficulty: "Principiante",
+          learningObjectives: [
+            "Explicar qué mide una caloría",
+            "Describir qué hacen los carbohidratos, las proteínas y las grasas",
+            "Decir por qué las vitaminas y los minerales importan en cantidades diminutas",
+            "Explicar por qué cada persona necesita cantidades distintas de comida"
+          ],
+          prerequisites: ["Curiosidad por lo que hay en tu plato"],
+          modules: [
+            {
+              title: "Módulo 1: Qué Es de Verdad una Caloría",
+              desc: "Una unidad de energía, no un marcador que ganas o pierdes.",
+              contentSections: [
+                { title: "Theo Lee la Caja", content: "Theo le dio la vuelta a la caja de cereales y encontró un número: 380 calorías. Había oído decir que las calorías eran malas. Pero los cereales no son malos. Quería saber qué significaba ese número." },
+                { title: "Una Caloría Mide Energía", content: "Una caloría es una unidad, como un centímetro o un litro. Mide cuánta energía puede darle un alimento a tu cuerpo. Más calorías es más energía, igual que un depósito más grande lleva más combustible." },
+                { title: "En Qué la Gasta tu Cuerpo", content: "Correr y jugar al fútbol: la parte en la que todos piensan\\nRespirar, bombear sangre, mantenerte caliente\\nCrecer y formar músculo\\nPensar, todo el día, en clase\\n\\nCasi toda la energía que usas se va en seguir vivo y crecer, no en hacer deporte." },
+                { title: "Tu Cerebro Tiene Hambre", content: "Tu cerebro es alrededor del dos por ciento de tu peso pero usa cerca del veinte por ciento de tu energía. Estar quieto concentrándote cuesta combustible de verdad." },
+                { title: "Busca el Número", content: "Encuentra tres paquetes en tu cocina. Anota las calorías por cada 100 gramos. Ordénalos y pregúntate cuál te sorprendió y por qué." },
+                { title: "Resumen del Módulo 1", content: "• Una caloría es una unidad de energía, como el centímetro lo es de longitud\\n• No es una nota buena ni mala\\n• Casi toda tu energía se va en vivir y crecer\\n• Solo tu cerebro usa cerca de una quinta parte" }
+              ],
+              exercises: [
+                { question: "¿Qué mide una caloría?", options: ["Cuánto azúcar lleva un alimento", "Cuánta energía puede darte un alimento", "Cuánto pesa una ración de comida", "Cuánto tarda un alimento en digerirse"] },
+                { question: "Casi toda la energía que usas cada día se va en hacer deporte." },
+                { question: "Una caloría es una unidad de ___.", answer: "energía" },
+                { question: "Relaciona cada tarea con para qué necesita energía:", pairs: [ { term: "Respirar", definition: "Mantener tu cuerpo en marcha" }, { term: "Crecer", definition: "Formar hueso y músculo nuevos" }, { term: "Pensar", definition: "Alimentar tu cerebro" }, { term: "Correr", definition: "Mover los músculos con fuerza" } ] },
+                { question: "¿Más o menos cuánta energía usa tu cerebro?", options: ["Alrededor del dos por ciento", "Alrededor del veinte por ciento", "Más o menos la mitad", "Casi nada" ] }
+              ]
+            },
+            {
+              title: "Módulo 2: Los Tres Grandes",
+              desc: "Carbohidratos, proteínas y grasas, y para qué sirve cada uno.",
+              contentSections: [
+                { title: "La Tarde Floja de Theo", content: "Theo desayunó tostada con mermelada y se sintió genial, y se quedó sin fuerzas en la segunda clase. Su amigo tomó huevos con tostada y seguía entero. La misma cantidad de comida, tardes muy distintas." },
+                { title: "Tres Clases de Combustible", content: "Los macronutrientes son las tres cosas que tu cuerpo necesita en gran cantidad. El carbohidrato es energía rápida, la proteína es material de construcción, la grasa es energía duradera y protección. Macro solo significa grande." },
+                { title: "Qué Hace Cada Uno", content: "Carbohidratos — pan, arroz, fruta. Energía rápida para ahora.\\nProteínas — huevos, legumbres, pescado, lentejas. Construye y repara músculo.\\nGrasas — frutos secos, aceite de oliva, queso. Energía lenta, protege tus órganos, ayuda a tu cerebro.\\n\\nUna comida con los tres te aguanta mucho más que una de solo carbohidratos." },
+                { title: "Ningún Macro Es el Malo", content: "La gente se turna para culpar a la grasa, luego a los carbohidratos, luego a otra cosa. Tu cuerpo necesita los tres. Un cuerpo sin grasa o sin carbohidratos no funciona mejor: funciona peor." },
+                { title: "Clasifica tu Comida", content: "Piensa en lo último que comiste. Escribe cada parte bajo carbohidrato, proteína o grasa. Algunos alimentos caen en dos columnas. Fíjate si alguna columna quedó vacía." },
+                { title: "Resumen del Módulo 2", content: "• Macro significa grande: los tres que más necesitas\\n• El carbohidrato es energía rápida\\n• La proteína te construye y repara\\n• La grasa es energía lenta y protección\\n• Necesitas los tres, no dos de ellos" }
+              ],
+              exercises: [
+                { question: "¿Qué macronutriente se usa sobre todo para construir y reparar músculo?", options: ["Carbohidrato", "Proteína", "Grasa", "Agua"] },
+                { question: "Un cuerpo sano necesita carbohidratos, proteínas y grasas, no solo dos de ellos." },
+                { question: "La palabra macro en macronutriente significa ___.", answer: "grande" },
+                { question: "Relaciona cada macronutriente con su función principal:", pairs: [ { term: "Carbohidrato", definition: "Energía rápida" }, { term: "Proteína", definition: "Construir y reparar" }, { term: "Grasa", definition: "Energía lenta y protección" }, { term: "Los tres", definition: "Una comida que aguanta" } ] },
+                { question: "¿Por qué Theo se quedó sin energía antes que su amigo?", options: ["Comió muchísimo menos de la cuenta", "Su desayuno era casi todo carbohidrato", "Tomó demasiada proteína de golpe", "No bebió agua con el desayuno"] }
+              ]
+            },
+            {
+              title: "Módulo 3: Cantidades Diminutas, Tareas Enormes",
+              desc: "Vitaminas y minerales, y por qué la cantidad no mide la importancia.",
+              contentSections: [
+                { title: "Los Marineros Que Comían Limas", content: "Los viajes largos por mar dejaban a los marineros agotados y con las encías sangrando. Tenían comida de sobra y energía de sobra. Lo que les faltaba no pesaba casi nada: vitamina C. Las limas lo arreglaron." },
+                { title: "Los Micronutrientes Son Herramientas, No Combustible", content: "Las vitaminas y los minerales no te dan energía alguna. Tu cuerpo los usa para hacer tareas: formar hueso, transportar oxígeno, curar heridas. Micro significa pequeño, y solo necesitas cantidades diminutas." },
+                { title: "Algunos y Qué Hacen", content: "Hierro — transporta oxígeno en tu sangre\\nCalcio — forma huesos y dientes\\nVitamina C — cura heridas y ayuda a absorber hierro\\nVitamina D — deja que tu cuerpo use el calcio\\n\\nLa vitamina C ayuda a absorber hierro, así que las legumbres con tomate ganan a las legumbres solas." },
+                { title: "Una la Fabrica el Sol", content: "La vitamina D es la rara: tu piel la fabrica con la luz del sol. Es la única vitamina que tu cuerpo puede producir solo, por eso baja en los inviernos largos y oscuros." },
+                { title: "Cuenta Colores", content: "Cuenta cuántos colores distintos de fruta y verdura comiste ayer. Colores distintos suelen significar micronutrientes distintos. Propón añadir un color nuevo mañana." },
+                { title: "Resumen del Módulo 3", content: "• Los micronutrientes no dan energía; permiten hacer tareas\\n• El hierro transporta oxígeno, el calcio forma hueso\\n• La vitamina C ayuda a absorber hierro\\n• Tu piel fabrica vitamina D con el sol" }
+              ],
+              exercises: [
+                { question: "¿Qué le dan a tu cuerpo las vitaminas y los minerales?", options: ["Energía para correr y jugar", "Herramientas para tareas como formar hueso", "Peso extra para crecer más", "Agua para mantenerte hidratado"] },
+                { question: "La vitamina D es la única vitamina que tu propia piel puede fabricar, usando el sol." },
+                { question: "El mineral que transporta oxígeno por tu sangre es el ___.", answer: "hierro" },
+                { question: "Relaciona cada micronutriente con su tarea:", pairs: [ { term: "Hierro", definition: "Transporta oxígeno en tu sangre" }, { term: "Calcio", definition: "Forma huesos y dientes" }, { term: "Vitamina C", definition: "Cura heridas y ayuda a absorber hierro" }, { term: "Vitamina D", definition: "Deja que tu cuerpo use el calcio" } ] },
+                { question: "¿Por qué aparece micro en la palabra micronutriente?", options: ["Solo se encuentran en alimentos pequeños", "Los necesitas en cantidades diminutas", "Se descubrieron los últimos", "Son los menos importantes"] }
+              ]
+            },
+            {
+              title: "Módulo 4: Por Qué Nadie Necesita lo Mismo",
+              desc: "La edad, el tamaño y cómo pasas el día cambian la respuesta.",
+              contentSections: [
+                { title: "Tres Platos en una Mesa", content: "La familia de Theo se sentó junta: su hermana bebé, su tío que corre maratones y su abuela. Tres platos muy distintos, y cada uno era el correcto para quien se lo comía." },
+                { title: "Tu Cuerpo Marca la Cantidad", content: "Cuánta energía necesita alguien depende de su tamaño, su edad y de cómo pasa el día. Un cuerpo más grande cuesta más de mantener. Un cuerpo que crece, todavía más." },
+                { title: "Misma Familia, Necesidades Distintas", content: "Un maratoniano pasa horas moviéndose, así que necesita mucha.\\nUn bebé es pequeño pero crece deprisa, así que necesita bastante para su tamaño.\\nUna persona mayor que se mueve menos necesita menos.\\n\\nNinguna es mejor que otra. Son respuestas a preguntas distintas." },
+                { title: "No Hay un Número Correcto para un Niño", content: "Los cuerpos que crecen necesitan mucho, y el apetito cambia de una semana a otra, y eso es normal. Nadie de tu edad debería contar ni limitar. Si alguna vez te preguntas por tu propia alimentación, eso lo responde un médico, no internet." },
+                { title: "Adivina Quién Necesita Más", content: "Para cada pareja, di quién necesita seguramente más energía al día y por qué: alguien que nada a diario o alguien en reposo con una pierna rota; un adolescente en pleno estirón o un adulto más pequeño. Di tu razón en voz alta." },
+                { title: "Resumen del Módulo 4", content: "• El tamaño, la edad y la actividad cambian la energía que alguien necesita\\n• Los cuerpos que crecen necesitan mucho para su tamaño\\n• Necesidades distintas no son mejores ni peores\\n• No hay un número correcto para un niño: eso lo responde un médico" }
+              ],
+              exercises: [
+                { question: "¿Qué cambia la energía que una persona necesita al día?", options: ["Solo cuánto pesa", "Su tamaño, su edad y lo activa que es", "Solo los deportes que practica", "La época del año en que estemos"] },
+                { question: "Un bebé necesita bastante energía para su tamaño, porque crece deprisa." },
+                { question: "Si tienes una duda sobre tu propia alimentación, la persona a la que preguntar es un ___.", answer: "médico" },
+                { question: "Relaciona cada persona con por qué cambian sus necesidades:", pairs: [ { term: "Maratoniano", definition: "Horas de movimiento intenso" }, { term: "Bebé", definition: "Pequeño, pero crece deprisa" }, { term: "Persona mayor", definition: "Normalmente se mueve menos" }, { term: "Adolescente", definition: "Crece deprisa y es activo" } ] },
+                { question: "Dos personas comen cantidades muy distintas. ¿Qué te dice eso?", options: ["Una de las dos come mal", "Sus cuerpos necesitan cantidades distintas", "El plato más grande siempre es mejor", "Deberían intercambiarse las comidas"] }
+              ]
+            }
+          ]
+        },
+        "9": {
+          title: "La IA Explicada: Cómo Aprende y Dónde Falla",
+          desc: "Entiende cómo la IA aprende de ejemplos, por qué suena segura aunque se equivoque, cómo recoge injusticias y cómo usarla sin entregarle tu forma de pensar.",
+          category: "Alfabetización en IA",
+          difficulty: "Principiante",
+          learningObjectives: [
+            "Explicar cómo una máquina aprende a partir de ejemplos",
+            "Decir por qué la IA puede equivocarse con total seguridad",
+            "Reconocer por dónde se cuela la injusticia en un sistema",
+            "Usar la IA como ayudante sin que piense por ti"
+          ],
+          prerequisites: ["No hace falta experiencia"],
+          modules: [
+            {
+              title: "Módulo 1: Aprender con Ejemplos",
+              desc: "Cómo pasaron las máquinas de reglas fijas a detectar patrones.",
+              contentSections: [
+                { title: "Nia Intenta Escribir las Reglas", content: "Nia intentó escribir instrucciones para distinguir un gato de un perro. Cuatro patas, pelo, bigotes, cola. Todas las reglas que escribía valían para los dos. Al cabo de una hora no tenía ninguna que funcionara." },
+                { title: "Enséñaselo, No Se lo Cuentes", content: "Los programas antiguos seguían reglas escritas por una persona. La IA moderna ve en cambio miles de ejemplos y deduce el patrón ella sola. Nadie le explica qué es un bigote." },
+                { title: "Tres Épocas, la Misma Pregunta", content: "Reglas — una persona escribe: si ladra, es un perro. Falla con un perro callado.\\nAprendizaje — le enseñas muchas fotos etiquetadas. Encuentra el patrón.\\nGeneración — con suficientes ejemplos, también puede crear texto o imágenes nuevas.\\n\\nCada paso necesitó más ejemplos y más potencia, no una regla más lista." },
+                { title: "Nunca Ha Visto un Gato", content: "Un modelo de imágenes no tiene ni idea de cómo se siente el pelo ni de que los gatos ronronean. Solo ha visto números que describen píxeles. Reconoce el patrón sin entender al animal." },
+                { title: "Prueba a Escribir las Reglas", content: "Escribe instrucciones para distinguir una taza de un cuenco, tan precisas que sirvan a alguien que nunca ha visto ninguno. Pruébalas con cinco objetos reales. Cuenta cuántas fallan." },
+                { title: "Resumen del Módulo 1", content: "• Los programas antiguos seguían reglas escritas por personas\\n• La IA moderna aprende el patrón de muchos ejemplos\\n• Más ejemplos y potencia, no reglas más listas\\n• Reconocer un patrón no es entenderlo" }
+              ],
+              exercises: [
+                { question: "¿Cómo aprende sobre todo la IA moderna a distinguir cosas?", options: ["Una persona escribe reglas para cada caso", "Encuentra patrones en muchos ejemplos", "Busca la respuesta en internet", "Le pregunta a un humano cada vez"] },
+                { question: "Un modelo de imágenes entiende qué es un gato igual que lo entiende una persona." },
+                { question: "En vez de darle reglas, a la IA moderna se le dan muchos ___ para aprender.", answer: "ejemplos" },
+                { question: "Relaciona cada enfoque con lo que hace:", pairs: [ { term: "Reglas", definition: "Una persona escribe cada instrucción" }, { term: "Aprendizaje", definition: "Encuentra patrones en ejemplos" }, { term: "Generación", definition: "Crea texto o imágenes nuevas" }, { term: "Ejemplos", definition: "Aquello de lo que aprende" } ] },
+                { question: "¿Por qué fallaban siempre las reglas de Nia?", options: ["No escribió suficientes", "Casi todas valían para los dos animales", "Su computadora era muy lenta", "Gatos y perros son idénticos"] }
+              ]
+            },
+            {
+              title: "Módulo 2: Segura y Equivocada",
+              desc: "Por qué la IA se inventa cosas y nunca suena dudosa.",
+              contentSections: [
+                { title: "El Libro Que No Existía", content: "Nia pidió a una IA libros sobre volcanes. Le dio cinco títulos con autores y años. Su bibliotecaria encontró cuatro. El quinto no existía ni había existido nunca, pero parecía tan real como los demás." },
+                { title: "Predice, No Consulta", content: "Un modelo de lenguaje adivina qué palabras suelen venir después. No está buscando en una biblioteca. Un título inventado encaja perfectamente con el patrón de los títulos reales, así que sale igual de convincente." },
+                { title: "Dónde Es Más Débil", content: "Números y fechas exactas\\nQuién dijo o escribió qué\\nCualquier cosa muy reciente\\nEnlaces y referencias\\n\\nSon los detalles que un patrón no puede aportar. Produce algo con la forma correcta, no algo comprobado." },
+                { title: "La Seguridad No Es una Prueba", content: "La IA escribe una respuesta equivocada con la misma voz tranquila y ordenada que una correcta. No hay ningún titubeo que te avise. Todo lo que importe se comprueba en otro sitio, siempre." },
+                { title: "Píllala en un Fallo", content: "Pregúntale a una IA por algo que conozcas bien: un lugar de tu zona, tu deporte favorito, una afición familiar. Busca el detalle que falla un poco. Fíjate en lo segura que suena mientras lo dice." },
+                { title: "Resumen del Módulo 2", content: "• Un modelo de lenguaje predice palabras probables, no consulta\\n• Los datos inventados parecen exactamente reales\\n• Números, fechas, fuentes y lo reciente son lo más débil\\n• Sonar segura no es lo mismo que acertar" }
+              ],
+              exercises: [
+                { question: "¿Por qué puede una IA inventarse un libro que no existe?", options: ["Su biblioteca está desactualizada", "Predice palabras probables en vez de consultar", "Alguien borró el registro real", "Intenta engañarte a propósito"] },
+                { question: "La IA suele sonar menos segura cuando su respuesta es incorrecta." },
+                { question: "Un modelo de lenguaje funciona prediciendo qué ___ vienen después.", answer: "palabras" },
+                { question: "Relaciona cada cosa con cuánta comprobación necesita:", pairs: [ { term: "Una fecha exacta", definition: "Compruébala en otro sitio" }, { term: "Una fuente o enlace", definition: "Compruébala en otro sitio" }, { term: "Explicar una idea", definition: "Terreno normalmente más seguro" }, { term: "Noticias muy recientes", definition: "Compruébalas en otro sitio" } ] },
+                { question: "Una IA te da un dato para tus deberes. ¿Cuál es el paso sensato?", options: ["Usarlo, sonaba seguro", "Comprobarlo en otra fuente", "Preguntarle lo mismo otra vez", "Usarlo solo si es corto"] }
+              ]
+            },
+            {
+              title: "Módulo 3: Por Dónde Se Cuela la Injusticia",
+              desc: "Un sistema aprende lo que contienen los ejemplos, incluida la parte injusta.",
+              contentSections: [
+                { title: "El Dibujo Que Salía Siempre Igual", content: "Nia pidió a una IA que dibujara a un científico diez veces. En todas salió un hombre mayor con bata blanca. Su profesora de ciencias es una mujer joven. La máquina no estaba siendo cruel: repetía lo que le habían enseñado." },
+                { title: "Los Ejemplos Llevan el Sesgo", content: "Un modelo solo puede aprender de lo que le dan. Si los ejemplos muestran demasiado a un solo tipo de persona, el resultado también. La injusticia entró con los datos, no de una opinión." },
+                { title: "Dónde Se Nota", content: "Imágenes que siempre muestran al mismo tipo de persona en un oficio\\nHerramientas de voz que se atascan con ciertos acentos\\nTraducciones que adivinan un género que nunca se dijo\\n\\nCada una es un patrón de los ejemplos, devuelto mucho más rápido y a mucha mayor escala." },
+                { title: "Pregunta Quién Falta", content: "Cuando la IA describe a un grupo de personas, pregunta quién no está en la foto. El hueco suele ser un hueco en los ejemplos, y se ve mucho mejor desde fuera que desde dentro." },
+                { title: "Haz la Prueba Tú", content: "Pide a una herramienta de imágenes un enfermero, un cocinero y un piloto varias veces cada uno. Haz recuento. Compáralo con quienes hacen esos trabajos donde vives de verdad." },
+                { title: "Resumen del Módulo 3", content: "• Un modelo aprende solo de los ejemplos que recibe\\n• Ejemplos injustos dan resultados injustos\\n• Repite patrones, no tiene opiniones\\n• Preguntar quién falta es la comprobación más rápida" }
+              ],
+              exercises: [
+                { question: "¿Por qué una IA puede dibujar siempre al mismo tipo de persona para un oficio?", options: ["Ha decidido quién encaja ahí", "Sus ejemplos mostraban sobre todo a esa persona", "Está copiando a otra IA", "Dibujar a otras personas es más difícil"] },
+                { question: "El sesgo en la IA suele venir de los ejemplos con los que aprendió." },
+                { question: "Cuando la IA muestra a un grupo de personas, una buena pregunta es quién ___.", answer: "falta" },
+                { question: "Relaciona cada ejemplo con el hueco que hay detrás:", pairs: [ { term: "Siempre el mismo científico", definition: "Ejemplos de imagen poco variados" }, { term: "Se atasca con un acento", definition: "Ejemplos de voz poco variados" }, { term: "Adivina un género", definition: "Patrones en textos antiguos" }, { term: "Quién falta", definition: "La pregunta que lo detecta" } ] },
+                { question: "¿Qué hace que esta injusticia sea mayor problema que la opinión de una persona?", options: ["Las máquinas no se pueden corregir", "Se repite a enorme velocidad y escala", "Solo afecta a las imágenes", "Nadie puede llegar a notarla"] }
+              ]
+            },
+            {
+              title: "Módulo 4: Usarla Sin Dejarle tu Cabeza",
+              desc: "Dónde ayuda de verdad la IA y dónde usarla te cuesta el aprendizaje.",
+              contentSections: [
+                { title: "Dos Formas de Entregar un Trabajo", content: "Nia le pidió a una IA que escribiera su trabajo y lo entregó. Su amigo le pidió que le explicara la parte confusa y luego escribió el suyo. Los dos entregaron. Solo uno supo responder una pregunta sobre él después." },
+                { title: "Una Ayudante, No un Sustituto", content: "La IA es buena explicando algo de otra manera, sugiriendo un punto de partida o revisando la ortografía. Es mala sustituyendo el pensamiento, porque pensar es justo la parte que te cambia." },
+                { title: "Buena Pregunta, Mala Pregunta", content: "Mala: escríbeme el trabajo sobre volcanes\\nBuena: explícame por qué sube el magma, como si tuviera doce años\\n\\nMala: resuélveme este problema de mates\\nBuena: me da 42 y la solución es 36, ¿dónde me equivoqué?\\n\\nLas buenas te dejan el trabajo a ti y usan la IA para la parte atascada." },
+                { title: "Nunca le Des Cosas Privadas", content: "Tu nombre completo, tu dirección, tu colegio, tus contraseñas y fotos de otras personas no van en un chat. Trata lo que escribes como algo que leerías en voz alta sin problema." },
+                { title: "Convierte una Mala Pregunta en Buena", content: "Coge algo que te costara esta semana. Escribe la versión perezosa de la pregunta y luego reescríbela para que la IA explique y el trabajo siga siendo tuyo. Fíjate cuál te enseña más." },
+                { title: "Resumen del Módulo 4", content: "• La IA explica y sugiere bien; piensa por ti mal\\n• Pídele que explique, no que sustituya el trabajo\\n• El esfuerzo es la parte que te enseña\\n• Los datos privados no entran en un chat" }
+              ],
+              exercises: [
+                { question: "¿Cuál es la mejor forma de usar la IA para los deberes?", options: ["Pedirle que escriba toda la respuesta", "Pedirle que explique la parte confusa", "Copiarla y cambiar algunas palabras", "Usarla solo cuando estés cansado"] },
+                { question: "Tu dirección, tu colegio y tus contraseñas nunca deberían escribirse en un chat de IA." },
+                { question: "La IA es una buena ___, pero un mal sustituto de tu propio pensamiento.", answer: "ayudante" },
+                { question: "Relaciona cada uso con si te ayuda a aprender:", pairs: [ { term: "Explícamelo otra vez", definition: "Te ayuda a aprender" }, { term: "Escríbelo por mí", definition: "Te salta el aprendizaje" }, { term: "Dónde me equivoqué", definition: "Te ayuda a aprender" }, { term: "Dame la respuesta", definition: "Te salta el aprendizaje" } ] },
+                { question: "¿Por qué el amigo de Nia supo responder sobre su trabajo y ella no?", options: ["Escribe mejor por naturaleza", "Hizo el trabajo de pensar él mismo", "Su trabajo era más largo", "Eligió un tema más fácil"] }
+              ]
+            }
+          ]
+        }
     }
   },
 

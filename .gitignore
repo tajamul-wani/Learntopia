@@ -63,3 +63,8 @@ coverage/
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+
+# Windows "downloaded from the internet" markers. Copying a file from Windows
+# into WSL brings these along; they are metadata, not content, and must never
+# reach a public repo.
+*:Zone.Identifier
