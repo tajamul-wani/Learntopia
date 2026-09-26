@@ -12,7 +12,8 @@ import { COURSES } from "../data/coursesData";
 import { getLocalizedCourse } from "../utils/localizationUtils";
 import { moduleGrant } from "../utils/xpGrants";
 import { canLearn, primaryAction } from "../utils/enrollmentState";
-import { courseFacts, courseSkills } from "../utils/courseFacts";
+import { courseSkills } from "../utils/courseFacts";
+import { useScrollToTopOn } from "../hooks/useScrollToTop";
 import { enroll, restart as restartCourse } from "../services/enrollment";
 import CoursePreview from "../Components/CoursePreview";
 import Card from "../Components/ui/Card";
@@ -68,6 +69,11 @@ const CourseDetails = () => {
   const [joining, setJoining] = useState(false);
   
   const [activeTab, setActiveTab] = useState("overview");
+
+  // Switching tabs and crossing from the preview into the course both replace
+  // the whole page without changing the route. Keyed on both so either one
+  // starts the new view at its top rather than wherever the button was.
+  useScrollToTopOn(`${activeTab}:${canLearn(enrolment)}`);
 
   // Track answers for the current active module's exercises: { exerciseIndex: selectedOption }
   // Track whether user has completed the lesson phase for the active module
@@ -331,6 +337,11 @@ const CourseDetails = () => {
         setIsCompleted(!!next.completed);
       }
       setExpandedIndex(0);
+      // Joining, rejoining and restarting are all decisions to start learning.
+      // Landing back on the overview they just read puts the modules a click
+      // away for no reason, so the curriculum is what they walk into. Someone
+      // opening a course they are already in still arrives on the overview.
+      setActiveTab("syllabus");
     } catch (err) {
       console.error("Enrollment error:", err);
       toast.error(t("toasts.loadDataFailed"));

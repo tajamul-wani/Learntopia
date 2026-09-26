@@ -71,6 +71,13 @@ test.describe("course enrollment flow", () => {
       "the learner was sent back to the preview after the animation"
     ).toBeHidden();
 
+    // Joining is a decision to start learning, so the modules are what they
+    // walk into — not the overview they just finished reading.
+    await expect(
+      page.getByRole("heading", { name: /course modules/i }),
+      "joining dropped the learner on the overview instead of the curriculum"
+    ).toBeVisible({ timeout: 10000 });
+
     expect(
       await docExists(`Users/${learner.uid}/enrolledCourses/${COURSE_ID}`),
       "the animation played but the learner was never enrolled"

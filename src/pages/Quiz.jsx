@@ -3,6 +3,7 @@ import { Link, useBlocker } from "react-router-dom";
 import { db } from "../firebase/firebase";
 import { collection, addDoc, getDocs, doc, setDoc } from "firebase/firestore";
 import { quizzes } from "../data/quizData";
+import { useScrollToTopOn } from "../hooks/useScrollToTop";
 import { getLocalizedQuiz } from "../utils/localizationUtils";
 import { useAuth } from "../context/AuthContext";
 import { quizLevelGrant, quizLevelsToClaim, QUIZ_LEVEL_XP } from "../utils/xpGrants";
@@ -30,6 +31,9 @@ const Quiz = () => {
 
   // Core game state
   const [screen, setScreen] = useState("selection"); // 'selection' | 'active' | 'results'
+  // Starting a quiz and finishing one both swap the screen without changing
+  // the route, so the router's own scroll reset never runs for them.
+
   const [activeQuiz, setActiveQuiz] = useState(null);
   const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
@@ -68,6 +72,8 @@ const Quiz = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [loadingScores, setLoadingScores] = useState(false);
   const [xpEarned, setXpEarned] = useState(0);
+
+  useScrollToTopOn(screen);
 
 
   // Save score to Firestore with fail-safe merge and incremental retake XP
