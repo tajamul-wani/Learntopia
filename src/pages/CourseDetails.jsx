@@ -28,7 +28,7 @@ import AIChatDrawer from "../Components/AIChatDrawer";
 import BotAvatar from "../Components/BotAvatar";
 import TutorLauncher from "../Components/TutorLauncher";
 import CourseEnterOverlay from "../Components/CourseEnterOverlay";
-import CourseFactTiles from "../Components/CourseFactTiles";
+import CourseFacts from "../Components/CourseFacts";
 import { courseTint } from "../utils/courseTint";
 
 const CourseDetails = () => {
@@ -428,24 +428,21 @@ const CourseDetails = () => {
               </span>
             </div>
             
-            <h1 className="mt-4 text-3xl font-extrabold tracking-tight text-ink-hi md:text-4xl lg:text-5xl">{course.title}</h1>
-            <p className="mt-4 text-lg leading-relaxed text-ink-low">{course.desc}</p>
-            
+            <h1 className="mt-4 text-3xl/[1.25] font-extrabold tracking-tight text-ink-hi md:text-4xl/[1.2] lg:text-5xl/[1.15]">{course.title}</h1>
+            <p className="mt-4 text-base leading-relaxed text-ink-low md:text-lg">{course.desc}</p>
+
+            {/* In the text column, so it starts where the title and description
+                do. It lives here rather than full width because a meta line
+                fits the column that four tiles did not. */}
+            <CourseFacts course={course} className="mt-6 justify-center md:justify-start" />
           </div>
         </div>
         )}
 
-        {/* Full content width rather than the column beside the artwork: that
-            column tops out around 600px, which is not enough for four tiles
-            without the values wrapping. Same four facts as the preview,
-            counted from the course so neither can drift. */}
-        {activeTab !== "syllabus" && (
-          <CourseFactTiles course={course} className="-mt-4 mb-10 text-left" />
-        )}
 
         {/* On the curriculum, this one line is all the orientation needed. */}
         {activeTab === "syllabus" && (
-          <h1 className="mb-5 text-2xl font-extrabold tracking-tight text-ink-hi sm:text-3xl">
+          <h1 className="mb-5 text-2xl/[1.3] font-extrabold tracking-tight text-ink-hi sm:text-3xl/[1.25]">
             {course.title}
           </h1>
         )}

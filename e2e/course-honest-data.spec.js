@@ -80,12 +80,13 @@ test.describe("courses show counted facts, not invented ones", () => {
     // Inside the course now, so the header is the enrolled one.
     await expect(page.getByRole("button", { name: /course curriculum/i })).toBeVisible();
 
-    // The header now carries the same counted tiles as the preview. Modules,
-    // not lessons: modules are the unit progress is measured in once enrolled,
+    // The header carries the same counted facts as the preview, now as a meta
+    // line rather than tiles. Modules, not lessons: modules are the unit
+    // progress is measured in once enrolled,
     // and the lesson count is a before-you-choose signal that lives on the
     // preview alongside the exercise count.
     await expect(page.getByText(/\d+ XP/).first()).toBeVisible();
-    await expect(page.getByText("Modules", { exact: true }).first()).toBeVisible();
+    await expect(page.getByText(/\d+ modules/).first()).toBeVisible();
     await expect(page.getByRole("heading", { name: /what it covers/i })).toBeVisible();
 
     const header = await page.locator("main").innerText();

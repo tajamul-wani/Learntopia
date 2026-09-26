@@ -2,7 +2,7 @@ import Card from "./ui/Card";
 import Button from "./ui/Button";
 import Icon from "./ui/Icon";
 import ImageWithSkeleton from "./ui/ImageWithSkeleton";
-import CourseFactTiles from "./CourseFactTiles";
+import CourseFacts from "./CourseFacts";
 import { courseTint } from "../utils/courseTint";
 import { useLanguage } from "../context/LanguageContext";
 import { progressPercent } from "../utils/enrollmentState";
@@ -43,7 +43,7 @@ const CoursePreview = ({ course, action = "enroll", enrolment = null, onAction, 
               <span className="inline-flex items-center gap-1.5 rounded-full border border-violet-500/25 bg-violet-500/10 px-3.5 py-1.5 text-xs font-bold uppercase tracking-[0.08em] text-violet-300">
                 {course?.category}
               </span>
-              <h1 className="mt-4 text-[1.75rem] font-extrabold leading-[1.15] tracking-tight sm:text-4xl md:text-[2.75rem]">
+              <h1 className="mt-4 text-[1.75rem]/[1.3] font-extrabold tracking-tight sm:text-4xl/[1.25] md:text-[2.75rem]/[1.2]">
                 {course?.title}
               </h1>
               <p className="mt-4 max-w-2xl text-base leading-relaxed text-ink-low sm:text-lg">
@@ -63,7 +63,7 @@ const CoursePreview = ({ course, action = "enroll", enrolment = null, onAction, 
           </div>
 
           {/* ── The honest numbers ── */}
-          <CourseFactTiles course={course} className="mt-8" />
+          <CourseFacts course={course} className="mt-6" />
 
           {/* ── The one thing to do ── */}
           <div className="mt-8 flex flex-col gap-4 border-t border-white/[0.07] pt-6 sm:flex-row sm:items-center sm:justify-between">
@@ -103,7 +103,7 @@ const CoursePreview = ({ course, action = "enroll", enrolment = null, onAction, 
         {/* ── What you'll be able to do ── */}
         {course?.learningObjectives?.length > 0 && (
           <section className="mt-8 md:mt-14">
-            <h2 className="mb-4 text-xl font-extrabold sm:text-2xl">{t("coursePreview.whatYouLearn")}</h2>
+            <h2 className="mb-4 text-xl/snug font-extrabold sm:text-2xl/snug">{t("coursePreview.whatYouLearn")}</h2>
             <div className="grid gap-3 sm:grid-cols-2 lg:gap-4">
               {course.learningObjectives.map((objective) => (
                 <div
@@ -123,12 +123,12 @@ const CoursePreview = ({ course, action = "enroll", enrolment = null, onAction, 
             cannot describe a course that no longer exists. */}
         {topics.length > 0 && (
           <section className="mt-8 md:mt-14">
-            <h2 className="mb-4 text-xl font-extrabold sm:text-2xl">{t("coursePreview.topics")}</h2>
+            <h2 className="mb-4 text-xl/snug font-extrabold sm:text-2xl/snug">{t("coursePreview.topics")}</h2>
             <div className="flex flex-wrap gap-2.5">
               {topics.map((topic) => (
                 <span
                   key={topic}
-                  className="rounded-full border border-violet-500/25 bg-violet-500/10 px-4 py-2 text-[0.9375rem] font-semibold text-violet-300"
+                  className="rounded-full border border-violet-500/25 bg-violet-500/10 px-3 py-1.5 text-[0.8125rem] font-semibold text-violet-300 tablets:px-4 tablets:py-2 tablets:text-[0.9375rem]"
                 >
                   {topic}
                 </span>
@@ -140,7 +140,7 @@ const CoursePreview = ({ course, action = "enroll", enrolment = null, onAction, 
         {/* ── The outline, lessons still closed ── */}
         <section className="mt-8 md:mt-14">
           <div className="mb-4">
-            <h2 className="text-xl font-extrabold sm:text-2xl">{t("coursePreview.outline")}</h2>
+            <h2 className="text-xl/snug font-extrabold sm:text-2xl/snug">{t("coursePreview.outline")}</h2>
             <p className="mt-1 text-sm text-ink-low">
               {t("coursePreview.contentCount", {
                 lessons: facts.lessons,
@@ -198,7 +198,7 @@ const CoursePreview = ({ course, action = "enroll", enrolment = null, onAction, 
         {/* ── Before you start ── */}
         {course?.prerequisites?.length > 0 && (
           <section className="mt-8 md:mt-14">
-            <h2 className="mb-4 text-xl font-extrabold sm:text-2xl">{t("coursePreview.prerequisites")}</h2>
+            <h2 className="mb-4 text-xl/snug font-extrabold sm:text-2xl/snug">{t("coursePreview.prerequisites")}</h2>
             <ul className="space-y-2.5">
               {course.prerequisites.map((item) => (
                 <li key={item} className="flex items-start gap-3 text-pretty text-[0.9375rem] leading-relaxed text-ink">
