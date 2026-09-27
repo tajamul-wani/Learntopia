@@ -42,11 +42,13 @@ const Footer = () => {
   return (
     <footer className="mt-20 select-none border-t border-white/[0.07] bg-ground-900">
       <div className="container-page py-12">
-        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-[1.6fr_1fr_1fr_1fr_1fr]">
-          {/* Brand column */}
-          <div>
+        <div className="grid grid-cols-2 gap-x-8 gap-y-10 md:grid-cols-2 lg:grid-cols-[1.6fr_1fr_1fr_1fr_1fr]">
+          {/* Brand column. Spans the phone's two columns so the tagline keeps a
+              readable line length; the link groups pair up beneath it instead
+              of stacking one per row and leaving the right half empty. */}
+          <div className="col-span-2 md:col-span-1">
             <Logo />
-            <p className="mt-4 max-w-xs text-sm leading-relaxed text-ink-low">
+            <p className="mt-4 text-sm leading-relaxed text-ink-low">
               {t("footer.tagline")}
             </p>
           </div>
