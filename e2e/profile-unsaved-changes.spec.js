@@ -9,7 +9,8 @@ const NAV_TARGET = /^Courses$/;
 async function openEditProfile(page) {
   await page.goto("/dashboard", { waitUntil: "domcontentloaded" });
   await expect(page.getByLabel("Loading page")).toBeHidden({ timeout: 20000 });
-  await page.getByRole("button", { name: /edit profile/i }).first().click();
+  // The editor opens from the profile header, beside the name it changes.
+  await page.getByTestId("profile-edit").click();
   await expect(page.getByRole("heading", { name: /edit your profile/i })).toBeVisible({ timeout: 20000 });
 }
 

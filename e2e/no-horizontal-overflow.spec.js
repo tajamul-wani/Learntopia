@@ -25,6 +25,13 @@ const WIDTHS = [320, 359, 360, 375, 390, 419, 421, 524, 526, 640, 767, 768, 900,
 // route has painted, so a measurement taken then sees an empty page and passes
 // whatever the route actually does. /thank-you passed locally for exactly that
 // reason while CI, landing a few milliseconds later, caught a real overflow.
+// A resize is applied on the next frame, so measuring in the same tick reads
+// the old layout. Two frames is enough for the browser to lay out and paint.
+const settled = (page) =>
+  page.evaluate(
+    () => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done)))
+  );
+
 const settle = async (page) => {
   await expect(page.getByLabel("Loading page")).toBeHidden({ timeout: 20000 });
   await expect
@@ -40,10 +47,19 @@ test.describe("no page scrolls sideways", () => {
     test(`${path} at every width`, async ({ page }) => {
       const offenders = [];
 
+      // One navigation per route, then resize. Reloading for all 17 widths meant
+      // 357 navigations across the file, which made the dev server slow enough
+      // that a route occasionally failed to paint inside the settle timeout and
+      // reddened a different test each run. Resizing exercises the same layout:
+      // the app's breakpoints are CSS and matchMedia, both of which react to a
+      // resize exactly as they do to a fresh load.
+      await page.setViewportSize({ width: WIDTHS[0], height: 900 });
+      await page.goto(path, { waitUntil: "domcontentloaded" });
+      await settle(page);
+
       for (const width of WIDTHS) {
         await page.setViewportSize({ width, height: 900 });
-        await page.goto(path, { waitUntil: "domcontentloaded" });
-        await settle(page);
+        await settled(page);
 
         const result = await page.evaluate(() => {
           const doc = document.documentElement;
@@ -123,10 +139,13 @@ signedIn.describe("no page scrolls sideways, signed in", () => {
       expect(learner.uid).toBeTruthy();
       const offenders = [];
 
+      await page.setViewportSize({ width: WIDTHS[0], height: 900 });
+      await page.goto(path, { waitUntil: "domcontentloaded" });
+      await settle(page);
+
       for (const width of WIDTHS) {
         await page.setViewportSize({ width, height: 900 });
-        await page.goto(path, { waitUntil: "domcontentloaded" });
-        await settle(page);
+        await settled(page);
 
         const result = await page.evaluate(() => {
           const doc = document.documentElement;

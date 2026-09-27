@@ -178,14 +178,18 @@ export async function createLearner(testInfo, { points = 0 } = {}) {
  * the lessons has to say so. Seeding the document is deterministic and skips
  * the preview, which those specs are not testing.
  */
-export async function enrollLearner(uid, courseId, { totalModules = 4, completedModules = [] } = {}) {
+export async function enrollLearner(
+  uid,
+  courseId,
+  { totalModules = 4, completedModules = [], title = "Course", unenrolled = false } = {}
+) {
   await writeDoc(`Users/${uid}/enrolledCourses/${courseId}`, {
     courseId: Number(courseId),
-    title: "Course",
+    title,
     category: "Programming",
     completed: false,
     completedModules,
     totalModules,
-    unenrolled: false,
+    unenrolled,
   });
 }

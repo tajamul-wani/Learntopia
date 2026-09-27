@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo, useRef, useCallback } from "react";
-import { useParams, useNavigate, useBlocker } from "react-router-dom";
+import { useParams, useNavigate, useBlocker, useSearchParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useGamification } from "../context/GamificationContext";
 import { useSound } from "../context/SoundContext";
@@ -68,6 +68,19 @@ const CourseDetails = () => {
   const [joining, setJoining] = useState(false);
   
   const [activeTab, setActiveTab] = useState("overview");
+
+  // "Continue" on My Profile means carry on learning, not read the overview
+  // again, so it links to ?tab=syllabus. Honoured only once the learner may
+  // actually open the lessons; otherwise the preview stands.
+  const [courseParams, setCourseParams] = useSearchParams();
+  useEffect(() => {
+    if (courseParams.get("tab") !== "syllabus") return;
+    if (!canLearn(enrolment)) return;
+    setActiveTab("syllabus");
+    const next = new URLSearchParams(courseParams);
+    next.delete("tab");
+    setCourseParams(next, { replace: true });
+  }, [courseParams, setCourseParams, enrolment]);
 
   // Switching tabs and crossing from the preview into the course both replace
   // the whole page without changing the route. Keyed on both so either one

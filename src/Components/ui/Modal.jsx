@@ -17,7 +17,8 @@ const Modal = ({
   isDestructive = false,
   loading = false,
   actionDisabled = false,
-  showFooter = true
+  showFooter = true,
+  widthClass = "max-w-lg"
 }) => {
   const { t } = useLanguage();
   useEffect(() => {
@@ -31,6 +32,18 @@ const Modal = ({
     };
   }, [isOpen]);
 
+  // Escape closes it. A dialog that traps you until you find its button is the
+  // one interaction every user already knows how to leave, and the delete
+  // confirmation guards its own close while a deletion is in flight.
+  useEffect(() => {
+    if (!isOpen) return undefined;
+    const onKeyDown = (e) => {
+      if (e.key === "Escape") onClose?.();
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const shouldRenderFooter = showFooter && Boolean(onAction);
@@ -42,7 +55,7 @@ const Modal = ({
         onClick={!loading ? onClose : undefined}
       />
       
-      <Card className="relative z-10 w-full max-w-lg overflow-hidden p-5 sm:p-6 md:p-8 animate-fade-up">
+      <Card className={`relative z-10 w-full ${widthClass} overflow-hidden p-5 sm:p-6 md:p-8 animate-fade-up`}>
         <div className="mb-5 flex items-start justify-between gap-3 sm:mb-6 sm:gap-4">
           <div className="flex min-w-0 items-center gap-3 sm:gap-4">
             {icon && (

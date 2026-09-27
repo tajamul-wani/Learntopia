@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { Link, useBlocker } from "react-router-dom";
+import { Link, useBlocker, useSearchParams} from "react-router-dom";
 import { db } from "../firebase/firebase";
 import { collection, addDoc, getDocs, doc, setDoc } from "firebase/firestore";
 import { quizzes } from "../data/quizData";
@@ -192,6 +192,22 @@ const Quiz = () => {
     },
     [isAnswerSubmitted, activeQuiz, currentQuestionIdx, playCorrect, playIncorrect]
   );
+
+  // "Beat it" on My Profile names the quiz it means, so the learner lands in
+  // that quiz rather than back on the list to find it again.
+  const [quizParams, setQuizParams] = useSearchParams();
+  useEffect(() => {
+    const wanted = quizParams.get("quiz");
+    if (!wanted || screen !== "selection") return;
+    const match = quizzes.find((q) => q.id === wanted);
+    const next = new URLSearchParams(quizParams);
+    next.delete("quiz");
+    setQuizParams(next, { replace: true });
+    if (match) startQuiz(match);
+    // startQuiz is stable enough for this one-shot entry; re-running on every
+    // render would restart the quiz mid-answer.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [quizParams, screen]);
 
   const startQuiz = (quiz) => {
     playClick();

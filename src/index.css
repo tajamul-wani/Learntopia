@@ -106,6 +106,21 @@ body {
   }
 }
 
+/* A strip that scrolls sideways on its own rather than widening the page.
+   Used by the profile tab row: five labels do not fit a 320px screen in
+   English and certainly not in Spanish ("Aprendiendo"), and a row that wraps
+   or overflows is worse than one the thumb can push. The bar itself is hidden
+   because the content sits flush to the edge and reads as scrollable. */
+.scroll-x {
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  overscroll-behavior-x: contain;
+}
+.scroll-x::-webkit-scrollbar {
+  display: none;
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 9px;

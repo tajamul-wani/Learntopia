@@ -372,9 +372,18 @@ export function AuthProvider({ children }) {
                 newStreak = 1;
               }
 
+              // Record the day itself, not just the count. A streak number can
+              // place only its own run on a calendar; this is what lets the
+              // profile show a real year. It starts from today — there is no
+              // history to backfill — and is trimmed to the last 400 days so
+              // the document cannot grow without bound.
+              const priorDays = Array.isArray(data.activeDays) ? data.activeDays : [];
+              const activeDays = [...priorDays.filter((d) => d !== todayStr), todayStr].slice(-400);
+
               await updateDoc(userRef, {
                 streak: newStreak,
                 lastLoginDate: todayStr,
+                activeDays,
               });
 
               const publicRef = doc(db, "PublicLeaderboard", user.uid);

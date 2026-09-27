@@ -37,6 +37,9 @@ async function seedLearnerData(learner) {
 async function openDeleteDialog(page) {
   await page.goto("/dashboard", { waitUntil: "domcontentloaded" });
   await expect(page.getByLabel("Loading page")).toBeHidden({ timeout: 20000 });
+  // Deleting is a settings action, so it sits in the Account tab of My Profile
+  // rather than at the bottom of one long page (LT-107).
+  await page.getByTestId("profile-tab-account").click();
   const openButton = page.getByRole("button", { name: /delete my profile/i });
   await openButton.scrollIntoViewIfNeeded();
   await openButton.click();
