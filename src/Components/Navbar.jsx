@@ -52,7 +52,7 @@ const Navbar = () => {
       <nav className="container-page relative flex items-center justify-between py-3.5">
         {/* Zone 1 (Left): Brand Logo */}
         <NavLink to="/" className="flex items-center">
-          <Logo />
+          <Logo tightNav />
         </NavLink>
 
         {/* Zone 2 (Center): Flex-Centered Desktop Links */}
