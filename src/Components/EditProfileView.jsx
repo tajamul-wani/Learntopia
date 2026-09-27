@@ -34,8 +34,11 @@ const EditProfileView = ({ onBack, required = false, initialName = "", initialAv
   const { t } = useLanguage();
 
   const googlePhoto = currentUser?.photoURL || null;
+  // Neither is editable, but this is where someone looks for them, and Firebase
+  // Auth already records the creation time so it needs no field of our own.
   const joinedDate = currentUser?.metadata?.creationTime
     ? new Date(currentUser.metadata.creationTime).toLocaleDateString(undefined, {
+        day: "numeric",
         month: "long",
         year: "numeric",
       })
@@ -278,7 +281,7 @@ const EditProfileView = ({ onBack, required = false, initialName = "", initialAv
               </div>
             )}
 
-            {/* Joined — read-only (moved here from the dashboard header) */}
+            {/* Joined — read-only, from the account's own creation time */}
             {joinedDate && (
               <div className="mt-4">
                 <label className="mb-1.5 block text-xs font-semibold text-ink-hi">

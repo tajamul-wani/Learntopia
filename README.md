@@ -63,8 +63,9 @@ translated into English and Spanish.
 - **AI tutor**: Leo, one assistant across every course, on Google Gemini with
   the key held in a Cloudflare Worker. Each request carries the course and the
   module the learner is on, so answers stay on topic.
-- **Progress**: XP, levels, badges, daily streaks, a global leaderboard, and a
-  dashboard covering courses and quiz history.
+- **Progress**: XP, levels, badges, daily streaks and a global leaderboard, all
+  gathered on My Profile: what is being learned, what is finished, quiz scores,
+  badges earned, and a year calendar of the days the learner turned up.
 - **Accounts**: email and password or Google sign-in, 26 built-in avatars,
   guest scores carried into a new account, and full account deletion.
 - **Anti-cheat**: XP is granted once per module, a retake rewards only a better
@@ -147,7 +148,7 @@ them pass.
 
 | Layer | What it covers |
 |---|---|
-| **End-to-end** (`e2e/`, Playwright) | Drives the real app in a browser: public pages, sign-in, courses, account deletion, navigation, brand assets and fonts, and a check that no page scrolls sideways at any width from 320px up |
+| **End-to-end** (`e2e/`, Playwright) | Drives the real app in a browser: public pages, sign-in, courses, the profile page and its tabs, account deletion, navigation, brand assets and fonts, and a check that no page scrolls sideways at any width from 320px up |
 | **Security rules** (`test/firestore.rules.test.js`) | Runs the real `firestore.rules` in the Firestore emulator: per-user isolation, anti-cheat, account deletion, admin-only data |
 | **Unit and component** (`npm run test:unit`, Vitest) | Pure helpers and React components with no browser or database: identity and name rules, level maths, the legacy-name scrub's decisions, and component behaviour through Testing Library |
 | **Static** (`npm run lint`, `npm run build`, `npm run test:palette`) | Lint errors, build breakage, and colours outside the design system |
@@ -215,6 +216,7 @@ src/
 ├── Authentication/     Login and SignUp pages
 ├── Components/         App components, plus ui/ design-system primitives
 ├── assets/             Images, course art and Lottie animations
+├── Components/profile/ The My Profile page: header, tabs and one file per panel
 ├── context/            Auth, gamification, language, sound, toast, nav chrome
 ├── data/               Courses, quizzes and avatar definitions
 ├── config/             Single-source app constants, such as the AI tutor
