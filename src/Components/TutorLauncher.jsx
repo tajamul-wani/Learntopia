@@ -95,7 +95,7 @@ const TutorLauncher = ({ onOpen, courseId }) => {
     // Above the mobile bottom nav (z-40) and clear of it; below the drawer
     // (z-60/70) so opening the chat covers the launcher rather than fighting it.
     <div
-      className={`fixed right-4 z-50 flex items-center gap-2.5 md:bottom-6 md:right-6 ${
+      className={`fixed right-4 z-50 flex items-center gap-2.5 lg:bottom-6 lg:right-6 ${
         immersive ? "bottom-[calc(1rem+env(safe-area-inset-bottom))]" : "bottom-[calc(4.75rem+env(safe-area-inset-bottom))]"
       }`}
     >

@@ -53,7 +53,7 @@ const BottomNav = () => {
     <nav
       aria-label="Primary"
       data-testid="bottom-nav"
-      className="fixed inset-x-0 bottom-0 z-40 flex items-stretch gap-1 border-t border-white/[0.08] bg-ground-900/95 px-1.5 pt-1.5 pb-[calc(0.375rem+env(safe-area-inset-bottom))] shadow-[0_-14px_26px_-18px_rgba(0,0,0,0.9)] md:hidden"
+      className="fixed inset-x-0 bottom-0 z-40 flex items-stretch gap-1 border-t border-white/[0.08] bg-ground-900/95 px-1.5 pt-1.5 pb-[calc(0.375rem+env(safe-area-inset-bottom))] shadow-[0_-14px_26px_-18px_rgba(0,0,0,0.9)] lg:hidden"
     >
       {tabs.map((tab) => (
         <NavLink
