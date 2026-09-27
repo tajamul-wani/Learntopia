@@ -59,7 +59,7 @@ service cloud.firestore {
                                'totalPoints', 'streak', 'lastLoginDate',
                                'badges', 'xp', 'quizPoints', 'updatedAt',
                                'lastStreakClaimDate', 'lastStreakPopupDate',
-                               'identityConfirmedAt', 'lastGrantKey'])
+                               'identityConfirmedAt', 'lastGrantKey', 'activeDays'])
           && d.email is string
           && d.fullName is string
           && (!('displayName' in d) || d.displayName is string)
@@ -73,7 +73,14 @@ service cloud.firestore {
           // prompt never comes back.
           && (!('identityConfirmedAt' in d) || d.identityConfirmedAt is timestamp)
           // Names the ledger entry that pays for an xp increase in this write.
-          && (!('lastGrantKey' in d) || d.lastGrantKey is string);
+          && (!('lastGrantKey' in d) || d.lastGrantKey is string)
+          // The days this learner actually opened the app, one "YYYY-MM-DD" per
+          // entry, so the profile calendar can show a real year instead of only
+          // the current streak. Capped so the document cannot be grown without
+          // limit: a year of squares needs 366, and the client trims to 400.
+          // Rules cannot check every element of a list, so the cap is what
+          // protects the free tier here; the field is cosmetic and feeds no XP.
+          && (!('activeDays' in d) || (d.activeDays is list && d.activeDays.size() <= 400));
     }
 
     // Quiz attempts are validated so a client can't write garbage or an

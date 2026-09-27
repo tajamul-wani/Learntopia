@@ -226,6 +226,46 @@ describe("Users/{uid} profile", () => {
     );
   });
 
+  // LT-107: the profile calendar needs to know WHICH days the learner showed
+  // up, not just how many in a row. The field is cosmetic — it feeds no XP — so
+  // the rules check its shape and, above all, its size: an uncapped array is a
+  // free-tier document that can be grown until it costs money.
+  test("owner can record the days they were active", async () => {
+    await assertSucceeds(
+      setDoc(doc(alice(), "Users/alice"), {
+        ...validProfile(),
+        activeDays: ["2026-09-25", "2026-09-26", "2026-09-27"],
+      })
+    );
+  });
+
+  test("rejects activeDays that is not a list", async () => {
+    await assertFails(
+      setDoc(doc(alice(), "Users/alice"), {
+        ...validProfile(),
+        activeDays: "2026-09-27",
+      })
+    );
+  });
+
+  test("rejects an activeDays longer than a year of days", async () => {
+    await assertFails(
+      setDoc(doc(alice(), "Users/alice"), {
+        ...validProfile(),
+        activeDays: Array.from({ length: 401 }, (_, i) => `day-${i}`),
+      })
+    );
+  });
+
+  test("rejects a profile field nobody declared", async () => {
+    await assertFails(
+      setDoc(doc(alice(), "Users/alice"), {
+        ...validProfile(),
+        activeDaysCount: 9,
+      })
+    );
+  });
+
   test("rejects a non-boolean usePhoto", async () => {
     await assertFails(
       setDoc(doc(alice(), "Users/alice"), {
