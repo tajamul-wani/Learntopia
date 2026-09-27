@@ -22,7 +22,7 @@ const ScrollToTop = () => {
 
 const RootLayout = () => {
   return (
-    <div className="flex min-h-screen flex-col pb-[calc(4.25rem+env(safe-area-inset-bottom))] md:pb-0">
+    <div className="flex min-h-screen flex-col pb-[calc(4.25rem+env(safe-area-inset-bottom))] lg:pb-0">
       <ScrollToTop />
       {/* Ambient drifting clay orbs — subtle animated depth behind all content. */}
       <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">

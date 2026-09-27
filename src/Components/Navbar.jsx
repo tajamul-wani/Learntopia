@@ -52,11 +52,11 @@ const Navbar = () => {
       <nav className="container-page relative flex items-center justify-between py-3.5">
         {/* Zone 1 (Left): Brand Logo */}
         <NavLink to="/" className="flex items-center">
-          <Logo />
+          <Logo tightNav />
         </NavLink>
 
         {/* Zone 2 (Center): Flex-Centered Desktop Links */}
-        <ul className="hidden flex-1 items-center justify-center gap-5 lg:gap-8 px-4 md:flex">
+        <ul className="hidden flex-1 items-center justify-center gap-5 px-4 lg:flex lg:gap-8">
           {navItems.map((item) => (
             <li key={item.to}>
               <NavLink
@@ -75,7 +75,7 @@ const Navbar = () => {
         </ul>
 
         {/* Zone 3 (Right): Balanced Controls & Auth Capsule */}
-        <div className="hidden items-center gap-2.5 shrink-0 md:flex">
+        <div className="hidden items-center gap-2.5 shrink-0 lg:flex">
           {/* Controls Capsule: Language + Sound SFX */}
           <div className="flex items-center gap-2 rounded-full border border-white/10 bg-surface-2 p-1 shadow-clay-sm">
             {/* Language Selector Dropdown */}
@@ -141,7 +141,7 @@ const Navbar = () => {
         </div>
 
         {/* Mobile controls & hamburger button */}
-        <div className="flex items-center gap-2 md:hidden">
+        <div className="flex items-center gap-2 lg:hidden">
           <LanguageSelector />
 
           <button

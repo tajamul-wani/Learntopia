@@ -3,14 +3,20 @@
 // footer, README and structured data all share one file. The favicon
 // (public/favicon.svg) is the same bulb with heavier strokes for tab sizes.
 // It is loaded as an <img>, so its internal gradient/filter ids never collide
-// with other inline SVGs on the page. `withWordmark` toggles the "Learntopia"
-// text beside it. The navbar is tight on phones, so the wordmark hides below
-// `sm` unless `wordmarkOnPhone` is set (the footer has room for it).
+// with other inline SVGs on the page.
+//
+// The wordmark used to hide below `sm`, which had it missing on phones — where
+// there is room — and present between 1024 and 1280, which is the one band
+// where the row is genuinely tight: the desktop links appear at 1024, and a
+// signed-in learner also carries a name pill and a Sign Out button.
+//
+// `tightNav` is the navbar's version: shown on phones, hidden in that band, and
+// also hidden below 360px, where the logo, the wordmark and the language and
+// sound controls together came to 354px on a 320px screen and scrolled the page
+// sideways. The footer has room, so it passes nothing and always shows it.
 
-// Responsive by default: the logo scales up with the viewport, and the wordmark
-// grows alongside it.
-const Logo = ({ withWordmark = true, wordmarkOnPhone = false, className = "" }) => (
-  <span className={`inline-flex items-center gap-2.5 ${className}`}>
+const Logo = ({ withWordmark = true, tightNav = false, className = "" }) => (
+  <span className={`inline-flex items-center gap-2 sm:gap-2.5 ${className}`}>
     <img
       src="/logo.svg"
       alt="Learntopia"
@@ -21,7 +27,9 @@ const Logo = ({ withWordmark = true, wordmarkOnPhone = false, className = "" }) 
     />
     {withWordmark && (
       <span
-        className={`${wordmarkOnPhone ? "inline" : "hidden sm:inline"} font-display text-[1.5rem] font-semibold leading-none tracking-tight text-ink-hi lg:text-[1.7rem]`}
+        className={`font-display text-[1.25rem] font-semibold leading-none tracking-tight text-ink-hi sm:text-[1.5rem] lg:text-[1.7rem] ${
+          tightNav ? "hidden min-[360px]:inline lg:hidden xl:inline" : ""
+        }`}
       >
         Learn<span className="text-gradient">topia</span>
       </span>

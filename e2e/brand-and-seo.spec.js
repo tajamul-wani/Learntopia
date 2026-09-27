@@ -78,13 +78,25 @@ test.describe("brand and SEO metadata", () => {
         expect(box.x + box.width, "logo overflows the viewport").toBeLessThanOrEqual(viewport.width);
       }
 
-      // The footer always shows the "Learntopia" name next to the logo; the
-      // navbar drops it on phones to make room for its controls.
-      const footerWordmark = page.locator("footer").getByText("Learntopia", { exact: true }).first();
-      await expect(footerWordmark).toBeVisible();
-      const headerWordmark = page.locator("header").getByText("Learntopia", { exact: true }).first();
-      if (label === "phone") await expect(headerWordmark).toBeHidden();
-      else await expect(headerWordmark).toBeVisible();
+      // Both carry the "Learntopia" name. The navbar used to drop it on phones,
+      // which had it missing where there is room and present between 1024 and
+      // 1280, the one band where the row is genuinely tight (LT-108).
+      await expect(page.locator("footer").getByText("Learntopia", { exact: true }).first()).toBeVisible();
+      await expect(page.locator("header").getByText("Learntopia", { exact: true }).first()).toBeVisible();
+    });
+  }
+
+  // The two widths where the navbar wordmark is deliberately absent. Below
+  // 360px the logo, the wordmark and the language and sound controls together
+  // scrolled the page sideways; between 1024 and 1280 the desktop links appear
+  // and a signed-in learner also carries a name pill and a Sign Out button.
+  for (const [label, width] of [["a 320px phone", 320], ["the tight 1100px band", 1100]]) {
+    test(`the navbar wordmark stands aside on ${label}`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 800 });
+      await page.goto("/", { waitUntil: "domcontentloaded" });
+      await expect(page.locator("header").getByText("Learntopia", { exact: true }).first()).toBeHidden();
+      // The mark itself never goes: it is what identifies the app.
+      await expect(page.locator('header img[src="/logo.svg"]')).toBeVisible();
     });
   }
 

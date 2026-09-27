@@ -31,10 +31,12 @@ const CourseFacts = ({ course, className = "" }) => {
 
   return (
     <div
-      // One row is the default at every width. Only below 441px, where the four
+      // One row is the default at every width. Only below 500px, where the four
       // facts cannot share a line and a wrapping row strands the fourth on its
-      // own, does it become a two-column grid that pairs them evenly.
-      className={`flex flex-wrap items-center gap-x-5 gap-y-2.5 text-sm font-semibold text-ink max-[440px]:grid max-[440px]:grid-cols-2 max-[440px]:justify-items-center max-[440px]:gap-x-4 max-[440px]:gap-y-3 sm:gap-x-6 sm:text-[0.9375rem] ${className}`}
+      // own, does it become a two-column grid that pairs them evenly. Items sit
+      // at the start of their column so they line up with the description above;
+      // a caller whose heading is centred passes justify-items-center back.
+      className={`flex flex-wrap items-center gap-x-5 gap-y-2.5 text-sm font-semibold text-ink max-[499px]:grid max-[499px]:grid-cols-2 max-[499px]:justify-items-start max-[499px]:gap-x-4 max-[499px]:gap-y-3 sm:gap-x-6 sm:text-[0.9375rem] ${className}`}
     >
       {items.map((item) => (
         // items-center on the row and the item, with a fixed-size mark, is what
