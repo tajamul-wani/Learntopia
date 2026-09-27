@@ -10,10 +10,11 @@
 // where the row is genuinely tight: the desktop links appear at 1024, and a
 // signed-in learner also carries a name pill and a Sign Out button.
 //
-// `tightNav` is the navbar's version: shown on phones, hidden in that band, and
-// also hidden below 360px, where the logo, the wordmark and the language and
-// sound controls together came to 354px on a 320px screen and scrolled the page
-// sideways. The footer has room, so it passes nothing and always shows it.
+// `tightNav` is the navbar's version: hidden below 540px and in that band. The
+// threshold is not about overflow — the row fits from 360px — but about how it
+// reads: at 390px the wordmark, the language pill, the sound button and the
+// sign-in button leave no air between them, and the header looks packed rather
+// than calm. The footer has room, so it passes nothing and always shows it.
 
 const Logo = ({ withWordmark = true, tightNav = false, className = "" }) => (
   <span className={`inline-flex items-center gap-2 sm:gap-2.5 ${className}`}>
@@ -28,7 +29,7 @@ const Logo = ({ withWordmark = true, tightNav = false, className = "" }) => (
     {withWordmark && (
       <span
         className={`font-display text-[1.25rem] font-semibold leading-none tracking-tight text-ink-hi sm:text-[1.5rem] lg:text-[1.7rem] ${
-          tightNav ? "hidden min-[360px]:inline lg:hidden xl:inline" : ""
+          tightNav ? "hidden min-[540px]:inline lg:hidden xl:inline" : ""
         }`}
       >
         Learn<span className="text-gradient">topia</span>
