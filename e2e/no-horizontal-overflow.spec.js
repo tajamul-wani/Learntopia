@@ -21,7 +21,19 @@ const ROUTES = [
 // custom screens in tailwind.config.js (420, 525, 1350).
 const WIDTHS = [320, 359, 360, 375, 390, 419, 421, 524, 526, 640, 767, 768, 900, 1023, 1024, 1280, 1440];
 
-const settle = (page) => expect(page.getByLabel("Loading page")).toBeHidden({ timeout: 20000 });
+// Waiting for the skeleton to disappear is not enough: it hides before the lazy
+// route has painted, so a measurement taken then sees an empty page and passes
+// whatever the route actually does. /thank-you passed locally for exactly that
+// reason while CI, landing a few milliseconds later, caught a real overflow.
+const settle = async (page) => {
+  await expect(page.getByLabel("Loading page")).toBeHidden({ timeout: 20000 });
+  await expect
+    .poll(() => page.evaluate(() => (document.querySelector("main")?.innerText || "").trim().length), {
+      timeout: 20000,
+      message: "the route never painted any content",
+    })
+    .toBeGreaterThan(20);
+};
 
 test.describe("no page scrolls sideways", () => {
   for (const path of ROUTES) {
@@ -38,12 +50,26 @@ test.describe("no page scrolls sideways", () => {
           if (doc.scrollWidth <= doc.clientWidth) return null;
           // The overall number says something is wrong; the per-element pass
           // says WHAT, which is how the navbar was identified.
+          // An element inside an ancestor that clips cannot widen the page, and
+          // the decorative orbs sit in exactly such a wrapper on every route.
+          // Reporting them buried the real cause under three false names.
+          // The walk stops at body on purpose: body carries overflow-x: hidden
+          // globally, and the root's overflow propagates to the viewport, which
+          // is the thing scrollWidth measures. Treating body as a clipper marks
+          // every element clipped and reports no cause at all.
+          const isClipped = (el) => {
+            for (let p = el.parentElement; p && p !== document.body; p = p.parentElement) {
+              const o = getComputedStyle(p);
+              if (o.overflowX !== "visible" || o.overflowY !== "visible") return true;
+            }
+            return false;
+          };
           const widest = [];
           for (const el of document.querySelectorAll("body *")) {
             const r = el.getBoundingClientRect();
             if (r.width === 0 || r.height === 0) continue;
-            if (r.right > doc.clientWidth + 1) {
-              widest.push(`${el.tagName.toLowerCase()}.${String(el.className).split(" ").slice(0, 2).join(".")}`);
+            if (r.right > doc.clientWidth + 1 && !isClipped(el)) {
+              widest.push(`${el.tagName.toLowerCase()}.${String(el.className).split(" ").slice(0, 2).join(".")} (right ${Math.round(r.right)})`);
             }
           }
           return { scrollWidth: doc.scrollWidth, clientWidth: doc.clientWidth, widest: widest.slice(0, 3) };

@@ -19,19 +19,25 @@ const ThankYou = () => {
   return (
     <div className="container-page relative flex min-h-[calc(100vh-5rem)] flex-col items-center justify-center py-20">
 
-      {/* ── Decorative ambient glows ── */}
-      <div className="pointer-events-none absolute left-1/2 top-1/3 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-600/10 blur-[120px]" />
-      <div className="pointer-events-none absolute left-1/4 top-2/3 h-64 w-64 rounded-full bg-sky/8 blur-[80px]" />
-      <div className="pointer-events-none absolute right-1/4 top-1/4 h-48 w-48 rounded-full bg-state-success/8 blur-[80px]" />
+      {/* ── Decoration ──
+          Inside a clipping layer, the way RootLayout wraps its ambient orbs.
+          The largest glow is 500px wide and centred, so on any phone it reached
+          past the right edge and widened the page: 438px of content on a 375px
+          screen. Nothing here is content, so it is clipped rather than resized,
+          and the glows keep their shape on a wide screen. */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute left-1/2 top-1/3 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-600/10 blur-[120px]" />
+        <div className="absolute left-1/4 top-2/3 h-64 w-64 rounded-full bg-sky/8 blur-[80px]" />
+        <div className="absolute right-1/4 top-1/4 h-48 w-48 rounded-full bg-state-success/8 blur-[80px]" />
 
-      {/* Decorative dots */}
-      {PARTICLES.map((p, i) => (
-        <div
-          key={i}
-          className="pointer-events-none absolute rounded-full bg-violet-400"
-          style={{ top: p.top, left: p.left, width: p.size, height: p.size, opacity: p.opacity }}
-        />
-      ))}
+        {PARTICLES.map((p, i) => (
+          <div
+            key={i}
+            className="absolute rounded-full bg-violet-400"
+            style={{ top: p.top, left: p.left, width: p.size, height: p.size, opacity: p.opacity }}
+          />
+        ))}
+      </div>
 
       {/* ── Card ── */}
       <div className="relative z-10 mx-auto w-full max-w-lg text-center">
