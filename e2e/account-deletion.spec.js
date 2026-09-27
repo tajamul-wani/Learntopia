@@ -85,7 +85,10 @@ test.describe("account deletion (LT-84)", () => {
     await page.locator("#delete-password").fill("not-the-password");
     await confirmButton(page).click();
 
-    await expect(page.getByText(/password isn't right/i).first()).toBeVisible({ timeout: 20000 });
+    // Matches the toast copy shortened for the one-line rule (LT-116); what
+    // matters to this test is that it names the password and says nothing went.
+    await expect(page.getByText(/wrong password/i).first()).toBeVisible({ timeout: 20000 });
+    await expect(page.getByText(/nothing was deleted/i).first()).toBeVisible();
     for (const path of paths) {
       expect(await docExists(path), `${path} was deleted despite the wrong password`).toBe(true);
     }

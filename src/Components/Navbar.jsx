@@ -1,14 +1,15 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "../context/ToastContext";
 import Icon from "./ui/Icon";
-import Button from "./ui/Button";
 import Logo from "./ui/Logo";
+import AccountMenu from "./AccountMenu";
 import LanguageSelector from "./LanguageSelector";
 import { useAuth } from "../context/AuthContext";
 import { useGamification } from "../context/GamificationContext";
 import { useSound } from "../context/SoundContext";
 import { useLanguage } from "../context/LanguageContext";
-import Avatar from "./Avatar";
+import useMediaQuery from "../hooks/useMediaQuery";
+import useHideOnScroll from "../hooks/useHideOnScroll";
 
 import { parseProfileName } from "../utils/profileUtils";
 
@@ -18,6 +19,12 @@ const Navbar = () => {
   const { profile, photoURL, usePhoto } = useGamification();
   const { isMuted, toggleMute } = useSound();
   const { t } = useLanguage();
+
+  // The desktop header holds the nav, so it stays put. On a phone the bottom bar
+  // is doing that job and the header is 58px the reader could have (LT-115).
+  const { pathname } = useLocation();
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
+  const hidden = useHideOnScroll({ enabled: !isDesktop, resetKey: pathname });
 
   const { displayName: navDisplayName, avatarId: navAvatarId } = parseProfileName(
     profile,
@@ -48,7 +55,13 @@ const Navbar = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 select-none border-b border-white/[0.08] bg-ground-900/95 shadow-[0_4px_30px_rgba(0,0,0,0.35)]">
+    <header
+      data-testid="app-header"
+      data-hidden={hidden ? "true" : "false"}
+      className={`sticky top-0 z-50 select-none border-b border-white/[0.08] bg-ground-900/95 shadow-[0_4px_30px_rgba(0,0,0,0.35)] transition-transform duration-300 will-change-transform motion-reduce:transition-none lg:translate-y-0 ${
+        hidden ? "-translate-y-full" : "translate-y-0"
+      }`}
+    >
       <nav className="container-page relative flex items-center justify-between py-3.5">
         {/* Zone 1 (Left): Brand Logo */}
         <NavLink to="/" className="flex items-center">
@@ -98,28 +111,15 @@ const Navbar = () => {
           </div>
 
           {/* User Auth or Student Dashboard Profile Pill */}
+          {/* One control for both account actions. Two side by side is what made
+              this row too wide between 1024 and 1280. */}
           {currentUser ? (
-            <div className="flex items-center gap-2">
-              <div
-                onClick={() => navigate("/dashboard")}
-                title={t("ui.profileAndDashboard")}
-                className="group h-[34px] flex items-center gap-2 rounded-full border border-white/10 bg-surface-2 shadow-clay-sm px-3.5 cursor-pointer transition-all duration-200 hover:border-sky/50 hover:bg-sky/10 hover:shadow-glow"
-              >
-                <Avatar
-                  avatarId={currentAvatarId}
-                  photoURL={usePhoto ? photoURL : null}
-                  size={22}
-                  name={currentDisplayName}
-                />
-                <span className="text-xs font-bold text-ink-hi group-hover:text-sky transition-colors max-w-[120px] truncate">
-                  {currentDisplayName}
-                </span>
-              </div>
-
-              <Button variant="ghost" size="sm" onClick={handleLogout} className="h-[34px] px-2.5 text-xs text-ink-low hover:text-state-danger">
-                {t("nav.logout")}
-              </Button>
-            </div>
+            <AccountMenu
+              displayName={currentDisplayName}
+              avatarId={currentAvatarId}
+              photoURL={usePhoto ? photoURL : null}
+              onSignOut={handleLogout}
+            />
           ) : (
             <div className="flex items-center gap-2 shrink-0">
               <button
@@ -157,19 +157,12 @@ const Navbar = () => {
             <Icon name={isMuted ? "volume-x" : "volume-2"} size={17} />
           </button>
 
-          {/* The profile itself lives in the bottom bar, so the top bar carries
-              the account action: sign out when signed in, sign in when not. */}
-          {currentUser ? (
-            <button
-              type="button"
-              onClick={handleLogout}
-              aria-label={t("nav.logout")}
-              title={t("nav.logout")}
-              className="grid h-9 w-9 place-items-center rounded-full border border-white/10 bg-surface-2 text-ink-low shadow-clay-sm transition-colors hover:border-state-danger/30 hover:bg-state-danger/10 hover:text-state-danger"
-            >
-              <Icon name="logout" size={17} />
-            </button>
-          ) : (
+          {/* Sign Out is not here any more. This header hides as the learner
+              scrolls, and an account action that comes and goes with it is only
+              sometimes reachable; it lives on the My Profile page, which is
+              where the bottom bar's avatar leads. Signed out there is no
+              account yet, so the way in stays. */}
+          {!currentUser && (
             <button
               type="button"
               onClick={() => navigate("/login")}

@@ -1,6 +1,9 @@
-import { NavLink } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { toast } from "../context/ToastContext";
 import Icon from "./ui/Icon";
 import Avatar from "./Avatar";
+import AccountSheet from "./AccountSheet";
 import { useAuth } from "../context/AuthContext";
 import { useGamification } from "../context/GamificationContext";
 import { useLanguage } from "../context/LanguageContext";
@@ -20,10 +23,20 @@ import { parseProfileName } from "../utils/profileUtils";
  * their dashboard constantly and Contact rarely.
  */
 const BottomNav = () => {
-  const { currentUser } = useAuth();
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const { currentUser, logOut } = useAuth();
+  const [accountOpen, setAccountOpen] = useState(false);
   const { profile, photoURL, usePhoto } = useGamification();
   const { t } = useLanguage();
   const { immersive } = useNavChrome();
+
+  // The sheet belongs to the page it was opened on. Leaving that page with it
+  // still raised leaves a menu floating over content it no longer describes,
+  // and the learner has to dismiss something they did not ask for.
+  useEffect(() => {
+    setAccountOpen(false);
+  }, [pathname]);
 
   // Out of the way while a module or quiz is running.
   if (immersive) return null;
@@ -40,7 +53,7 @@ const BottomNav = () => {
         { to: "/courses", label: t("nav.courses"), icon: "book" },
         { to: "/quiz", label: t("nav.quiz"), icon: "target" },
         { to: "/leaderboard", label: t("nav.leaderboard"), icon: "trophy" },
-        { to: "/dashboard", label: t("nav.dashboard"), avatar: true },
+        { to: "/dashboard", label: t("nav.profileTab"), avatar: true, account: true },
       ]
     : [
         { to: "/", label: t("nav.home"), icon: "home", end: true },
@@ -55,8 +68,30 @@ const BottomNav = () => {
       data-testid="bottom-nav"
       className="fixed inset-x-0 bottom-0 z-40 flex items-stretch gap-1 border-t border-white/[0.08] bg-ground-900/95 px-1.5 pt-1.5 pb-[calc(0.375rem+env(safe-area-inset-bottom))] shadow-[0_-14px_26px_-18px_rgba(0,0,0,0.9)] lg:hidden"
     >
-      {tabs.map((tab) => (
-        <NavLink
+      {tabs.map((tab) =>
+        tab.account ? (
+          <button
+            key={tab.to}
+            type="button"
+            onClick={() => setAccountOpen((v) => !v)}
+            aria-haspopup="menu"
+            aria-expanded={accountOpen}
+            data-testid="account-tab"
+            className={`flex min-w-0 flex-1 flex-col items-center gap-1 rounded-xl px-1 py-1.5 font-display text-[10px] font-semibold transition-colors duration-200 ${
+              accountOpen || pathname === tab.to ? "bg-sky/[0.09] text-sky" : "text-ink-low"
+            }`}
+          >
+            <Avatar
+              avatarId={avatarId}
+              photoURL={usePhoto ? photoURL : null}
+              size={21}
+              name={displayName}
+              className={accountOpen || pathname === tab.to ? "rounded-full ring-2 ring-sky" : ""}
+            />
+            <span className="max-w-full truncate">{tab.label}</span>
+          </button>
+        ) : (
+          <NavLink
           key={tab.to}
           to={tab.to}
           end={tab.end}
@@ -86,8 +121,32 @@ const BottomNav = () => {
               <span className="max-w-full truncate">{tab.label}</span>
             </>
           )}
-        </NavLink>
-      ))}
+          </NavLink>
+        )
+      )}
+
+      <AccountSheet
+        open={accountOpen}
+        onClose={() => setAccountOpen(false)}
+        onGoToProfile={() => {
+          setAccountOpen(false);
+          navigate("/dashboard");
+        }}
+        onSignOut={async () => {
+          setAccountOpen(false);
+          try {
+            await logOut();
+            toast.logout(t("toasts.loggedOut"));
+            navigate("/");
+          } catch (err) {
+            console.error(err);
+            toast.error(t("toasts.logoutFailedRetry"));
+          }
+        }}
+        displayName={displayName}
+        avatarId={avatarId}
+        photoURL={usePhoto ? photoURL : null}
+      />
     </nav>
   );
 };
