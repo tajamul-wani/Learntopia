@@ -64,8 +64,12 @@ const Navbar = () => {
     >
       <nav className="container-page relative flex items-center justify-between py-3.5">
         {/* Zone 1 (Left): Brand Logo */}
+        {/* Signed in, the header carries only the brand and the account menu,
+            so the wordmark fits at every width. Signed out it still shares the
+            row with the language, sound and sign-in controls, which is what
+            `tightNav` holds it back for. */}
         <NavLink to="/" className="flex items-center">
-          <Logo tightNav />
+          <Logo tightNav={!currentUser} />
         </NavLink>
 
         {/* Zone 2 (Center): Flex-Centered Desktop Links */}
@@ -89,7 +93,11 @@ const Navbar = () => {
 
         {/* Zone 3 (Right): Balanced Controls & Auth Capsule */}
         <div className="hidden items-center gap-2.5 shrink-0 lg:flex">
-          {/* Controls Capsule: Language + Sound SFX */}
+          {/* Language and sound are set once and then left alone, and a signed-in
+              learner has both on their own Account tab. Repeating them in the
+              header gave the same two controls two homes. Signed out there is no
+              account to keep them in, so they stay. */}
+          {!currentUser && (
           <div className="flex items-center gap-2 rounded-full border border-white/10 bg-surface-2 p-1 shadow-clay-sm">
             {/* Language Selector Dropdown */}
             <LanguageSelector />
@@ -109,6 +117,7 @@ const Navbar = () => {
               <span className="text-[11px] font-bold uppercase tracking-wider">{isMuted ? t("common.off") : t("common.sfx")}</span>
             </button>
           </div>
+          )}
 
           {/* User Auth or Student Dashboard Profile Pill */}
           {/* One control for both account actions. Two side by side is what made
@@ -142,8 +151,9 @@ const Navbar = () => {
 
         {/* Mobile controls & hamburger button */}
         <div className="flex items-center gap-2 lg:hidden">
-          <LanguageSelector />
+          {!currentUser && <LanguageSelector />}
 
+          {!currentUser && (
           <button
             onClick={toggleMute}
             className={`grid h-9 w-9 place-items-center rounded-full border transition-colors ${
@@ -156,6 +166,7 @@ const Navbar = () => {
           >
             <Icon name={isMuted ? "volume-x" : "volume-2"} size={17} />
           </button>
+          )}
 
           {/* Sign Out is not here any more. This header hides as the learner
               scrolls, and an account action that comes and goes with it is only
