@@ -83,9 +83,17 @@ function ToastCard({ toast: item, onDismiss }) {
           )}
         </span>
         <div className="min-w-0 flex-1">
-          <p className="text-[13px] sm:text-sm font-bold leading-tight text-ink-hi">{title}</p>
+          {/* One line each, headline and detail (owner). Every string is written
+              to fit the 340px card, and the clamp is the guarantee: a message
+              added later that does not fit is cut rather than reflowing the
+              stack. Titles all fit comfortably today. */}
+          <p className="truncate text-[13px] font-bold leading-tight text-ink-hi sm:text-sm" title={title}>
+            {title}
+          </p>
           {item.message && (
-            <p className="mt-0.5 line-clamp-2 text-[11px] leading-snug text-ink-low">{item.message}</p>
+            <p className="mt-0.5 truncate text-[11px] leading-snug text-ink-low" title={item.message}>
+              {item.message}
+            </p>
           )}
           {item.confirmLabel && item.onConfirm && (
             <button
