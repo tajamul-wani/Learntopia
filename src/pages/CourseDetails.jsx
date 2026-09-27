@@ -433,7 +433,7 @@ const CourseDetails = () => {
             {/* In the text column, so it starts where the title and description
                 do. It lives here rather than full width because a meta line
                 fits the column that four tiles did not. */}
-            <CourseFacts course={course} className="mt-6 justify-center md:justify-start" />
+            <CourseFacts course={course} className="mt-6 justify-center max-[499px]:justify-items-center md:justify-start" />
           </div>
         </div>
         )}
