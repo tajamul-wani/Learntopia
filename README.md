@@ -66,6 +66,10 @@ translated into English and Spanish.
 - **Progress**: XP, levels, badges, daily streaks and a global leaderboard, all
   gathered on My Profile: what is being learned, what is finished, quiz scores,
   badges earned, and a year calendar of the days the learner turned up.
+- **Certificates**: a finished course issues one, drawn in the browser and
+  saved as a PNG. It carries the learner's chosen display name, the course, the
+  badge earned, the date and an id derived from the account and the course, so
+  the same course always issues the same number.
 - **Accounts**: email and password or Google sign-in, 26 built-in avatars,
   guest scores carried into a new account, and full account deletion.
 - **Anti-cheat**: XP is granted once per module, a retake rewards only a better
@@ -89,6 +93,7 @@ translated into English and Spanish.
 | Hosting | Firebase Hosting, deployed by GitHub Actions on merge to `main` |
 | AI tutor | Google Gemini behind a Cloudflare Worker proxy (`worker/`) |
 | Error triage | Sentry, with a Cloudflare Worker for issue routing (`worker-sentry-linear/`) |
+| Certificates | Drawn on an HTML canvas in the browser and saved as a PNG, with no added dependency |
 | Testing | Vitest for logic and components, Playwright end-to-end, Firestore rules tests, and a palette guard |
 
 ---
@@ -148,7 +153,7 @@ them pass.
 
 | Layer | What it covers |
 |---|---|
-| **End-to-end** (`e2e/`, Playwright) | Drives the real app in a browser: public pages, sign-in, courses, the profile page and its tabs, account deletion, navigation, brand assets and fonts, and a sweep of every breakpoint that no page scrolls sideways, cuts content off silently, or carries a control too small to hit |
+| **End-to-end** (`e2e/`, Playwright) | Drives the real app in a browser: public pages, sign-in, courses, the profile page and its tabs, course certificates, account deletion, navigation, brand assets and fonts, and a sweep of every breakpoint that no page scrolls sideways, cuts content off silently, or carries a control too small to hit |
 | **Security rules** (`test/firestore.rules.test.js`) | Runs the real `firestore.rules` in the Firestore emulator: per-user isolation, anti-cheat, account deletion, admin-only data |
 | **Unit and component** (`npm run test:unit`, Vitest) | Pure helpers and React components with no browser or database: identity and name rules, level maths, the legacy-name scrub's decisions, and component behaviour through Testing Library |
 | **Static** (`npm run lint`, `npm run build`, `npm run test:palette`) | Lint errors, build breakage, and colours outside the design system |
@@ -227,7 +232,7 @@ src/
 ├── lib/                Monitoring and DOM guards
 ├── pages/              Routed pages (home, courses, quiz, dashboard, docs, legal)
 ├── services/           Gemini client, account deletion
-├── utils/              Profile, localisation, enrolment state, course facts, badges
+├── utils/              Profile, localisation, enrolment state, course facts, badges, certificates
 ├── App.jsx             Routes
 └── main.jsx            Entry point
 
@@ -307,6 +312,9 @@ Learntopia is used by children, so data access is deliberately narrow.
   deleted as part of that flow, so they cannot be wiped to re-earn XP.
 - **Photos stay private.** A Google profile photo is shown only to the learner
   on their own screens, never on the leaderboard.
+- **No real names.** The app asks for a display name and nothing else, and a
+  certificate carries that same chosen name, so finishing a course adds nothing
+  to what is stored about a learner.
 - **App Check** (reCAPTCHA v3) is wired in and activates when
   `VITE_RECAPTCHA_SITE_KEY` is set, so Firebase can tell requests from the real
   app apart from scripted ones.
