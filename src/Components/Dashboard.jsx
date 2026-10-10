@@ -28,6 +28,7 @@ import trophyLottie from "../assets/lottie/Trophy.lottie?url";
 import crownLottie from "../assets/lottie/crown.lottie?url";
 import roboticLottie from "../assets/lottie/robotic_memory.lottie?url";
 import EditProfileView from "./EditProfileView";
+import CertificateModal from "./CertificateModal";
 import ProfileHeader from "./profile/ProfileHeader";
 import ProfileTabs from "./profile/ProfileTabs";
 import LearningPanel from "./profile/LearningPanel";
@@ -127,6 +128,8 @@ const Dashboard = () => {
   const [courseToUnenroll, setCourseToUnenroll] = useState(null);
   // The course just paused, so the panel can move the learner to where it went.
   const [justPausedId, setJustPausedId] = useState(null);
+  // The finished course whose certificate is open, if any.
+  const [certificateFor, setCertificateFor] = useState(null);
   const [unenrollLoading, setUnenrollLoading] = useState(false);
   const [editingProfile, setEditingProfile] = useState(false);
 
@@ -531,6 +534,7 @@ const Dashboard = () => {
               finished={completedCourses}
               nearest={nearestFinish}
               onOpen={(course) => navigate(`/course/${course.courseId}`)}
+              onCertificate={(course) => setCertificateFor(course)}
               onBrowse={() => navigate("/courses")}
             />
           )}
@@ -565,6 +569,17 @@ const Dashboard = () => {
           ══════════════════════════════════════════════════════════════════ */}
 
       {/* Unenroll Modal */}
+      {certificateFor && (
+        <CertificateModal
+          open={!!certificateFor}
+          onClose={() => setCertificateFor(null)}
+          uid={currentUser?.uid}
+          learnerName={studentName}
+          course={certificateFor}
+          completedAt={certificateFor.completedAt}
+        />
+      )}
+
       {courseToUnenroll && (
         <Modal
           isOpen={!!courseToUnenroll}

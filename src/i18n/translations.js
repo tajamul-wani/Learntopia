@@ -48,6 +48,19 @@ export const translations = {
       "launcherTeaser": "Hi! I'm {name}. Stuck? Just ask.",
       "dismissTeaser": "Hide this message"
     },
+    certificate: {
+      title: "Your certificate",
+      eyebrow: "Certificate of completion",
+      awardedTo: "Awarded to",
+      forCompleting: "for finishing the course",
+      badgeEarned: "{name} badge earned",
+      completedOn: "Completed",
+      issuedOn: "Issued",
+      idLabel: "Certificate",
+      download: "Download",
+      hint: "Saves as an image you can print or share.",
+      view: "Certificate"
+    },
     profile: {
       tabLearning: "Learning",
       tabFinished: "Finished",
@@ -1061,6 +1074,19 @@ export const translations = {
       "chatGreeting": "¡Hola! Soy {name}, ¡tu compañero de {subject}! Pregúntame lo que quieras sobre este curso, ¡y aprendamos juntos!",
       "launcherTeaser": "¡Hola! Soy {name}. ¿Dudas? Pregúntame.",
       "dismissTeaser": "Ocultar este mensaje"
+    },
+    certificate: {
+      title: "Tu certificado",
+      eyebrow: "Certificado de finalización",
+      awardedTo: "Otorgado a",
+      forCompleting: "por terminar el curso",
+      badgeEarned: "Insignia {name} conseguida",
+      completedOn: "Terminado el",
+      issuedOn: "Emitido el",
+      idLabel: "Certificado",
+      download: "Descargar",
+      hint: "Se guarda como imagen para imprimir o compartir.",
+      view: "Certificado"
     },
     profile: {
       tabLearning: "Aprendiendo",

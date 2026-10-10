@@ -14,7 +14,7 @@ import capLottie from "../../assets/lottie/graduation_cap.lottie?url";
  * the tab points at the next finish rather than being a wall of things already
  * behind them.
  */
-const FinishedPanel = ({ finished, nearest, onOpen, onBrowse }) => {
+const FinishedPanel = ({ finished, nearest, onOpen, onBrowse, onCertificate }) => {
   const { t } = useLanguage();
 
   if (!finished.length) {
@@ -58,8 +58,17 @@ const FinishedPanel = ({ finished, nearest, onOpen, onBrowse }) => {
               </div>
             )}
 
-            <div className="mt-5">
-              <Button variant="ghost" onClick={() => onOpen(course)} className="gap-2 font-bold">
+            <div className="mt-5 flex flex-wrap items-center gap-2">
+              <Button
+                size="sm"
+                onClick={() => onCertificate(course)}
+                data-testid={`certificate-open-${course.courseId}`}
+                className="gap-2 font-bold"
+              >
+                <Icon name="award" size={16} />
+                {t("certificate.view")}
+              </Button>
+              <Button size="sm" variant="ghost" onClick={() => onOpen(course)} className="gap-2 font-bold">
                 <Icon name="refresh-cw" size={16} />
                 {t("profile.review")}
               </Button>
