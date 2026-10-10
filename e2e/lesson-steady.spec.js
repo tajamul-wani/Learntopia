@@ -8,6 +8,8 @@ import { test as signedIn, createLearner, enrollLearner, signIn } from "./suppor
 //   * it must not pad itself out. An earlier fix held the card at the tallest
 //     step so far, which kept it steady and left a short step sitting above
 //     half a screen of empty card.
+//   * the controls under it must stay on one line, down to a small phone.
+//
 // What holds those together: the card's TOP is anchored and only its bottom
 // moves with the content, so the thing being read never shifts.
 
@@ -69,3 +71,24 @@ signedIn("the step card stays put and does not pad itself out", async ({ page },
     expect(gap, `step ${i + 1} leaves ${gap}px of empty card below its content`).toBeLessThanOrEqual(56);
   }
 });
+
+for (const width of [320, 390, 525, 599]) {
+  signedIn(`the step controls stay on one line at ${width}px`, async ({ page }, testInfo) => {
+    await seeded(page, testInfo);
+    await page.setViewportSize({ width, height: 900 });
+    await openFirstModule(page);
+
+    const back = page.getByRole("button", { name: /^back$/i }).first();
+    await expect(back).toBeVisible();
+
+    const { row, button } = await back.evaluate((el) => ({
+      row: Math.round(el.parentElement.getBoundingClientRect().height),
+      button: Math.round(el.getBoundingClientRect().height),
+    }));
+
+    // A wrapped label makes the button, and so the row, about twice as tall.
+    expect(row, `the controls wrapped at ${width}px: row ${row}px against a ${button}px button`).toBeLessThanOrEqual(
+      button + 8
+    );
+  });
+}

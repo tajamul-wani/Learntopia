@@ -314,22 +314,23 @@ const LessonPlayer = ({ sections = [], onComplete }) => {
       </div>
 
       {/* Navigation */}
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex items-center justify-between gap-2 min-[600px]:gap-4">
         <Button
           variant="ghost"
           size="sm"
           onClick={goPrev}
           disabled={currentStep === 0 || isAnimating}
-          className="gap-2"
+          className="flex-none gap-2 whitespace-nowrap"
         >
           <Icon name={isRTL ? "arrow-right" : "arrow-left"} size={16} />
-          {t("lessonPlayer.prevStep")}
+          <span className="min-[600px]:hidden">{t("lessonPlayer.back")}</span>
+          <span className="hidden min-[600px]:inline">{t("lessonPlayer.prevStep")}</span>
         </Button>
 
         {/* The dot stays 10px; the button around it is 24, which is the WCAG
             2.2 AA target size. A 10px tap target is a miss waiting to happen,
             and on a step indicator a miss means losing your place. */}
-        <div className="hidden items-center sm:flex">
+        <div className="hidden items-center md:flex">
           {sections.map((s, i) => (
             <button
               key={i}
@@ -361,18 +362,20 @@ const LessonPlayer = ({ sections = [], onComplete }) => {
           size="sm"
           onClick={goNext}
           disabled={!canProceed || isAnimating}
-          className={`gap-2 transition-all duration-300 ${
+          className={`flex-none gap-2 whitespace-nowrap transition-all duration-300 ${
             !canProceed ? "opacity-50" : "opacity-100"
           }`}
         >
           {isLastStep ? (
             <>
-              {t("lessonPlayer.startPractice")}
+              <span className="min-[600px]:hidden">{t("lessonPlayer.practice")}</span>
+              <span className="hidden min-[600px]:inline">{t("lessonPlayer.startPractice")}</span>
               <Icon name="edit-3" size={16} />
             </>
           ) : (
             <>
-              {t("lessonPlayer.nextStep")}
+              <span className="min-[600px]:hidden">{t("lessonPlayer.next")}</span>
+              <span className="hidden min-[600px]:inline">{t("lessonPlayer.nextStep")}</span>
               <Icon name={isRTL ? "arrow-left" : "arrow-right"} size={16} />
             </>
           )}
