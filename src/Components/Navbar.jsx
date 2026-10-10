@@ -168,11 +168,24 @@ const Navbar = () => {
           </button>
           )}
 
-          {/* Sign Out is not here any more. This header hides as the learner
-              scrolls, and an account action that comes and goes with it is only
-              sometimes reachable; it lives on the My Profile page, which is
-              where the bottom bar's avatar leads. Signed out there is no
-              account yet, so the way in stays. */}
+          {/* Below 600px the profile tab goes straight to My Profile rather
+              than raising a sheet, so Sign Out lives here instead — it is the
+              only account action with nowhere else to be at that width. From
+              600px up the sheet holds it, and this is not drawn. It returns
+              with the header on any upward scroll. */}
+          {currentUser && (
+            <button
+              type="button"
+              onClick={handleLogout}
+              aria-label={t("nav.logout")}
+              title={t("nav.logout")}
+              data-testid="header-sign-out"
+              className="hidden h-9 w-9 place-items-center rounded-full border border-state-danger/25 bg-state-danger/[0.08] text-state-danger transition-colors hover:bg-state-danger/15 max-[599px]:grid"
+            >
+              <Icon name="logout" size={17} />
+            </button>
+          )}
+
           {!currentUser && (
             <button
               type="button"

@@ -13,6 +13,9 @@ import { test } from "./support/test.js";
 
 const DESKTOP = { width: 1280, height: 800 };
 const PHONE = { width: 390, height: 844 };
+// Wide enough for the bottom bar but under lg, which is where the account
+// sheet lives. Below 600px the profile tab navigates instead (owner).
+const TABLET = { width: 768, height: 1000 };
 
 // Scrolling a page that has not finished growing is scrolling nothing: the
 // browser clamps to whatever height exists at that instant, the header never
@@ -99,10 +102,38 @@ signedIn.describe("the account menu is the one home for account actions", () => 
   });
 });
 
-signedIn.describe("on a phone the account opens from the bottom bar", () => {
-  signedIn("the header offers no sign out, because it hides as you read", async ({ page, learner }) => {
+signedIn.describe("below 600px the profile tab just goes there", () => {
+  signedIn("tapping it opens My Profile with no sheet in the way", async ({ page, learner }) => {
     expect(learner.uid).toBeTruthy();
     await page.setViewportSize(PHONE);
+    await page.goto("/", { waitUntil: "domcontentloaded" });
+
+    await expect(page.getByTestId("account-tab")).toHaveCount(0);
+    await page.getByTestId("bottom-nav").getByRole("link").last().click();
+
+    await expect(page).toHaveURL(/\/dashboard/);
+    await expect(page.getByTestId("account-sheet")).toBeHidden();
+  });
+
+  // The sheet is what used to hold Sign Out at this width, so the header takes
+  // it rather than leaving the learner no way out.
+  signedIn("sign out moves into the header", async ({ page, learner }) => {
+    expect(learner.uid).toBeTruthy();
+    await page.setViewportSize(PHONE);
+    await page.goto("/", { waitUntil: "domcontentloaded" });
+
+    await expect(page.getByTestId("header-sign-out")).toBeVisible();
+
+    await page.setViewportSize(TABLET);
+    await expect(page.getByTestId("header-sign-out")).toBeHidden();
+    await expect(page.getByTestId("account-tab")).toBeVisible();
+  });
+});
+
+signedIn.describe("the account sheet belongs to the tablet band", () => {
+  signedIn("the header offers no sign out, because it hides as you read", async ({ page, learner }) => {
+    expect(learner.uid).toBeTruthy();
+    await page.setViewportSize(TABLET);
     await page.goto("/", { waitUntil: "domcontentloaded" });
 
     await expect(page.locator("header").getByRole("button", { name: /sign out/i })).toHaveCount(0);
@@ -111,7 +142,7 @@ signedIn.describe("on a phone the account opens from the bottom bar", () => {
 
   signedIn("the profile tab raises the same two choices the desktop menu holds", async ({ page, learner }) => {
     expect(learner.uid).toBeTruthy();
-    await page.setViewportSize(PHONE);
+    await page.setViewportSize(TABLET);
     await page.goto("/", { waitUntil: "domcontentloaded" });
 
     const tab = page.getByTestId("account-tab");
@@ -125,7 +156,7 @@ signedIn.describe("on a phone the account opens from the bottom bar", () => {
 
   signedIn("choosing the profile goes to the page", async ({ page, learner }) => {
     expect(learner.uid).toBeTruthy();
-    await page.setViewportSize(PHONE);
+    await page.setViewportSize(TABLET);
     await page.goto("/", { waitUntil: "domcontentloaded" });
 
     await page.getByTestId("account-tab").click();
@@ -137,7 +168,7 @@ signedIn.describe("on a phone the account opens from the bottom bar", () => {
 
   signedIn("sign out is in the sheet, not the header", async ({ page, learner }) => {
     expect(learner.uid).toBeTruthy();
-    await page.setViewportSize(PHONE);
+    await page.setViewportSize(TABLET);
     await page.goto("/", { waitUntil: "domcontentloaded" });
 
     await page.getByTestId("account-tab").click();
@@ -164,7 +195,7 @@ signedIn.describe("on a phone the account opens from the bottom bar", () => {
 
   signedIn("Escape closes it without going anywhere", async ({ page, learner }) => {
     expect(learner.uid).toBeTruthy();
-    await page.setViewportSize(PHONE);
+    await page.setViewportSize(TABLET);
     await page.goto("/", { waitUntil: "domcontentloaded" });
 
     await page.getByTestId("account-tab").click();
@@ -179,7 +210,7 @@ signedIn.describe("on a phone the account opens from the bottom bar", () => {
   // than being swallowed by a backdrop.
   signedIn("the rest of the bar still works while it is open", async ({ page, learner }) => {
     expect(learner.uid).toBeTruthy();
-    await page.setViewportSize(PHONE);
+    await page.setViewportSize(TABLET);
     await page.goto("/", { waitUntil: "domcontentloaded" });
 
     await page.getByTestId("account-tab").click();
