@@ -14,6 +14,7 @@ import { moduleGrant } from "../utils/xpGrants";
 import { canLearn, primaryAction } from "../utils/enrollmentState";
 import { courseSkills } from "../utils/courseFacts";
 import { useScrollToTopOn } from "../hooks/useScrollToTop";
+import { revealTopAfterPaint } from "../utils/reveal";
 import { enroll, restart as restartCourse } from "../services/enrollment";
 import CoursePreview from "../Components/CoursePreview";
 import Card from "../Components/ui/Card";
@@ -149,7 +150,10 @@ const CourseDetails = () => {
           setXpAwardedModules(Array.isArray(data.xpAwardedModules) ? data.xpAwardedModules : []);
           setCourseXpAwarded(!!data.courseXpAwarded);
           setIsCompleted(!!data.completed);
-          setExpandedIndex(done.length < total ? done.length : total - 1);
+          // Open the module they are up to. With none left, nothing is open:
+          // a finished module sitting expanded is a lesson asking to be read
+          // again, which is not where a learner who finished it is going.
+          setExpandedIndex(done.length < total ? done.length : -1);
         } else {
           setExpandedIndex(0);
         }
@@ -174,6 +178,8 @@ const CourseDetails = () => {
 
   // First-try accuracy per module (from ExerciseEngine), used to accumulate a
   // course-wide accuracy for the Sharp Memory award. Keyed by module index.
+  // The syllabus list, so completing a module can bring the next one into view.
+  const syllabusRef = useRef(null);
   const moduleFirstStatsRef = useRef({});
   const recordFirstAttempt = (moduleIndex, correct, totalForModule) => {
     moduleFirstStatsRef.current[moduleIndex] = { correct, total: totalForModule };
@@ -225,7 +231,19 @@ const CourseDetails = () => {
       setCompletedModules(newCompleted);
       if (earnXp) setXpAwardedModules((prev) => [...prev, moduleIndex]);
       setLessonPhase(true);
-      setExpandedIndex(newCompleted.length < total ? newCompleted.length : moduleIndex);
+      // Move on to the next module, or close up once there is no next one.
+      const nextIndex = newCompleted.length < total ? newCompleted.length : -1;
+      setExpandedIndex(nextIndex);
+      // One panel closing and another opening moves everything below it. Land
+      // them at the top of whatever is now open, or at the top of the list
+      // when the course is done, instead of letting the page slide.
+      revealTopAfterPaint(
+        () =>
+          nextIndex >= 0
+            ? syllabusRef.current?.querySelector(`[data-module="${nextIndex}"]`)
+            : syllabusRef.current,
+        { force: true }
+      );
 
       if (earnXp) {
         // The amount lives with the grant now, so the client cannot choose it.
@@ -574,7 +592,7 @@ const CourseDetails = () => {
 
         {/* Tab Content: SYLLABUS */}
         {activeTab === "syllabus" && (
-          <div className="space-y-5 animate-fade-in">
+          <div ref={syllabusRef} className="space-y-5 animate-fade-in">
             <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
                 <h3 className="text-2xl font-bold leading-snug text-ink-hi">{t("courseDetails.courseModules")}</h3>
@@ -593,7 +611,7 @@ const CourseDetails = () => {
               const open = expandedIndex === moduleIndex && !locked;
 
               return (
-                <div key={moduleIndex} className="flex items-start gap-3 sm:gap-4">
+                <div key={moduleIndex} data-module={moduleIndex} className="flex items-start gap-3 sm:gap-4">
                   {/* Node on the spine */}
                   <div className="relative flex-none">
                     {active && (

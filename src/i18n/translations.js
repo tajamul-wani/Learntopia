@@ -289,6 +289,9 @@ export const translations = {
       recap: "Recap",
       stepCount: "Step {current} of {total}",
       prevStep: "Previous Step",
+      back: "Back",
+      next: "Next",
+      practice: "Practice",
       nextStep: "Next Step",
       startPractice: "Start Interactive Exercises",
       completeModule: "Complete & Practice"
@@ -1303,6 +1306,9 @@ export const translations = {
       recap: "Resumen",
       stepCount: "Paso {current} de {total}",
       prevStep: "Paso Anterior",
+      back: "Atrás",
+      next: "Siguiente",
+      practice: "Practicar",
       nextStep: "Siguiente Paso",
       startPractice: "Iniciar Ejercicios Interactivos",
       completeModule: "Completar y Practicar"
@@ -2084,6 +2090,9 @@ export const translations = {
       recap: "Récapitulatif",
       stepCount: "Étape {current} sur {total}",
       prevStep: "Étape Précédente",
+      back: "Retour",
+      next: "Suivant",
+      practice: "S'exercer",
       nextStep: "Étape Suivante",
       startPractice: "Lancer les Exercices Interactifs",
       completeModule: "Terminer et Pratiquer"
@@ -2629,6 +2638,9 @@ export const translations = {
       recap: "Zusammenfassung",
       stepCount: "Schritt {current} von {total}",
       prevStep: "Vorheriger Schritt",
+      back: "Zurück",
+      next: "Weiter",
+      practice: "Üben",
       nextStep: "Nächster Schritt",
       startPractice: "Interaktive Übungen Starten",
       completeModule: "Abschließen & Üben"
@@ -3174,6 +3186,9 @@ export const translations = {
       recap: "ملخص الدرس",
       stepCount: "الخطوة {current} من {total}",
       prevStep: "الخطوة السابقة",
+      back: "رجوع",
+      next: "التالي",
+      practice: "تدريب",
       nextStep: "الخطوة التالية",
       startPractice: "ابدأ التمارين التفاعلية",
       completeModule: "إكمال الدرس والتمرن"

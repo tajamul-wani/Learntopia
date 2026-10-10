@@ -3,6 +3,7 @@ import Icon from "./ui/Icon";
 import Button from "./ui/Button";
 import { useSound } from "../context/SoundContext";
 import { useLanguage } from "../context/LanguageContext";
+import { revealTopAfterPaint } from "../utils/reveal";
 
 /**
  * ExerciseEngine — Renders different exercise types with validation & feedback.
@@ -36,6 +37,7 @@ const ExerciseEngine = ({ exercises = [], onAllCorrect, onFirstAttempt, isComple
   // Fire onFirstAttempt only once per mount, so a retry never overwrites the
   // learner's genuine first-try accuracy for this module.
   const firstAttemptFiredRef = useRef(false);
+  const cardRef = useRef(null);
 
   // Cache each match question's shuffled right column so re-renders (tapping a
   // term) never re-randomize the positions.
@@ -153,13 +155,23 @@ const ExerciseEngine = ({ exercises = [], onAllCorrect, onFirstAttempt, isComple
 
     if (allCorrect) {
       playModuleComplete();
+      // The course page owns the view from here: it closes this module and
+      // opens the next, so a scroll from in here would fight that one.
       onAllCorrect?.();
     } else {
       playIncorrect();
+      // Marking every question pushes the page down around the button they
+      // just pressed. Take them to the top of the results instead, which is
+      // where the score is and where reviewing starts.
+      revealTopAfterPaint(() => cardRef.current, { force: true });
     }
   };
 
   const handleRetry = () => {
+    // Clearing the marking shrinks the card back, so the same applies in
+    // reverse: start them at the first question rather than wherever the
+    // page settles.
+    revealTopAfterPaint(() => cardRef.current, { force: true });
     setSubmitted(false);
     setShowFeedback({});
     setAnswers({});
@@ -482,7 +494,11 @@ const ExerciseEngine = ({ exercises = [], onAllCorrect, onFirstAttempt, isComple
   };
 
   return (
-    <div className="rounded-3xl border border-white/10 bg-surface p-5 shadow-clay md:p-8 animate-fade-in">
+    <div
+      ref={cardRef}
+      data-testid="module-challenge"
+      className="rounded-3xl border border-white/10 bg-surface p-5 shadow-clay md:p-8 animate-fade-in"
+    >
       {/* Header */}
       <div className="mb-6 border-b border-white/[0.08] pb-4">
         <h4 className="flex items-center gap-3 text-xl font-extrabold text-ink-hi">

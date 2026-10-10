@@ -1,4 +1,4 @@
-import { test, expect, enrollLearner } from "./support/emulator.js";
+import { test, expect, enrollLearner, writeDoc } from "./support/emulator.js";
 
 // Signed-in course-experience specs:
 //   LT-63  journey-map course view (syllabus as a clay node path)
@@ -100,5 +100,36 @@ test.describe("course experience (signed in)", () => {
     // definition term #1's number badge, so the pair reads at a glance.
     await defButtons.first().click();
     await expect(defButtons.first().locator("span").first()).toHaveText("1");
+  });
+
+  // A module that has been finished should not greet them expanded on the way
+  // back in: the lesson and its challenge are behind them, and an open panel
+  // of work they already did buries the rest of the course.
+  test("a finished course opens with every module collapsed", async ({ page, learner }) => {
+    // Written straight in: `enrollLearner` only ever seeds a course in
+    // progress, and what this test is about is the state after the last one.
+    await enrollLearner(learner.uid, 1, {
+      title: "Python for Kids: Build Your First Game!",
+      totalModules: 4,
+      completedModules: [0, 1, 2, 3],
+    });
+    await writeDoc(`Users/${learner.uid}/enrolledCourses/1`, {
+      courseId: 1,
+      title: "Python for Kids: Build Your First Game!",
+      category: "Programming",
+      completed: true,
+      completedModules: [0, 1, 2, 3],
+      totalModules: 4,
+      unenrolled: false,
+    });
+    await page.goto("/course/1?tab=syllabus", { waitUntil: "domcontentloaded" });
+    await expect(page.getByLabel("Loading page")).toBeHidden({ timeout: 20000 });
+    await expect(page.getByRole("heading", { name: /course modules/i })).toBeVisible();
+
+    await expect(page.getByRole("heading", { name: /module challenge/i })).toHaveCount(0);
+
+    // Closed, not unreachable: they can still go back into one deliberately.
+    await page.getByRole("button", { name: /Module 4/i }).first().click();
+    await expect(page.getByRole("heading", { name: /module challenge/i })).toBeVisible();
   });
 });
