@@ -8,6 +8,7 @@ import { useAuth } from "../context/AuthContext";
 import { useGamification } from "../context/GamificationContext";
 import { useLanguage } from "../context/LanguageContext";
 import { useNavChrome } from "../context/NavChromeContext";
+import useMediaQuery from "../hooks/useMediaQuery";
 import { parseProfileName } from "../utils/profileUtils";
 
 /**
@@ -27,6 +28,11 @@ const BottomNav = () => {
   const { pathname } = useLocation();
   const { currentUser, logOut } = useAuth();
   const [accountOpen, setAccountOpen] = useState(false);
+  // Below 600px the profile tab goes straight to the page: a sheet holding two
+  // choices is a tap in the way of the one people want. Sign Out moves to the
+  // header there instead, so the account still has a way out. From 600px up
+  // there is room for the sheet and both choices stay together.
+  const compact = useMediaQuery("(max-width: 599px)");
   const { profile, photoURL, usePhoto } = useGamification();
   const { t } = useLanguage();
   const { immersive } = useNavChrome();
@@ -69,7 +75,7 @@ const BottomNav = () => {
       className="fixed inset-x-0 bottom-0 z-40 flex items-stretch gap-1 border-t border-white/[0.08] bg-ground-900/95 px-1.5 pt-1.5 pb-[calc(0.375rem+env(safe-area-inset-bottom))] shadow-[0_-14px_26px_-18px_rgba(0,0,0,0.9)] lg:hidden"
     >
       {tabs.map((tab) =>
-        tab.account ? (
+        tab.account && !compact ? (
           <button
             key={tab.to}
             type="button"
@@ -126,7 +132,7 @@ const BottomNav = () => {
       )}
 
       <AccountSheet
-        open={accountOpen}
+        open={accountOpen && !compact}
         onClose={() => setAccountOpen(false)}
         onGoToProfile={() => {
           setAccountOpen(false);

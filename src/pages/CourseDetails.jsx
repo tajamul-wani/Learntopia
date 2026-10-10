@@ -415,7 +415,7 @@ const CourseDetails = () => {
         {/* Back Navigation */}
         <button 
           onClick={() => navigate("/courses")}
-          className="group mb-8 flex items-center gap-2 text-sm font-bold text-ink-low transition-colors hover:text-sky"
+          className="group mb-7 -ml-2 flex items-center gap-2 rounded-lg px-2 py-2 text-sm font-bold text-ink-low transition-colors hover:text-sky"
         >
           <Icon name="arrow-left" size={16} className="transition-transform group-hover:-translate-x-1" />
           {t("courseDetails.backToCourses")}

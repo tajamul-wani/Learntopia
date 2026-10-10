@@ -148,7 +148,7 @@ them pass.
 
 | Layer | What it covers |
 |---|---|
-| **End-to-end** (`e2e/`, Playwright) | Drives the real app in a browser: public pages, sign-in, courses, the profile page and its tabs, account deletion, navigation, brand assets and fonts, and a check that no page scrolls sideways at any width from 320px up |
+| **End-to-end** (`e2e/`, Playwright) | Drives the real app in a browser: public pages, sign-in, courses, the profile page and its tabs, account deletion, navigation, brand assets and fonts, and a sweep of every breakpoint that no page scrolls sideways, cuts content off silently, or carries a control too small to hit |
 | **Security rules** (`test/firestore.rules.test.js`) | Runs the real `firestore.rules` in the Firestore emulator: per-user isolation, anti-cheat, account deletion, admin-only data |
 | **Unit and component** (`npm run test:unit`, Vitest) | Pure helpers and React components with no browser or database: identity and name rules, level maths, the legacy-name scrub's decisions, and component behaviour through Testing Library |
 | **Static** (`npm run lint`, `npm run build`, `npm run test:palette`) | Lint errors, build breakage, and colours outside the design system |

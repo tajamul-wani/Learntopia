@@ -324,7 +324,10 @@ const LessonPlayer = ({ sections = [], onComplete }) => {
           {t("lessonPlayer.prevStep")}
         </Button>
 
-        <div className="hidden sm:flex items-center gap-2">
+        {/* The dot stays 10px; the button around it is 24, which is the WCAG
+            2.2 AA target size. A 10px tap target is a miss waiting to happen,
+            and on a step indicator a miss means losing your place. */}
+        <div className="hidden items-center sm:flex">
           {sections.map((s, i) => (
             <button
               key={i}
@@ -335,15 +338,20 @@ const LessonPlayer = ({ sections = [], onComplete }) => {
                 }
               }}
               disabled={i > currentStep}
-              className={`h-2.5 w-2.5 rounded-full transition-all duration-300 ${
-                i === currentStep
-                  ? "scale-125 bg-violet-500 shadow-[0_0_8px_rgba(139,124,246,0.6)]"
-                  : i < currentStep
-                  ? "bg-violet-500/40 hover:bg-violet-500/60 cursor-pointer"
-                  : "bg-white/[0.1] cursor-not-allowed"
-              }`}
+              className="grid h-6 w-6 place-items-center rounded-full"
               aria-label={`Step ${i + 1}`}
-            />
+              aria-current={i === currentStep ? "step" : undefined}
+            >
+              <span
+                className={`h-2.5 w-2.5 rounded-full transition-all duration-300 ${
+                  i === currentStep
+                    ? "scale-125 bg-violet-500 shadow-[0_0_8px_rgba(139,124,246,0.6)]"
+                    : i < currentStep
+                    ? "bg-violet-500/40 hover:bg-violet-500/60 cursor-pointer"
+                    : "bg-white/[0.1] cursor-not-allowed"
+                }`}
+              />
+            </button>
           ))}
         </div>
 

@@ -139,14 +139,14 @@ const Contact = () => {
                   {card.href ? (
                     <a
                       href={card.href}
-                      className="mt-1 block truncate text-sm font-medium text-ink-hi transition-colors hover:text-violet-400"
+                      className="mt-0.5 block truncate py-1.5 text-sm font-medium text-ink-hi transition-colors hover:text-violet-400"
                     >
                       {card.value}
                     </a>
                   ) : card.to ? (
                     <Link
                       to={card.to}
-                      className="mt-1 block text-sm font-medium text-ink-hi transition-colors hover:text-violet-400"
+                      className="mt-0.5 block py-1.5 text-sm font-medium text-ink-hi transition-colors hover:text-violet-400"
                     >
                       {card.value}
                     </Link>
