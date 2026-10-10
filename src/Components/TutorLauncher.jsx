@@ -114,7 +114,7 @@ const TutorLauncher = ({ onOpen, courseId }) => {
             type="button"
             onClick={dismiss}
             aria-label={t("aiTutor.dismissTeaser")}
-            className="grid h-5 w-5 flex-none place-items-center rounded-md text-ink-faint transition-colors hover:bg-white/5 hover:text-ink-hi"
+            className="grid h-6 w-6 flex-none place-items-center rounded-md text-ink-faint transition-colors hover:bg-white/5 hover:text-ink-hi"
           >
             <Icon name="x" size={12} />
           </button>
