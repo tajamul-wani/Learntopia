@@ -254,19 +254,23 @@ const CourseDetails = () => {
     // The +100 completion bonus pays out once, ever. Replaying a finished course
     // (after a restart) still shows the Trophy moment, just without new XP.
     const withXp = !courseXpAwarded;
+    // The day they finished it, kept. Replaying a course they already finished
+    // must not re-date the certificate to today.
+    const finishedAt = enrolment?.completedAt || new Date();
+    const done = {
+      completed: true,
+      completedAt: finishedAt,
+      completedModules: course?.syllabus ? course.syllabus.map((_, i) => i) : [],
+      totalModules: total,
+      ...(withXp ? { courseXpAwarded: true } : {}),
+    };
     setSaving(true);
     try {
-      await setDoc(
-        ref,
-        {
-          completed: true,
-          completedAt: new Date(),
-          completedModules: course?.syllabus ? course.syllabus.map((_, i) => i) : [],
-          totalModules: total,
-          ...(withXp ? { courseXpAwarded: true } : {}),
-        },
-        { merge: true }
-      );
+      await setDoc(ref, done, { merge: true });
+      // The certificate reads its date off this object, and it can be opened
+      // from the journey map the moment the course is finished, before any
+      // reload would fetch the document back.
+      setEnrolment((prev) => ({ ...prev, ...done }));
       setIsCompleted(true);
       if (withXp) setCourseXpAwarded(true);
 
