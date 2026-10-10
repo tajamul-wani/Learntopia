@@ -16,6 +16,8 @@ import { courseSkills } from "../utils/courseFacts";
 import { useScrollToTopOn } from "../hooks/useScrollToTop";
 import { enroll, restart as restartCourse } from "../services/enrollment";
 import CoursePreview from "../Components/CoursePreview";
+import CertificateModal from "../Components/CertificateModal";
+import { parseProfileName } from "../utils/profileUtils";
 import Card from "../Components/ui/Card";
 import Button from "../Components/ui/Button";
 import Icon from "../Components/ui/Icon";
@@ -35,7 +37,7 @@ const CourseDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { currentUser, loading: authLoading, isAdmin } = useAuth();
-  const { grantXp, awardCourseCompletion, awardSharpMemory } = useGamification();
+  const { grantXp, awardCourseCompletion, awardSharpMemory, profile } = useGamification();
   const { playClick } = useSound();
   const { t } = useLanguage();
 
@@ -54,6 +56,7 @@ const CourseDetails = () => {
   const [courseXpAwarded, setCourseXpAwarded] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
   const [expandedIndex, setExpandedIndex] = useState(0);
+  const [showCertificate, setShowCertificate] = useState(false);
   const [loadingData, setLoadingData] = useState(true);
   const [saving, setSaving] = useState(false);
   const [showResetModal, setShowResetModal] = useState(false);
@@ -719,6 +722,19 @@ const CourseDetails = () => {
                     <p className="mt-1 text-sm text-ink-low">
                       {isCompleted ? t("courseDetails.certificateEarned") : t("courseDetails.certificateLocked")}
                     </p>
+                    {/* Earned and nowhere to go was the gap: the finish line
+                        said "earned" and then did nothing. */}
+                    {isCompleted && (
+                      <Button
+                        size="sm"
+                        onClick={() => setShowCertificate(true)}
+                        data-testid="journey-certificate"
+                        className="mt-3 gap-2 font-bold"
+                      >
+                        <Icon name="award" size={16} />
+                        {t("certificate.view")}
+                      </Button>
+                    )}
                   </div>
                 </div>
               </div>
@@ -829,6 +845,20 @@ const CourseDetails = () => {
       />
 
     </div>
+    {showCertificate && (
+      <CertificateModal
+        open={showCertificate}
+        onClose={() => setShowCertificate(false)}
+        uid={currentUser?.uid}
+        learnerName={
+          parseProfileName(profile, currentUser?.displayName || "Learner").displayName ||
+          currentUser?.displayName ||
+          "Learner"
+        }
+        course={{ courseId: course?.id, title: course?.title }}
+        completedAt={enrolment?.completedAt}
+      />
+    )}
     {doorway}
     </>
   );
