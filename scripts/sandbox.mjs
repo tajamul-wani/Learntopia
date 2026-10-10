@@ -90,6 +90,9 @@ async function enrol(uid, courseId, { completedModules = [], completed = false, 
     title: "Python for Kids: Build Your First Game!",
     category: "Programming",
     completed,
+    // The app writes this the moment a course is finished, and the certificate
+    // prints it. Seeding without it made the sandbox lie by a few weeks.
+    ...(completed ? { completedAt: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString() } : {}),
     completedModules,
     totalModules: 4,
     unenrolled,
