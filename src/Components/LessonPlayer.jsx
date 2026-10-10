@@ -3,6 +3,7 @@ import Icon from "./ui/Icon";
 import Button from "./ui/Button";
 import { useSound } from "../context/SoundContext";
 import { useLanguage } from "../context/LanguageContext";
+import { revealTop } from "../utils/reveal";
 
 /**
  * LessonPlayer — Renders a module's contentSections one step at a time
@@ -131,11 +132,11 @@ const LessonPlayer = ({ sections = [], onComplete }) => {
     return () => clearTimeout(timer);
   }, [currentStep]);
 
-  // Scroll content area into view on step change
+  // Only when the step has actually gone above the view, which happens on a
+  // long step whose top ends up behind the header. Pressing Next means they
+  // were already looking at the right place.
   useEffect(() => {
-    if (contentRef.current) {
-      contentRef.current.scrollIntoView({ behavior: "smooth", block: "nearest" });
-    }
+    revealTop(contentRef.current);
   }, [currentStep]);
 
   const goNext = () => {
@@ -264,6 +265,7 @@ const LessonPlayer = ({ sections = [], onComplete }) => {
 
       {/* Content Card */}
       <div
+        data-testid="lesson-card"
         className={`relative overflow-hidden rounded-3xl border p-6 md:p-8 transition-all duration-300 ${style.border} ${style.bg} ${style.glow} ${
           isAnimating
             ? direction === "next"
