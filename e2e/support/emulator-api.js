@@ -181,13 +181,24 @@ export async function createLearner(testInfo, { points = 0 } = {}) {
 export async function enrollLearner(
   uid,
   courseId,
-  { totalModules = 4, completedModules = [], title = "Course", unenrolled = false } = {}
+  {
+    totalModules = 4,
+    completedModules = [],
+    title = "Course",
+    unenrolled = false,
+    completed = false,
+    // The app stamps this when the course is finished and the certificate
+    // prints it. A finished course seeded without one is not the thing the
+    // app produces, so the helper supplies a real date by default.
+    completedAt = completed ? new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString() : null,
+  } = {}
 ) {
   await writeDoc(`Users/${uid}/enrolledCourses/${courseId}`, {
     courseId: Number(courseId),
     title,
     category: "Programming",
-    completed: false,
+    completed,
+    ...(completedAt ? { completedAt } : {}),
     completedModules,
     totalModules,
     unenrolled,
