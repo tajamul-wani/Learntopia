@@ -55,6 +55,9 @@ translated into English and Spanish.
 
 ## Features
 
+- **Home**: the catalogue in figures, counted from the courses themselves —
+  courses, modules, lessons, exercises, activities, XP, quizzes and questions.
+  A visitor can answer a real quiz question before signing up.
 - **Courses**: multi-module tracks on a syllabus map. Each module opens with a
   short read, then exercises (multiple choice, true/false, fill in the blank,
   matching pairs) and a hands-on activity. That shape is enforced by a test, so
@@ -94,6 +97,7 @@ translated into English and Spanish.
 | AI tutor | Google Gemini behind a Cloudflare Worker proxy (`worker/`) |
 | Error triage | Sentry, with a Cloudflare Worker for issue routing (`worker-sentry-linear/`) |
 | Certificates | Drawn on an HTML canvas in the browser and saved as a PNG, with no added dependency |
+| Home motion | Hand-written canvas and `requestAnimationFrame`, no animation library; every scene stops when off screen and under `prefers-reduced-motion` |
 | Testing | Vitest for logic and components, Playwright end-to-end, Firestore rules tests, and a palette guard |
 
 ---
@@ -153,7 +157,7 @@ them pass.
 
 | Layer | What it covers |
 |---|---|
-| **End-to-end** (`e2e/`, Playwright) | Drives the real app in a browser: public pages, sign-in, courses, the profile page and its tabs, course certificates, account deletion, navigation, brand assets and fonts, and a sweep of every breakpoint that no page scrolls sideways, cuts content off silently, or carries a control too small to hit |
+| **End-to-end** (`e2e/`, Playwright) | Drives the real app in a browser: public pages, sign-in, courses, the profile page and its tabs, course certificates, the home page's counted figures and its reduced-motion behaviour, account deletion, navigation, brand assets and fonts, and a sweep of every breakpoint that no page scrolls sideways, cuts content off silently, or carries a control too small to hit |
 | **Security rules** (`test/firestore.rules.test.js`) | Runs the real `firestore.rules` in the Firestore emulator: per-user isolation, anti-cheat, account deletion, admin-only data |
 | **Unit and component** (`npm run test:unit`, Vitest) | Pure helpers and React components with no browser or database: identity and name rules, level maths, the legacy-name scrub's decisions, and component behaviour through Testing Library |
 | **Static** (`npm run lint`, `npm run build`, `npm run test:palette`) | Lint errors, build breakage, and colours outside the design system |
@@ -221,6 +225,8 @@ src/
 ├── Authentication/     Login and SignUp pages
 ├── Components/         App components, plus ui/ design-system primitives
 ├── assets/             Images, course art and Lottie animations
+├── Components/home/    The home page: backdrop, the try-a-question card, the
+│                       counted-figures ring and the closing card
 ├── Components/profile/ The My Profile page: header, tabs and one file per panel
 ├── context/            Auth, gamification, language, sound, toast, nav chrome
 ├── data/               Courses, quizzes and avatar definitions
@@ -232,7 +238,8 @@ src/
 ├── lib/                Monitoring and DOM guards
 ├── pages/              Routed pages (home, courses, quiz, dashboard, docs, legal)
 ├── services/           Gemini client, account deletion
-├── utils/              Profile, localisation, enrolment state, course facts, badges, certificates
+├── utils/              Profile, localisation, enrolment state, course facts, badges, certificates,
+│                       content totals, design tokens for canvas
 ├── App.jsx             Routes
 └── main.jsx            Entry point
 
@@ -315,6 +322,9 @@ Learntopia is used by children, so data access is deliberately narrow.
 - **No real names.** The app asks for a display name and nothing else, and a
   certificate carries that same chosen name, so finishing a course adds nothing
   to what is stored about a learner.
+- **Figures are counted, not claimed.** Everything the home page says about the
+  catalogue is derived from the course content at build time, so a signed-out
+  visitor reads real numbers and the page cannot go stale.
 - **App Check** (reCAPTCHA v3) is wired in and activates when
   `VITE_RECAPTCHA_SITE_KEY` is set, so Firebase can tell requests from the real
   app apart from scripted ones.

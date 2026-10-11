@@ -51,6 +51,10 @@ const AUDIT = (minTarget) => {
     // An ellipsis or a line clamp is a decision to cut; silence is not.
     if (s.textOverflow === "ellipsis") continue;
     if (s.webkitLineClamp && s.webkitLineClamp !== "none") continue;
+    // So is a track that travels. A marquee clips a strip deliberately wider
+    // than its box, and nothing is lost — what is off the edge is on its way
+    // in. It has to be able to say so, the way an ellipsis does.
+    if (el.hasAttribute("data-clips-intentionally")) continue;
     if (el.scrollWidth <= el.clientWidth + 1) continue;
     // What is overflowing matters more than what is doing the clipping. Cards
     // all over this app hold a decorative glow pinned past their own corner
