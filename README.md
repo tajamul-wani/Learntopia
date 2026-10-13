@@ -162,12 +162,14 @@ them pass.
 | **Unit and component** (`npm run test:unit`, Vitest) | Pure helpers and React components with no browser or database: identity and name rules, level maths, the legacy-name scrub's decisions, and component behaviour through Testing Library |
 | **Static** (`npm run lint`, `npm run build`, `npm run test:palette`) | Lint errors, build breakage, and colours outside the design system |
 
-Three guards run inside the unit layer and will fail a pull request on their
+Four guards run inside the unit layer and will fail a pull request on their
 own: `test/palette.test.js` rejects a colour that is not a design token,
 `test/no-untranslated-ui.test.js` rejects a string written into JSX instead of
-`src/i18n/translations.js`, and `test/course-content-standard.test.js` holds
+`src/i18n/translations.js`, `test/course-content-standard.test.js` holds
 course content to the shape every course shares and checks that the Spanish
-lesson content still lines up with the English index for index.
+lesson content still lines up with the English index for index, and
+`test/content-overlay-split.test.js` keeps every string that is read before the
+first paint in the dictionary that ships with the page.
 
 **No credentials, and no internet.** The app under test talks to the local
 Firebase Auth and Firestore emulators under the emulator-only
@@ -233,7 +235,8 @@ src/
 ├── config/             Single-source app constants, such as the AI tutor
 ├── firebase/           Firebase setup, including the emulator switch
 ├── hooks/              Shared React hooks
-├── i18n/               English and Spanish strings, UI and course content
+├── i18n/               English and Spanish strings. translations.js ships with
+│                       the page; content/<lang>.js is fetched per route
 ├── layout/             Root and admin layouts
 ├── lib/                Monitoring and DOM guards
 ├── pages/              Routed pages (home, courses, quiz, dashboard, docs, legal)
@@ -245,7 +248,7 @@ src/
 
 e2e/                    Playwright specs, with shared setup in support/
                         support/emulator-api.js is shared with the sandbox
-test/                   Firestore rules tests, the palette guard and the i18n guard
+test/                   Firestore rules tests, the palette guard and the i18n guards
 scripts/                Brand and avatar generation, build checks
 public/                 Brand SVG sources and generated PNGs
 worker/                 Cloudflare Worker: Gemini proxy
@@ -379,12 +382,16 @@ above all: a change ships with the tests that prove it.
    undone together, not by file. Use `type: imperative summary`.
 7. Keep to the design system. New colours need discussion first, and the
    palette guard enforces the rest.
-8. Put every string a learner reads in `src/i18n/translations.js` under English
-   and Spanish, and render it with `t()`. The i18n guard fails the build on
-   hardcoded text.
+8. Put every string a learner reads under English and Spanish, and render it
+   with `t()`. Which file depends on when it is read: `src/i18n/translations.js`
+   ships with the page and holds anything read while rendering or from an effect
+   on mount, and `src/i18n/content/<lang>.js` is fetched when a route opens and
+   holds that route's body copy. The i18n guard fails the build on hardcoded
+   text, and the overlay guard fails it when an early string goes in the
+   fetched half, where `t()` would return the key path instead of the string.
 9. Course content is translated by array index. Adding, removing or reordering a
    lesson section in `src/data/coursesData.js` means doing the same in
-   `src/i18n/contentTranslations.js`, or the Spanish text lands on the wrong
+   `src/i18n/content/es.js`, or the Spanish text lands on the wrong
    block. The content guard fails the build when the two drift.
 
 ---
