@@ -115,7 +115,7 @@ const LessonPlayer = ({ sections = [], onComplete }) => {
   const [canProceed, setCanProceed] = useState(false);
   const contentRef = useRef(null);
   const { playClick } = useSound();
-  const { t, isRTL } = useLanguage();
+  const { t } = useLanguage();
 
   const total = sections.length;
   const isLastStep = currentStep === total - 1;
@@ -322,7 +322,7 @@ const LessonPlayer = ({ sections = [], onComplete }) => {
           disabled={currentStep === 0 || isAnimating}
           className="flex-none gap-2 whitespace-nowrap"
         >
-          <Icon name={isRTL ? "arrow-right" : "arrow-left"} size={16} />
+          <Icon name="arrow-left" size={16} />
           <span className="min-[600px]:hidden">{t("lessonPlayer.back")}</span>
           <span className="hidden min-[600px]:inline">{t("lessonPlayer.prevStep")}</span>
         </Button>
@@ -376,7 +376,7 @@ const LessonPlayer = ({ sections = [], onComplete }) => {
             <>
               <span className="min-[600px]:hidden">{t("lessonPlayer.next")}</span>
               <span className="hidden min-[600px]:inline">{t("lessonPlayer.nextStep")}</span>
-              <Icon name={isRTL ? "arrow-left" : "arrow-right"} size={16} />
+              <Icon name="arrow-right" size={16} />
             </>
           )}
         </Button>
