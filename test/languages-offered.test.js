@@ -1,12 +1,14 @@
 import { describe, it, expect } from "vitest";
 import { LANGUAGES, translations } from "../src/i18n/translations";
-import { contentTranslations } from "../src/i18n/contentTranslations";
+import englishContent from "../src/i18n/content/en";
+import spanishContent from "../src/i18n/content/es";
 
 /**
  * The dictionaries and the switcher have to agree.
  *
  * Nothing checked this, and they drifted a long way: `translations.js` and
- * `contentTranslations.js` each carried French, German and Arabic while
+ * the content overlay (then a single `contentTranslations.js`, now one file
+ * per language) each carried French, German and Arabic while
  * `LANGUAGES` offered only English and Spanish. No user could reach them, and
  * every visitor downloaded them — 39K gzip in the entry chunk of every page
  * load. They were also 61% complete, so shipping them would have rendered
@@ -32,8 +34,19 @@ describe("the languages offered are exactly the languages translated", () => {
     expect(codes(translations)).toEqual(offered);
   });
 
-  it("the same holds for course content", () => {
-    expect(codes(contentTranslations)).toEqual(offered);
+  // The overlay is one module per language now, loaded on demand. The guard
+  // that matters is that each offered language has one, and that no module
+  // exists for a language nobody can select — a file nobody imports is still
+  // a file somebody maintains.
+  it("every offered language has a content overlay, and there are no others", async () => {
+    const modules = import.meta.glob("../src/i18n/content/*.js");
+    const present = Object.keys(modules)
+      .map((path) => path.split("/").pop().replace(".js", ""))
+      .filter((name) => name !== "index")
+      .sort();
+    expect(present).toEqual(offered);
+    expect(englishContent).toBeTypeOf("object");
+    expect(spanishContent).toBeTypeOf("object");
   });
 
   it("every offered language carries every English UI string", () => {

@@ -1,6 +1,6 @@
 import { test, expect, describe } from "vitest";
 import { COURSES } from "../src/data/coursesData";
-import { contentTranslations } from "../src/i18n/contentTranslations";
+import spanishContent from "../src/i18n/content/es";
 
 /**
  * The shape every course must have — the ones here now, and the ones added
@@ -80,7 +80,7 @@ describe("every course meets the content standard", () => {
  * fallback, just the wrong lesson. This catches that.
  */
 describe("Spanish course content lines up with English", () => {
-  const es = contentTranslations.es?.courseData || {};
+  const es = spanishContent?.courseData || {};
 
   test.each(COURSES.map((c) => [c.title, c]))("%s", (_title, course) => {
     // Both languages are live app-wide, so a course with no Spanish at all is a

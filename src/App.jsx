@@ -18,6 +18,7 @@ import ToastStack from "./Components/ui/ToastStack";
 import CelebrationOverlay from "./Components/CelebrationOverlay";
 import EditProfileView from "./Components/EditProfileView";
 import { consumeAccountDeletedFlag } from "./services/accountDeletedNotice";
+import { loadActiveContent } from "./i18n/content";
 
 // Lazy-load pages so each route ships as its own chunk. While a chunk loads,
 // RootLayout's Suspense boundary shows a PageSkeleton.
@@ -30,9 +31,16 @@ const CourseDetails = lazy(() => import("./pages/CourseDetails"));
 const SignUp = lazy(() => import("./Authentication/SignUp"));
 const Login = lazy(() => import("./Authentication/Login"));
 const Dashboard = lazy(() => import("./Components/Dashboard"));
-const Doc = lazy(() => import("./pages/Doc"));
-const Terms = lazy(() => import("./pages/Terms"));
-const Privacy = lazy(() => import("./pages/Privacy"));
+/* These three read the content overlay directly, so they wait for it rather
+   than rendering raw key paths for a frame. Awaiting it inside lazy() means
+   RootLayout's existing Suspense boundary covers the wait with the same
+   PageSkeleton the route already used — no new loading state. Every other
+   route renders immediately: t() falls back to English and
+   getLocalizedCourse falls back to the real content in coursesData.js. */
+const withContent = (load) => lazy(() => Promise.all([load(), loadActiveContent()]).then(([m]) => m));
+const Doc = withContent(() => import("./pages/Doc"));
+const Terms = withContent(() => import("./pages/Terms"));
+const Privacy = withContent(() => import("./pages/Privacy"));
 const Leaderboard = lazy(() => import("./pages/Leaderboard"));
 const ThankYou = lazy(() => import("./pages/ThankYou"));
 const Admin = lazy(() => import("./pages/Admin"));
