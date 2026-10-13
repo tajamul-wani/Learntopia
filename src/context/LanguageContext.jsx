@@ -53,13 +53,16 @@ export const LanguageProvider = ({ children }) => {
   const [targetLangObj, setTargetLangObj] = useState(null);
 
   const activeLangObj = LANGUAGES.find(l => l.code === currentLang) || LANGUAGES[0];
-  const isRTL = activeLangObj.dir === 'rtl';
 
   useEffect(() => {
     localStorage.setItem('learntopia_lang', currentLang);
-    document.documentElement.dir = isRTL ? 'rtl' : 'ltr';
+    // Still driven by the language's own `dir`, so adding a right-to-left
+    // language later is a data change rather than re-deriving this. Arabic
+    // was the only one, and an `isRTL` flag that can never be true is a
+    // branch nothing exercises.
+    document.documentElement.dir = activeLangObj.dir || 'ltr';
     document.documentElement.lang = currentLang;
-  }, [currentLang, isRTL]);
+  }, [currentLang, activeLangObj]);
 
   const setLanguage = (code) => {
     if (LANGUAGES.some((l) => l.code === code) && code !== currentLang) {
@@ -139,7 +142,7 @@ export const LanguageProvider = ({ children }) => {
   };
 
   return (
-    <LanguageContext.Provider value={{ currentLang, setLanguage, languages: LANGUAGES, activeLangObj, isRTL, t, tRaw }}>
+    <LanguageContext.Provider value={{ currentLang, setLanguage, languages: LANGUAGES, activeLangObj, t, tRaw }}>
       {children}
 
       {/* Smooth, non-blocking glassmorphism language transition overlay */}
