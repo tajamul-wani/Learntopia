@@ -1,8 +1,11 @@
-// Only fully-translated languages are exposed in the dropdown. English and
-// Spanish are complete end-to-end (UI, all pages, all 6 courses, quizzes,
-// toasts and modals). Additional languages are staged in the data
-// (contentTranslations.js) but stay HIDDEN until each is completed and verified
-// — a partial translation is worse UX than none. Re-add each below when done.
+// English and Spanish, both complete end-to-end: UI, every page, all nine
+// courses, the quizzes, the toasts and the modals. Nothing is staged here
+// half-finished — a partial translation reads as a broken page rather than an
+// honest absence, so a language arrives in this list only once it is whole.
+//
+// This file is the eager half of the dictionary and ships in the entry chunk.
+// Long per-route bodies live in i18n/content/<lang>.js and are fetched when
+// their route opens; i18n/content/index.js documents which goes where.
 export const LANGUAGES = [
   { code: 'en', name: 'English', flag: 'EN', dir: 'ltr' },
   { code: 'es', name: 'Español', flag: 'ES', dir: 'ltr' },
@@ -141,6 +144,7 @@ export const translations = {
       signOut: "Sign out"
     },
     nav: {
+      quizzes: "Quizzes",
       home: "Home",
       courses: "Courses",
       quiz: "Quiz",
@@ -312,6 +316,12 @@ export const translations = {
       saving: "Saving progress..."
     },
     quiz: {
+      start: "Start",
+      notSignedInTitle: "You're not signed in",
+      notSignedInMsg: "Your high scores won't be saved to your student profile.",
+      quitTitle: "Quit Quiz?",
+      quitMsg: "Are you sure you want to leave? Your progress won't be saved and this attempt won't be logged.",
+      quitConfirm: "Quit",
       title: "Quiz Center",
       subtitle: "Test your knowledge and verify your skills in real time.",
       selectTopic: "Choose a Topic",
@@ -634,6 +644,14 @@ export const translations = {
       signInBtn: "Sign In Now"
     },
     contact: {
+      formHeading: "Send a message",
+      formSubtitle: "Fill in the details below — we read every message.",
+      namePlaceholder: "John Doe",
+      emailPlaceholder: "you@example.com",
+      subjectPlaceholder: "Subject...",
+      agreementPre: "By submitting, you agree to our",
+      privacyLink: "Privacy Policy",
+      agreementPost: "We only use your email to respond to your message.",
       eyebrow: "Get in touch",
       title: "We'd love to hear from you",
       subtitle: "Have a question, feedback, or need help? Send us a message and our team will get back to you.",
@@ -653,12 +671,14 @@ export const translations = {
       privacySub: "Your message is stored securely on our servers — never shared."
     },
     thankYou: {
+      whatsNext: "While you wait", exploreDesc: "Explore free courses and start earning XP.", quizDesc: "Take a quick, timed quiz challenge.",
       title: "Message sent!",
       subtitle: "Thanks for reaching out — we've got your message and we'll reply within a day or two.",
       backHome: "Back to home",
       exploreCourses: "Explore Courses"
     },
     notFound: {
+      backHome: "Back to Home",
       title: "Page Not Found",
       subtitle: "Oops! The page you are looking for doesn't exist or has been moved.",
       goHome: "Return to Home"
@@ -1013,6 +1033,7 @@ export const translations = {
       }
     },
     common: {
+      sfx: "SFX", off: "Off",
       soundOn: "Sound On",
       soundOff: "Sound Muted",
       language: "Language",
@@ -1023,7 +1044,107 @@ export const translations = {
       loading: "Loading...",
       saving: "Saving...",
       error: "An error occurred"
-    }
+    },
+    toasts: {
+      // Notification titles (heading shown in the popup)
+      titleLogin: "Welcome back!",
+      titleSignup: "Welcome to Learntopia!",
+      titleLogout: "See you soon!",
+      titleProfile: "Profile saved",
+      titleQuiz: "Score saved!",
+      titleUnenroll: "Course unenrolled",
+      titleDelete: "Account removed",
+      titleSuccess: "All set!",
+      titleError: "Oops",
+      titleWarning: "Heads up",
+      titleInfo: "Good to know",
+      // Notification buttons
+      btnLogin: "Go to Dashboard",
+      btnSignup: "Start learning",
+      btnLogout: "Bye for now",
+      btnProfile: "Done",
+      btnQuiz: "See leaderboard",
+      btnUnenroll: "Okay",
+      btnDelete: "Goodbye",
+      btnGeneric: "Got it",
+      btnRetry: "Try again",
+      // Messages
+      loginSuccess: "You're in — keep that streak going!",
+      loginGoogleSuccess: "Signed in with Google. Keep it going!",
+      signupSuccess: "Account ready — start exploring!",
+      signupGoogleSuccess: "Account ready — start exploring!",
+      quizScoreSaved: "Score saved to the leaderboard. Nice work!",
+      googleFailed: "Google sign-in failed. Try again.",
+      googlePopupBlocked: "Popup blocked. Allow popups and try again.",
+      googleUnauthorizedDomain: "Google sign-in not enabled here yet.",
+      googleNotEnabled: "Google sign-in isn't enabled yet.",
+      googleNetwork: "Network error. Check your connection.",
+      noAccount: "No account found for this email.",
+      wrongPassword: "Incorrect password. Try again.",
+      invalidEmail: "That email looks incomplete.",
+      invalidCredentials: "Invalid email or password.",
+      emailInUse: "That email is already registered.",
+      weakPassword: "Use at least 6 characters.",
+      signupFailed: "Couldn't create your account. Try again.",
+      logoutSafe: "Come back tomorrow for your streak!",
+      logoutFailed: "Failed to log out.",
+      loggedOut: "Come back tomorrow for your streak!",
+      logoutFailedRetry: "Couldn't log you out. Try again.",
+      unenrollFailed: "Couldn't unenroll. Try again.",
+      noNewXpModule: "Already done — nice work revisiting it!",
+      replayModuleNoXp: "Great refresher - no new XP.",
+      noNewXpQuiz: "Beat your best score for more XP.",
+      unenrolledFrom: "Moved to Unenrolled — rejoin anytime.",
+      rejoined: "Welcome back — progress saved.",
+      rejoinFailed: "Couldn't rejoin. Try again.",
+      deleteConfirmType: "Type DELETE to confirm.",
+      profileDeleted: "Profile removed. We'll miss you!",
+      deleteWrongPassword: "Wrong password. Nothing was deleted.",
+      deleteReauthCancelled: "Cancelled. Nothing was deleted.",
+      deleteReauthFailed: "Couldn't confirm you. Nothing deleted.",
+      deleteFailed: "Not fully deleted. Please try again.",
+      accessDenied: "Access denied — admin only.",
+      adminNotALearner: "Admins can't take courses or quizzes.",
+      notAnAdminSignedIn: "Not an admin. Signed in as a learner.",
+      adminWelcome: "Welcome, Administrator",
+      googleAuthFailed: "Google authentication failed.",
+      adminLoggedOut: "Logged out of the Admin Center.",
+      loadDataFailed: "Failed to load some admin data.",
+      provideTitleDesc: "Add a title and description.",
+      logSaved: "System log saved.",
+      saveLogFailed: "Failed to save the log.",
+      noStudentData: "No student data to export.",
+      exportedCsv: "Student list exported to CSV.",
+      loginToView: "Log in to view course details.",
+      saveProgressFailed: "Couldn't save your progress. Try again.",
+      courseCompleted: "Course complete! +100 XP earned.",
+      markCompleteFailed: "Couldn't mark it complete. Try again.",
+      courseReset: "Course reset — fresh start!",
+      resetFailed: "Couldn't reset the course. Try again.",
+      loginToEnroll: "Log in to enroll.",
+      enrollFailed: "Couldn't enroll. Try again.",
+      quizProgressSaved: "Progress saved!",
+      quizProgressFailed: "Couldn't save progress.",
+      timesUp: "Time's up!",
+    },
+    modals: {
+      leaveTitle: "Leave Syllabus?",
+      leaveAction: "Leave",
+      leaveBody: "Are you sure you want to leave the syllabus?",
+      leaveResetPre: "Any ",
+      leaveResetBold: "unsubmitted answers",
+      leaveResetPost: " for your current module will be reset.",
+      leaveSavedPre: "Modules you have ",
+      leaveSavedBold: "already completed",
+      leaveSavedPost: " are securely saved and will not be lost.",
+      resetTitle: "Start Again?",
+      resetAction: "Yes, reset course",
+      resetBody: "Are you sure you want to reset your progress and start this course from the beginning?",
+      resetWarnLabel: "Warning:",
+      resetWarnText: " All your current checkmarks and completion timestamps will be permanently wiped out. This action cannot be undone.",
+      dashNoProfileTitle: "No active profile",
+      dashNoProfileDesc: "Please log in to view your dashboard.",
+    },
   },
 
   es: {
@@ -1158,6 +1279,7 @@ export const translations = {
       signOut: "Cerrar sesión"
     },
     nav: {
+      quizzes: "Cuestionarios",
       home: "Inicio",
       courses: "Cursos",
       quiz: "Cuestionario",
@@ -1329,6 +1451,12 @@ export const translations = {
       saving: "Guardando progreso..."
     },
     quiz: {
+      start: "Empezar",
+      notSignedInTitle: "No has iniciado sesión",
+      notSignedInMsg: "Tus mejores puntuaciones no se guardarán en tu perfil de estudiante.",
+      quitTitle: "¿Salir del Cuestionario?",
+      quitMsg: "¿Seguro que quieres salir? No se guardará tu progreso y este intento no se registrará.",
+      quitConfirm: "Salir",
       title: "Centro de Cuestionarios",
       subtitle: "Pon a prueba tus conocimientos y comprueba tus habilidades en tiempo real.",
       selectTopic: "Elige un Tema",
@@ -1651,6 +1779,14 @@ export const translations = {
       signInBtn: "Iniciar Sesión Ahora"
     },
     contact: {
+      formHeading: "Enviar un mensaje",
+      formSubtitle: "Completa los datos a continuación — leemos cada mensaje.",
+      namePlaceholder: "Juan Pérez",
+      emailPlaceholder: "tu@ejemplo.com",
+      subjectPlaceholder: "Asunto...",
+      agreementPre: "Al enviar, aceptas nuestra",
+      privacyLink: "Política de Privacidad",
+      agreementPost: "Solo usamos tu correo para responder a tu mensaje.",
       eyebrow: "Ponte en contacto",
       title: "Nos encantaría escucharte",
       subtitle: "¿Tienes alguna pregunta o necesitas ayuda? Envíanos un mensaje y te responderemos pronto.",
@@ -1670,12 +1806,14 @@ export const translations = {
       privacySub: "Tu mensaje está guardado de forma segura — nunca se comparte."
     },
     thankYou: {
+      whatsNext: "Mientras esperas", exploreDesc: "Explora cursos gratis y empieza a ganar XP.", quizDesc: "Acepta un reto de cuestionario rápido y cronometrado.",
       title: "¡Mensaje enviado!",
       subtitle: "Gracias por escribirnos — hemos recibido tu mensaje y te responderemos en uno o dos días.",
       backHome: "Volver al inicio",
       exploreCourses: "Explorar Cursos"
     },
     notFound: {
+      backHome: "Volver al Inicio",
       title: "Página No Encontrada",
       subtitle: "¡Ups! La página que buscas no existe o ha sido movida.",
       goHome: "Volver al Inicio"
@@ -1922,6 +2060,7 @@ export const translations = {
       }
     },
     common: {
+      sfx: "SFX", off: "Apagado",
       soundOn: "Sonido Activado",
       soundOff: "Sonido Silenciado",
       language: "Idioma",
@@ -1932,7 +2071,106 @@ export const translations = {
       loading: "Cargando...",
       saving: "Guardando...",
       error: "Ocurrió un error"
-    }
+    },
+    toasts: {
+      // Títulos de las notificaciones
+      titleLogin: "¡Bienvenido de nuevo!",
+      titleSignup: "¡Bienvenido a Learntopia!",
+      titleLogout: "¡Hasta pronto!",
+      titleProfile: "Perfil guardado",
+      titleQuiz: "¡Puntuación guardada!",
+      titleUnenroll: "Curso cancelado",
+      titleDelete: "Cuenta eliminada",
+      titleSuccess: "¡Listo!",
+      titleError: "Ups",
+      titleWarning: "Atención",
+      titleInfo: "Buena info",
+      // Botones de las notificaciones
+      btnLogin: "Ir al panel",
+      btnSignup: "Empezar a aprender",
+      btnLogout: "Hasta luego",
+      btnProfile: "Hecho",
+      btnQuiz: "Ver clasificación",
+      btnUnenroll: "De acuerdo",
+      btnDelete: "Adiós",
+      btnGeneric: "Entendido",
+      btnRetry: "Reintentar",
+      // Mensajes
+      loginSuccess: "¡Sesión iniciada! Sigue con tu racha.",
+      loginGoogleSuccess: "¡Sesión iniciada con Google! Sigue así.",
+      signupSuccess: "¡Cuenta lista! Explora y gana XP.",
+      signupGoogleSuccess: "¡Cuenta lista! Explora y gana XP.",
+      quizScoreSaved: "Puntuación guardada. ¡Bien hecho!",
+      googleFailed: "Error con Google. Inténtalo de nuevo.",
+      googlePopupBlocked: "Ventana bloqueada. Permítelas y reintenta.",
+      googleUnauthorizedDomain: "Google aún no está habilitado aquí.",
+      googleNotEnabled: "Google aún no está habilitado.",
+      googleNetwork: "Error de red. Comprueba tu conexión.",
+      noAccount: "No hay cuenta para este correo.",
+      wrongPassword: "Contraseña incorrecta. Inténtalo de nuevo.",
+      invalidEmail: "Ese correo parece incompleto.",
+      invalidCredentials: "Correo o contraseña no válidos.",
+      emailInUse: "Ese correo ya está registrado.",
+      weakPassword: "Usa al menos 6 caracteres.",
+      signupFailed: "No pudimos crear tu cuenta. Inténtalo.",
+      logoutSafe: "¡Vuelve mañana por tu racha!",
+      logoutFailed: "Error al cerrar sesión.",
+      loggedOut: "¡Vuelve mañana por tu racha!",
+      logoutFailedRetry: "No pudimos cerrar sesión. Inténtalo.",
+      unenrollFailed: "No se pudo cancelar. Inténtalo de nuevo.",
+      noNewXpModule: "¡Ya hecho — bien por repasarlo!",
+      replayModuleNoXp: "¡Buen repaso! Sin XP nuevo.",
+      noNewXpQuiz: "Supera tu mejor puntuación por más XP.",
+      unenrolledFrom: "En Cancelados — vuelve cuando quieras.",
+      rejoined: "Bienvenido de nuevo — progreso guardado.",
+      rejoinFailed: "No se pudo volver a unir. Inténtalo.",
+      deleteConfirmType: "Escribe DELETE para confirmar.",
+      profileDeleted: "Perfil eliminado. ¡Te extrañaremos!",
+      deleteWrongPassword: "Contraseña incorrecta. No se eliminó nada.",
+      deleteReauthCancelled: "Cancelado. No se eliminó nada.",
+      deleteReauthFailed: "Sin confirmar. No se eliminó nada.",
+      deleteFailed: "No se eliminó del todo. Inténtalo.",
+      accessDenied: "Acceso denegado — solo admins.",
+      adminNotALearner: "Los admins no hacen cursos ni tests.",
+      notAnAdminSignedIn: "No es admin. Entraste como estudiante.",
+      adminWelcome: "Bienvenido, Administrador",
+      googleAuthFailed: "Error de autenticación con Google.",
+      adminLoggedOut: "Sesión cerrada del Centro Admin.",
+      loadDataFailed: "Error al cargar datos de administración.",
+      provideTitleDesc: "Añade un título y una descripción.",
+      logSaved: "Registro guardado.",
+      saveLogFailed: "Error al guardar el registro.",
+      noStudentData: "No hay datos para exportar.",
+      exportedCsv: "Lista de estudiantes exportada a CSV.",
+      loginToView: "Inicia sesión para ver el curso.",
+      saveProgressFailed: "No pudimos guardar tu progreso. Inténtalo.",
+      courseCompleted: "¡Curso completado! +100 XP.",
+      markCompleteFailed: "No se pudo completar. Inténtalo.",
+      courseReset: "¡Curso reiniciado — nuevo comienzo!",
+      resetFailed: "No se pudo reiniciar el curso. Inténtalo.",
+      loginToEnroll: "Inicia sesión para inscribirte.",
+      enrollFailed: "No se pudo inscribir. Inténtalo de nuevo.",
+      quizProgressSaved: "¡Progreso guardado!",
+      quizProgressFailed: "Error al guardar el progreso.",
+      timesUp: "¡Se acabó el tiempo!",
+    },
+    modals: {
+      leaveTitle: "¿Salir del Temario?",
+      leaveAction: "Salir",
+      leaveBody: "¿Seguro que quieres salir del temario?",
+      leaveResetPre: "Cualquier ",
+      leaveResetBold: "respuesta sin enviar",
+      leaveResetPost: " de tu módulo actual se reiniciará.",
+      leaveSavedPre: "Los módulos que ya has ",
+      leaveSavedBold: "completado",
+      leaveSavedPost: " están guardados de forma segura y no se perderán.",
+      resetTitle: "¿Empezar de Nuevo?",
+      resetAction: "Sí, reiniciar el curso",
+      resetBody: "¿Seguro que quieres reiniciar tu progreso y empezar este curso desde el principio?",
+      resetWarnLabel: "Advertencia:",
+      resetWarnText: " Todas tus marcas actuales y las fechas de finalización se borrarán permanentemente. Esta acción no se puede deshacer.",
+      dashNoProfileTitle: "Sin perfil activo",
+      dashNoProfileDesc: "Inicia sesión para ver tu panel.",
+    },
   }
-
 };
