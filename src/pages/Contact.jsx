@@ -1,11 +1,62 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import Icon from "../Components/ui/Icon";
 import { useLanguage } from "../context/LanguageContext";
 
+// These mirror the caps in firestore.rules exactly. The rules are what is
+// actually enforced; these stop the form from ever building a message the
+// rules would turn away, which would otherwise surface as a generic failure
+// after the sender had already written the thing.
+const MAX_NAME = 100;
+const MAX_EMAIL = 200;
+const MAX_SUBJECT = 150;
 const MAX_MSG = 1000;
+
+/**
+ * Anyone can post here without an account, because a guardian with no login
+ * has to be able to reach us. These three checks raise the cost of abusing
+ * that without putting anything in a real person's way.
+ *
+ * None of them is a wall. A script holding the public Firebase config writes
+ * to Firestore directly and never loads this page, which is what App Check
+ * enforcement closes (LT-92). What these stop is the cheap case: a bot
+ * driving the real form, and a person sending the same message six times.
+ */
+
+// Bots fill every field they find. People never see this one. It is not
+// called anything a password manager recognises, which is the usual way a
+// honeypot ends up catching its own users.
+const HONEYPOT = "lt_ref";
+
+// Filling in a name, an email and ten characters of message takes longer than
+// this. Submitting sooner does not throw the message away - it waits out the
+// remainder and then sends. Discarding would risk binning a real message from
+// someone whose browser autofilled the form, and a support form that silently
+// eats a guardian's message is worse than one that takes some spam.
+const MIN_FILL_MS = 3000;
+
+// One message, then a pause. Browser-local and therefore trivial to bypass;
+// it is here for the double-click and the frustrated resend, not the attacker.
+const THROTTLE_MS = 2 * 60 * 1000;
+const THROTTLE_KEY = "learntopia_contact_last";
+
+const lastSentAt = () => {
+  try {
+    return Number(localStorage.getItem(THROTTLE_KEY)) || 0;
+  } catch {
+    return 0;
+  }
+};
+
+const markSent = () => {
+  try {
+    localStorage.setItem(THROTTLE_KEY, String(Date.now()));
+  } catch {
+    // Private mode and blocked storage are fine: the throttle is a courtesy.
+  }
+};
 
 // ─── Component ────────────────────────────────────────────────────────────────
 const Contact = () => {
@@ -14,6 +65,8 @@ const Contact = () => {
   const [formData, setFormData] = useState({ name: "", email: "", subject: "", message: "" });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [trap, setTrap] = useState("");
+  const openedAt = useRef(Date.now());
 
   const CONTACT_CARDS = [
     {
@@ -74,15 +127,41 @@ const Contact = () => {
       setErrors(validationErrors);
       return;
     }
+    // One message at a time. Says so plainly rather than failing silently,
+    // because a person who just sent something deserves to know why the
+    // second one did not go.
+    const since = Date.now() - lastSentAt();
+    if (since < THROTTLE_MS) {
+      setErrors({ form: t("contact.tooSoon") });
+      return;
+    }
+
     setIsSubmitting(true);
     try {
+      // The wait comes first so that both paths below take the same time. Had
+      // the trap returned straight away it would have answered in a fraction
+      // of the time a real send takes, and that gap is itself the tell.
+      const tooQuick = MIN_FILL_MS - (Date.now() - openedAt.current);
+      if (tooQuick > 0) {
+        await new Promise((resolve) => setTimeout(resolve, tooQuick));
+      }
+
+      // Anything that filled the hidden field is not a person. Send it to the
+      // same thank-you page a real submission reaches, having written nothing,
+      // so a bot cannot tell the difference and start probing for the check.
+      if (trap) {
+        navigate("/thank-you", { state: { name: formData.name.trim() } });
+        return;
+      }
+
       await addDoc(collection(db, "ContactMessages"), {
         name: formData.name.trim(),
         email: formData.email.trim(),
-        subject: formData.subject.trim() || "(no subject)",
+        subject: formData.subject.trim().slice(0, MAX_SUBJECT) || "(no subject)",
         message: formData.message.trim(),
         submittedAt: serverTimestamp(),
       });
+      markSent();
       // Navigate to dedicated Thank You page, pass name via state
       navigate("/thank-you", { state: { name: formData.name.trim() } });
     } catch (err) {
@@ -176,6 +255,22 @@ const Contact = () => {
           )}
 
           <form onSubmit={handleSubmit} noValidate className="relative flex flex-col gap-5">
+            {/*
+              Out of the layout, out of the tab order and hidden from assistive
+              tech, so the only thing that can reach it is something reading the
+              markup. Taken out of flow, so it adds no gap and no scroll width.
+            */}
+            <input
+              type="text"
+              name={HONEYPOT}
+              value={trap}
+              onChange={(e) => setTrap(e.target.value)}
+              className="pointer-events-none absolute left-0 top-0 h-px w-px opacity-0"
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+              data-testid="contact-trap"
+            />
 
             {/* Name + Email */}
             <div className="grid gap-5 sm:grid-cols-2">
@@ -189,6 +284,7 @@ const Contact = () => {
                 <input
                   id="contact-name"
                   name="name"
+                  maxLength={MAX_NAME}
                   type="text"
                   autoComplete="name"
                   placeholder={t("contact.namePlaceholder")}
@@ -213,6 +309,7 @@ const Contact = () => {
                 <input
                   id="contact-email"
                   name="email"
+                  maxLength={MAX_EMAIL}
                   type="email"
                   autoComplete="email"
                   placeholder={t("contact.emailPlaceholder")}
@@ -239,6 +336,7 @@ const Contact = () => {
               <input
                 id="contact-subject"
                 name="subject"
+                maxLength={MAX_SUBJECT}
                 type="text"
                 placeholder={t("contact.subjectPlaceholder")}
                 value={formData.subject}

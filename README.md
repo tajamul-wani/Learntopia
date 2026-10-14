@@ -158,7 +158,7 @@ them pass.
 | Layer | What it covers |
 |---|---|
 | **End-to-end** (`e2e/`, Playwright) | Drives the real app in a browser: public pages, sign-in, courses, the profile page and its tabs, course certificates, the home page's counted figures and its reduced-motion behaviour, account deletion, navigation, brand assets and fonts, and a sweep of every breakpoint that no page scrolls sideways, cuts content off silently, or carries a control too small to hit |
-| **Security rules** (`test/firestore.rules.test.js`) | Runs the real `firestore.rules` in the Firestore emulator: per-user isolation, anti-cheat, account deletion, admin-only data |
+| **Security rules** (`test/firestore.rules.test.js`) | Runs the real `firestore.rules` in the Firestore emulator: per-user isolation, anti-cheat, account deletion, admin-only data, and the bounds on the one write an unauthenticated visitor can make |
 | **Unit and component** (`npm run test:unit`, Vitest) | Pure helpers and React components with no browser or database: identity and name rules, level maths, the legacy-name scrub's decisions, and component behaviour through Testing Library |
 | **Static** (`npm run lint`, `npm run build`, `npm run test:palette`) | Lint errors, build breakage, and colours outside the design system |
 
@@ -328,6 +328,12 @@ Learntopia is used by children, so data access is deliberately narrow.
 - **Figures are counted, not claimed.** Everything the home page says about the
   catalogue is derived from the course content at build time, so a signed-out
   visitor reads real numbers and the page cannot go stale.
+- **The one door a stranger can open is bounded.** The contact form takes a
+  message from someone with no account, because a guardian has to be able to
+  reach us without signing up for anything. The rules hold that write to an
+  exact set of five fields, a size cap on every one of them, an
+  address-shaped email, and a timestamp set by the server rather than by the
+  sender.
 - **App Check** (reCAPTCHA v3) is wired in and activates when
   `VITE_RECAPTCHA_SITE_KEY` is set, so Firebase can tell requests from the real
   app apart from scripted ones.

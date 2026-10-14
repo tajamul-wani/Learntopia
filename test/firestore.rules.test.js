@@ -30,6 +30,7 @@ import {
   addDoc,
   collection,
   writeBatch,
+  serverTimestamp,
 } from "firebase/firestore";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -713,13 +714,19 @@ describe("PublicLeaderboard/{uid}", () => {
 });
 
 describe("ContactMessages", () => {
+  // submittedAt has to be the server's clock now, so the message that the
+  // rules accept is the one the app actually sends.
   const validMessage = () => ({
     name: "Parent",
     email: "parent@example.com",
     subject: "Hello",
     message: "This is a message that is definitely long enough.",
-    submittedAt: new Date(),
+    submittedAt: serverTimestamp(),
   });
+
+  // A stored message, for the read tests. seed() writes with rules disabled,
+  // where serverTimestamp() would never resolve.
+  const storedMessage = () => ({ ...validMessage(), submittedAt: new Date() });
 
   test("anyone (even unauthenticated) can submit a valid contact message", async () => {
     await assertSucceeds(
@@ -736,13 +743,69 @@ describe("ContactMessages", () => {
     );
   });
 
+  // This collection is the one door a stranger can open, so each way of
+  // pushing something odd through it gets its own test.
+
+  test("rejects a subject large enough to be storage abuse", async () => {
+    await assertFails(
+      addDoc(collection(anon(), "ContactMessages"), {
+        ...validMessage(),
+        subject: "x".repeat(151),
+      })
+    );
+  });
+
+  test("rejects an email that is not an address", async () => {
+    await assertFails(
+      addDoc(collection(anon(), "ContactMessages"), {
+        ...validMessage(),
+        email: "not-an-email",
+      })
+    );
+  });
+
+  test("rejects a client-chosen submittedAt", async () => {
+    await assertFails(
+      addDoc(collection(anon(), "ContactMessages"), {
+        ...validMessage(),
+        submittedAt: new Date("2020-01-01"),
+      })
+    );
+  });
+
+  test("rejects a message missing submittedAt entirely", async () => {
+    const { submittedAt, ...withoutStamp } = validMessage();
+    void submittedAt;
+    await assertFails(
+      addDoc(collection(anon(), "ContactMessages"), withoutStamp)
+    );
+  });
+
+  test("rejects an extra field smuggled alongside the message", async () => {
+    await assertFails(
+      addDoc(collection(anon(), "ContactMessages"), {
+        ...validMessage(),
+        isAdmin: true,
+      })
+    );
+  });
+
+  test("rejects an empty subject, which the form never sends", async () => {
+    await assertFails(
+      addDoc(collection(anon(), "ContactMessages"), {
+        ...validMessage(),
+        subject: "",
+      })
+    );
+  });
+
   test("non-admin cannot read contact messages", async () => {
-    await seed("ContactMessages/m1", validMessage());
+    await seed("ContactMessages/m1", storedMessage());
     await assertFails(getDoc(doc(alice(), "ContactMessages/m1")));
   });
 
   test("admin can read contact messages", async () => {
-    await seed("ContactMessages/m1", validMessage());
+    await seed("ContactMessages/m1", storedMessage());
     await assertSucceeds(getDoc(doc(admin(), "ContactMessages/m1")));
   });
 });

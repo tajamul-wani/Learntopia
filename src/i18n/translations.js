@@ -644,6 +644,7 @@ export const translations = {
       signInBtn: "Sign In Now"
     },
     contact: {
+      tooSoon: "You just sent us a message. Give us a couple of minutes before sending another.",
       formHeading: "Send a message",
       formSubtitle: "Fill in the details below — we read every message.",
       namePlaceholder: "John Doe",
@@ -1779,6 +1780,7 @@ export const translations = {
       signInBtn: "Iniciar Sesión Ahora"
     },
     contact: {
+      tooSoon: "Acabas de enviarnos un mensaje. Danos un par de minutos antes de enviar otro.",
       formHeading: "Enviar un mensaje",
       formSubtitle: "Completa los datos a continuación — leemos cada mensaje.",
       namePlaceholder: "Juan Pérez",

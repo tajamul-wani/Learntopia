@@ -336,13 +336,24 @@ service cloud.firestore {
     // Anyone (including unauthenticated visitors) may submit a contact form.
     // No client-side reads, updates, or deletes — messages are reviewed via
     // the Firebase Console only.
+    // Anyone may write here, signed in or not, because a guardian with no
+    // account has to be able to reach us. That makes this the one collection
+    // a stranger can add to, so the shape is pinned tightly: an exact key set,
+    // a cap on every field, and a timestamp the client cannot choose.
+    //
+    // `subject` was the hole. It was checked for type and nothing else, so a
+    // script could store a field as large as Firestore would take while still
+    // satisfying every other condition.
     function isValidContactMessage() {
       let d = request.resource.data;
-      return d.keys().hasOnly(['name', 'email', 'subject', 'message', 'submittedAt'])
+      let keys = ['name', 'email', 'subject', 'message', 'submittedAt'];
+      return d.keys().hasOnly(keys) && d.keys().hasAll(keys)
           && d.name is string && d.name.size() > 0 && d.name.size() <= 100
           && d.email is string && d.email.size() > 0 && d.email.size() <= 200
-          && d.subject is string
-          && d.message is string && d.message.size() >= 10 && d.message.size() <= 1000;
+          && d.email.matches('^[^@\\s]+@[^@\\s]+[.][^@\\s]+$')
+          && d.subject is string && d.subject.size() > 0 && d.subject.size() <= 150
+          && d.message is string && d.message.size() >= 10 && d.message.size() <= 1000
+          && d.submittedAt == request.time;
     }
 
     match /ContactMessages/{msgId} {
