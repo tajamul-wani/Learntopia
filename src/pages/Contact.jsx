@@ -5,6 +5,13 @@ import { db } from "../firebase/firebase";
 import Icon from "../Components/ui/Icon";
 import { useLanguage } from "../context/LanguageContext";
 
+// These mirror the caps in firestore.rules exactly. The rules are what is
+// actually enforced; these stop the form from ever building a message the
+// rules would turn away, which would otherwise surface as a generic failure
+// after the sender had already written the thing.
+const MAX_NAME = 100;
+const MAX_EMAIL = 200;
+const MAX_SUBJECT = 150;
 const MAX_MSG = 1000;
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -79,7 +86,7 @@ const Contact = () => {
       await addDoc(collection(db, "ContactMessages"), {
         name: formData.name.trim(),
         email: formData.email.trim(),
-        subject: formData.subject.trim() || "(no subject)",
+        subject: formData.subject.trim().slice(0, MAX_SUBJECT) || "(no subject)",
         message: formData.message.trim(),
         submittedAt: serverTimestamp(),
       });
@@ -189,6 +196,7 @@ const Contact = () => {
                 <input
                   id="contact-name"
                   name="name"
+                  maxLength={MAX_NAME}
                   type="text"
                   autoComplete="name"
                   placeholder={t("contact.namePlaceholder")}
@@ -213,6 +221,7 @@ const Contact = () => {
                 <input
                   id="contact-email"
                   name="email"
+                  maxLength={MAX_EMAIL}
                   type="email"
                   autoComplete="email"
                   placeholder={t("contact.emailPlaceholder")}
@@ -239,6 +248,7 @@ const Contact = () => {
               <input
                 id="contact-subject"
                 name="subject"
+                maxLength={MAX_SUBJECT}
                 type="text"
                 placeholder={t("contact.subjectPlaceholder")}
                 value={formData.subject}
