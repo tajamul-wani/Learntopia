@@ -25,6 +25,22 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   // Retry flaky tests on CI only.
   retries: process.env.CI ? 2 : 0,
+  expect: {
+    // Playwright's default is 5s. The suite had outgrown it: 93 assertions
+    // carried an explicit timeout and 139 did not, which is what a default
+    // that is too low looks like after enough people have patched around it
+    // one assertion at a time.
+    //
+    // The page that kept failing is the clearest case. Reaching
+    // `profile-tabs` on /dashboard means loading a lazy chunk, restoring the
+    // Firebase Auth session, and three Firestore reads, before anything is
+    // painted. That is a legitimate chain, not a stall, and 5s is tight for
+    // it on a dev server.
+    //
+    // The test timeout is 45s, so a genuinely broken assertion still fails
+    // with room to spare.
+    timeout: 15 * 1000,
+  },
   // Locally, Playwright would default to half the CPU cores (7 on a 14-core
   // machine). That many browsers loading the dev server's module files at once
   // stalls random page loads past the timeout, so cap it. Override for one run
@@ -38,8 +54,14 @@ export default defineConfig({
   use: {
     // Tests can use relative URLs like page.goto('/') against this base.
     baseURL: `http://localhost:${PORT}`,
-    // Capture a debug trace when a test is retried.
-    trace: 'on-first-retry',
+    // 'on-first-retry' traces the RETRY, and a flaky test passes on retry, so
+    // it preserves a recording of everything working. That is why three
+    // intermittent failures were seen and none could be diagnosed.
+    // 'retain-on-first-failure' records the first attempt and keeps it when
+    // that attempt failed, which is the run worth looking at.
+    trace: 'retain-on-first-failure',
+    // Same reason: the frame at the moment of failure, not after the retry.
+    screenshot: 'only-on-failure',
   },
 
   // Start with Chromium only — fast and simple. Firefox/WebKit can be added later.
