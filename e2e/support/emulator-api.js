@@ -98,6 +98,25 @@ export async function readDoc(path) {
 }
 
 /**
+ * Every document in a collection, read past the rules. Returns [] when the
+ * collection does not exist yet, which is what the emulator reports for one
+ * nothing has ever been written to.
+ */
+export async function listDocs(collectionPath) {
+  const res = await fetch(
+    `${FIRESTORE_EMULATOR}/v1/projects/${PROJECT_ID}/databases/(default)/documents/${collectionPath}?pageSize=300`,
+    { headers: { Authorization: "Bearer owner" } }
+  );
+  if (res.status === 404) return [];
+  if (!res.ok) throw new Error(`Firestore emulator list of ${collectionPath} failed: ${res.status}`);
+  const body = await res.json();
+  return (body.documents || []).map((d) => ({
+    id: d.name.split("/").pop(),
+    ...Object.fromEntries(Object.entries(d.fields || {}).map(([k, v]) => [k, decodeValue(v)])),
+  }));
+}
+
+/**
  * Firestore's REST shape back into plain JavaScript. Numbers matter: REST sends
  * integerValue as a STRING, so a test comparing a score to 30 was failing
  * against "30" while the app had written a perfectly good number.
