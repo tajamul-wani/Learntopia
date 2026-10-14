@@ -54,8 +54,14 @@ export default defineConfig({
   use: {
     // Tests can use relative URLs like page.goto('/') against this base.
     baseURL: `http://localhost:${PORT}`,
-    // Capture a debug trace when a test is retried.
-    trace: 'on-first-retry',
+    // 'on-first-retry' traces the RETRY, and a flaky test passes on retry, so
+    // it preserves a recording of everything working. That is why three
+    // intermittent failures were seen and none could be diagnosed.
+    // 'retain-on-first-failure' records the first attempt and keeps it when
+    // that attempt failed, which is the run worth looking at.
+    trace: 'retain-on-first-failure',
+    // Same reason: the frame at the moment of failure, not after the retry.
+    screenshot: 'only-on-failure',
   },
 
   // Start with Chromium only — fast and simple. Firefox/WebKit can be added later.
