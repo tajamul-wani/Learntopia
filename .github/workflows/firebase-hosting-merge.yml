@@ -7,6 +7,71 @@ on:
     branches:
       - main
 jobs:
+  # firestore.rules is the boundary protecting children's data, and this
+  # workflow pushes it live on every merge with nothing checking it first.
+  # The rules tests take about 75 seconds. That is cheap insurance on the most
+  # dangerous automated action in this repository, so the rules deploy waits
+  # for them.
+  #
+  # The hosting deploy does NOT wait. A bad front-end build is recoverable in
+  # minutes; bad security rules are a data exposure. Branch protection on main
+  # requires `test` and `rules-tests` to pass on the pull request, and requires
+  # the branch to be current, so main is green before a merge happens at all.
+  # The hosting build therefore has nothing left to prove and stays at a minute.
+  #
+  # The tests live in their own workflow file, so `needs:` cannot reach them.
+  # This waits on the check run for this exact commit instead, and fails
+  # closed: a failed, cancelled or absent check means no rules deploy, and the
+  # reason is in the log.
+  rules_gate:
+    name: rules_gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      checks: read
+    steps:
+      - name: Wait for the rules tests on this commit
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          # The check-run name is the job id in firestore-rules-tests.yml.
+          # Renaming that job without changing this blocks the rules deploy,
+          # which is the safe failure.
+          required="rules-tests"
+          deadline=$(( $(date +%s) + 10 * 60 ))
+
+          while :; do
+            runs=$(gh api "repos/$REPO/commits/$SHA/check-runs?per_page=100" \
+                     --jq '.check_runs[] | "\(.name)\t\(.status)\t\(.conclusion // "none")"')
+            line=$(printf '%s\n' "$runs" | awk -F'\t' -v n="$required" '$1==n {print; exit}')
+
+            if [ -n "$line" ]; then
+              status=$(printf '%s' "$line" | cut -f2)
+              conclusion=$(printf '%s' "$line" | cut -f3)
+              if [ "$status" = "completed" ]; then
+                if [ "$conclusion" = "success" ]; then
+                  echo "rules-tests passed. Deploying rules."
+                  exit 0
+                fi
+                echo "::error::rules-tests concluded '$conclusion' on $SHA. Not deploying rules."
+                exit 1
+              fi
+              echo "waiting: rules-tests is $status"
+            else
+              echo "waiting: rules-tests has not started"
+            fi
+
+            if [ "$(date +%s)" -ge "$deadline" ]; then
+              echo "::error::Timed out waiting for rules-tests on $SHA."
+              echo "Rules deploy skipped rather than published unverified."
+              exit 1
+            fi
+            sleep 10
+          done
+
   build_and_deploy:
     runs-on: ubuntu-latest
     steps:
@@ -43,6 +108,7 @@ jobs:
   # NOTE: the service account must have the "Firebase Rules Admin" role for
   # this to succeed — grant it in Google Cloud IAM if the deploy is denied.
   deploy_firestore_rules:
+    needs: rules_gate
     runs-on: ubuntu-latest
     # Deploys with its own service account; it never writes to the repository.
     permissions:
