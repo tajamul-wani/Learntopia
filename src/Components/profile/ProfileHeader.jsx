@@ -1,8 +1,7 @@
 import Icon from "../ui/Icon";
 import Button from "../ui/Button";
 import Avatar from "../Avatar";
-import LottieIcon from "../ui/LottieIcon";
-import streakLottie from "../../assets/lottie/Streak.lottie?url";
+import { LevelPill, XpBar, XpChip, StreakChip } from "../gamification/StatusPieces";
 import { useLanguage } from "../../context/LanguageContext";
 
 /**
@@ -21,6 +20,9 @@ import { useLanguage } from "../../context/LanguageContext";
  *
  * At the top level there is no next level to progress towards, so the bar is
  * replaced by the total rather than left sitting at 100% forever.
+ *
+ * The rank pill, bar and chips come from ../gamification/StatusPieces, shared
+ * with the navbar HUD so the two cannot drift apart.
  */
 const ProfileHeader = ({ name, avatarId, photoURL, level, xp, xpInLevel, xpNeeded, progressPct, nextLevel, streak, onEdit }) => {
   const { t } = useLanguage();
@@ -45,9 +47,7 @@ const ProfileHeader = ({ name, avatarId, photoURL, level, xp, xpInLevel, xpNeede
             className="h-20 w-20 rounded-full ring-2 ring-violet-500/30 sm:h-[88px] sm:w-[88px]"
           />
           {/* The level rides on the picture, the way a game shows rank. */}
-          <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border border-violet-500/40 bg-surface-2 px-2.5 py-0.5 text-[0.6875rem] font-bold text-violet-300 shadow-clay-sm">
-            {t("profile.levelLabel", { level })}
-          </span>
+          <LevelPill level={level} className="absolute -bottom-1 left-1/2 -translate-x-1/2" />
         </div>
 
         <div className="w-full min-w-0 flex-1">
@@ -65,27 +65,14 @@ const ProfileHeader = ({ name, avatarId, photoURL, level, xp, xpInLevel, xpNeede
                 </span>
                 <span className="flex-none font-display text-base tabular-nums text-sky">{progressPct}%</span>
               </div>
-              <div className="mt-1.5 h-2.5 w-full max-w-md overflow-hidden rounded-full bg-surface-3">
-                <div
-                  className="h-full rounded-full bg-gradient-to-r from-violet-500 to-sky transition-[width] duration-500"
-                  style={{ width: `${progressPct}%` }}
-                />
-              </div>
+              <XpBar progressPct={progressPct} trackClassName="mt-1.5 h-2.5 w-full max-w-md" />
             </>
           )}
 
           {/* Under the bar, because they describe what it is measuring. */}
           <div className="mt-3.5 flex flex-wrap items-center justify-center gap-2 sm:justify-start">
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-sky/25 bg-sky/[0.10] px-3 py-1 text-xs font-bold text-sky">
-              <Icon name="zap" size={13} />
-              {t("profile.xpTotal", { xp })}
-            </span>
-            {streak > 0 && (
-              <span className="inline-flex items-center gap-1 rounded-full border border-gold-500/30 bg-gold-500/[0.13] py-1 pl-1.5 pr-3 text-xs font-bold text-gold-400">
-                <LottieIcon src={streakLottie} size={20} fallbackIcon="flame" />
-                {t("profile.streakDays", { count: streak })}
-              </span>
-            )}
+            <XpChip xp={xp} />
+            <StreakChip streak={streak} />
           </div>
         </div>
 

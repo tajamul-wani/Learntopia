@@ -66,9 +66,11 @@ translated into English and Spanish.
 - **AI tutor**: Leo, one assistant across every course, on Google Gemini with
   the key held in a Cloudflare Worker. Each request carries the course and the
   module the learner is on, so answers stay on topic.
-- **Progress**: XP, levels, badges, daily streaks and a global leaderboard, all
-  gathered on My Profile: what is being learned, what is finished, quiz scores,
-  badges earned, and a year calendar of the days the learner turned up.
+- **Progress**: XP, levels, badges, daily streaks and a global leaderboard.
+  Rank, XP and the streak stay in the header across the home page, the
+  catalogue, a course and the quizzes. My Profile holds the rest: what is being
+  learned, what is finished, quiz scores, badges earned, and a year calendar of
+  the days the learner turned up.
 - **Certificates**: a finished course issues one, drawn in the browser and
   saved as a PNG. It carries the learner's chosen display name, the course, the
   badge earned, the date and an id derived from the account and the course, so
