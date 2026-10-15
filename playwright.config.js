@@ -67,7 +67,13 @@ export default defineConfig({
   // generated but NOT auto-served (open:'never'), so the run never blocks the
   // terminal waiting on the report server. View it later with:
   //   npx playwright show-report
-  reporter: [['list'], ['html', { open: 'never' }]],
+  // 'json' feeds scripts/report-flaky.mjs in CI. A flaky test exits 0, so
+  // without reading the report a real failure hides behind a green tick.
+  reporter: [
+    ['list'],
+    ['html', { open: 'never' }],
+    ['json', { outputFile: 'playwright-report/results.json' }],
+  ],
   use: {
     // Tests can use relative URLs like page.goto('/') against this base.
     baseURL: `http://localhost:${PORT}`,

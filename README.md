@@ -296,8 +296,8 @@ GitHub Actions handles every deploy.
 
 | Trigger | What happens |
 |---|---|
-| Pull request | Rules tests, Playwright suite and a preview deploy on its own URL |
-| Merge to `main` | Production deploy to Firebase Hosting, plus `firebase deploy --only firestore:rules` so rule changes go live with the code |
+| Pull request | Rules tests, Playwright suite and a preview deploy on its own URL. Both test jobs must pass, and the branch must be up to date, before the pull request can merge |
+| Merge to `main` | Production deploy to Firebase Hosting. The Firestore rules deploy waits for the rules tests to pass on that commit first, so a rule change cannot go live unverified |
 
 Manual deploy, if ever needed, requires Firebase project access:
 
