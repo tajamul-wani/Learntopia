@@ -36,7 +36,8 @@ test.describe("courses show counted facts, not invented ones", () => {
 
     // What replaced them is counted from the syllabus.
     await expect(page.getByText(/\d+ modules/).first()).toBeVisible();
-    await expect(page.getByText(/\d+ XP/).first()).toBeVisible();
+    // Scoped to the page: the header HUD also says "N XP" on every route now.
+    await expect(page.locator("main").getByText(/\d+ XP/).first()).toBeVisible();
 
     // The stock photographs of strangers are gone from the DOM, not just hidden.
     expect(
@@ -85,7 +86,8 @@ test.describe("courses show counted facts, not invented ones", () => {
     // progress is measured in once enrolled,
     // and the lesson count is a before-you-choose signal that lives on the
     // preview alongside the exercise count.
-    await expect(page.getByText(/\d+ XP/).first()).toBeVisible();
+    // Scoped to the page: the header HUD also says "N XP" on every route now.
+    await expect(page.locator("main").getByText(/\d+ XP/).first()).toBeVisible();
     await expect(page.getByText(/\d+ modules/).first()).toBeVisible();
     await expect(page.getByRole("heading", { name: /what it covers/i })).toBeVisible();
 

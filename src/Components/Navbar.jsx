@@ -3,6 +3,8 @@ import { toast } from "../context/ToastContext";
 import Icon from "./ui/Icon";
 import Logo from "./ui/Logo";
 import AccountMenu from "./AccountMenu";
+import StatusHud from "./gamification/StatusHud";
+import { XpBar } from "./gamification/StatusPieces";
 import LanguageSelector from "./LanguageSelector";
 import { useAuth } from "../context/AuthContext";
 import { useGamification } from "../context/GamificationContext";
@@ -16,7 +18,7 @@ import { parseProfileName } from "../utils/profileUtils";
 const Navbar = () => {
   const navigate = useNavigate();
   const { currentUser, logOut } = useAuth();
-  const { profile, photoURL, usePhoto } = useGamification();
+  const { profile, photoURL, usePhoto, levelInfo } = useGamification();
   const { isMuted, toggleMute } = useSound();
   const { t } = useLanguage();
 
@@ -93,6 +95,8 @@ const Navbar = () => {
 
         {/* Zone 3 (Right): Balanced Controls & Auth Capsule */}
         <div className="hidden items-center gap-2.5 shrink-0 lg:flex">
+          {/* Rank, XP and streak (LT-68). Renders nothing signed out. */}
+          <StatusHud />
           {/* Language and sound are set once and then left alone, and a signed-in
               learner has both on their own Account tab. Repeating them in the
               header gave the same two controls two homes. Signed out there is no
@@ -151,6 +155,7 @@ const Navbar = () => {
 
         {/* Mobile controls & hamburger button */}
         <div className="flex items-center gap-2 lg:hidden">
+          <StatusHud variant="compact" />
           {!currentUser && <LanguageSelector />}
 
           {!currentUser && (
@@ -198,6 +203,16 @@ const Navbar = () => {
         </div>
       </nav>
 
+      {/* Progress through the current rank, as a hairline along the foot of the
+          header. On a phone the row has no width to spare for a bar, and this
+          costs it none: full width, two pixels, and it only exists when there
+          is a next rank to move towards. */}
+      {currentUser && levelInfo?.nextLevel && (
+        <XpBar
+          progressPct={levelInfo.progressPct ?? 0}
+          trackClassName="h-0.5 w-full rounded-none lg:hidden"
+        />
+      )}
     </header>
   );
 };
