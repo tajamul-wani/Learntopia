@@ -18,8 +18,13 @@ export default defineConfig({
   testDir: './e2e',
   globalSetup: './e2e/global-setup.js',
   fullyParallel: true,
-  // Headroom for slow first paints when the dev server runs from a WSL /mnt/c
-  // mount under parallel load. The specs still wait on DOM+mount, not on 'load'.
+  // Headroom for a slow first paint while several workers pull the dev server's
+  // unbundled modules at once. The specs still wait on DOM+mount, not on 'load'.
+  //
+  // This originally said the headroom was for a WSL /mnt/c mount. The repo
+  // moved to WSL-native storage on 2026-09-19, so that reason is gone; the
+  // value stays because the dev server, not the disk, is what makes a cold
+  // page load slow here.
   timeout: 45 * 1000,
   // Fail CI if a `test.only` was left in the source.
   forbidOnly: !!process.env.CI,
@@ -41,11 +46,23 @@ export default defineConfig({
     // with room to spare.
     timeout: 15 * 1000,
   },
-  // Locally, Playwright would default to half the CPU cores (7 on a 14-core
-  // machine). That many browsers loading the dev server's module files at once
-  // stalls random page loads past the timeout, so cap it. Override for one run
-  // with `npx playwright test --workers=N`.
-  workers: process.env.CI ? 1 : 3,
+  // CI ran the whole suite on one worker, on a runner with four cores, and so
+  // paid for a serial run on every pull request. Two is the smallest change
+  // that stops that.
+  //
+  // Not three. Measurements on this machine (14 cores, 174 tests) could not
+  // separate two workers from three: 9m34s against 8.4-9.0m, with the same
+  // configuration varying by half a minute between runs. The one clean-looking
+  // result, 6m10s at three workers, came from a quiet machine and did not
+  // reproduce. So there is no evidence that three beats two, and `ubuntu-latest`
+  // has four cores to share between the browsers, the dev server and two
+  // emulators. Raise it only if CI runs show headroom.
+  //
+  // Six workers were slower than three, and slower again when the suite was
+  // served a prebuilt bundle instead of the dev server, so the ceiling is not
+  // the dev server. Whatever limits this suite is per-test cost, not page
+  // loads. See LT-120.
+  workers: process.env.CI ? 2 : 3,
   // 'list' prints each test live in the terminal; the html report is still
   // generated but NOT auto-served (open:'never'), so the run never blocks the
   // terminal waiting on the report server. View it later with:
