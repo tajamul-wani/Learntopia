@@ -33,6 +33,13 @@ jobs:
     # shuts them down. The exit code is Playwright's, so a failing test fails CI.
     - name: Run Playwright tests
       run: npm run test:e2e
+    # A flaky test passes on retry and Playwright exits 0, so a real failure
+    # can sit inside a green run with nobody the wiser. This puts a warning on
+    # the pull request and a table in the job summary. It never fails the
+    # build: the owner chose to keep retries and surface the flake instead.
+    - name: Surface flaky tests
+      if: ${{ !cancelled() }}
+      run: node scripts/report-flaky.mjs
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
