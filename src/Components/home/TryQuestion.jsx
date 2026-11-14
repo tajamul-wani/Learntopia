@@ -107,7 +107,7 @@ const TryQuestion = () => {
   };
 
   return (
-    <div ref={wrapRef} className="relative min-w-0">
+    <div ref={wrapRef} data-testid="try-card" className="relative min-w-0">
       <canvas
         ref={burstRef}
         aria-hidden="true"

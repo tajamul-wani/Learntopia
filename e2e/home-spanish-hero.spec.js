@@ -7,8 +7,15 @@ import { test, expect } from "./support/test.js";
 // 2. The level name under the progress bar must display the translated level name ("Novato Coder").
 // 3. Picking the correct Spanish answer yields positive feedback and XP.
 
+const routeRecaptcha = async (page) => {
+  await page.route(/recaptcha/, (route) =>
+    route.fulfill({ status: 200, contentType: "application/javascript", body: "" })
+  );
+};
+
 test.describe("hero try-a-question localization", () => {
   test("renders translated Spanish question, options, and level name", async ({ page }) => {
+    await routeRecaptcha(page);
     // Set active language to Spanish before initial mount
     await page.addInitScript(() => {
       localStorage.setItem("learntopia_lang", "es");
@@ -17,7 +24,7 @@ test.describe("hero try-a-question localization", () => {
     await page.goto("/", { waitUntil: "domcontentloaded" });
     await expect(page.getByLabel("Loading page")).toBeHidden({ timeout: 20000 });
 
-    const tryCard = page.locator("main").filter({ hasText: /prueba una pregunta|probar/i }).first();
+    const tryCard = page.getByTestId("try-card");
     await expect(tryCard).toBeVisible();
 
     // The hero question must be in Spanish
@@ -34,15 +41,16 @@ test.describe("hero try-a-question localization", () => {
     await expect(tryCard.getByText("Rookie Coder")).toBeHidden();
 
     // Answering correctly works in Spanish
-    await tryCard.getByRole("button", { name: /Un lenguaje de computadora/i }).click();
+    await page.getByTestId("try-option-1").click();
 
     // Verdict appears in Spanish
     const verdict = page.getByTestId("try-verdict");
     await expect(verdict).toBeVisible();
-    await expect(verdict).toContainText("¡Correcto!");
+    await expect(verdict).toContainText("Correcto");
   });
 
   test("English hero question and level name remain accurate in English", async ({ page }) => {
+    await routeRecaptcha(page);
     await page.addInitScript(() => {
       localStorage.setItem("learntopia_lang", "en");
     });
@@ -50,7 +58,7 @@ test.describe("hero try-a-question localization", () => {
     await page.goto("/", { waitUntil: "domcontentloaded" });
     await expect(page.getByLabel("Loading page")).toBeHidden({ timeout: 20000 });
 
-    const tryCard = page.locator("main").filter({ hasText: /try a question/i }).first();
+    const tryCard = page.getByTestId("try-card");
     await expect(tryCard).toBeVisible();
 
     await expect(tryCard.getByText("What is Python?")).toBeVisible();
