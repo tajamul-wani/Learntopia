@@ -238,7 +238,7 @@ const Courses = () => {
                   </div>
                 )}
 
-                <div className={`flex items-center justify-between gap-3 border-t border-white/[0.07] pt-5 ${isEnrolled && !isCompleted ? "mt-5" : "mt-auto"}`}>
+                <div className={`flex flex-col mediumPhone:flex-row mediumPhone:items-center justify-between gap-3 border-t border-white/[0.07] pt-5 ${isEnrolled && !isCompleted ? "mt-5" : "mt-auto"}`}>
                   {/* What a learner actually needs to choose: how much there
                       is, how long it takes, how hard it is and what it pays.
                       Every number is counted from the course itself. */}
@@ -263,7 +263,7 @@ const Courses = () => {
                       variant="ghost"
                       size="sm"
                       onClick={() => openCourse(course)}
-                      className="flex-none gap-1.5 border-state-success/30 bg-state-success/[0.08] text-state-success hover:bg-state-success/[0.15]"
+                      className="w-full mediumPhone:w-auto flex-none gap-1.5 border-state-success/30 bg-state-success/[0.08] text-state-success hover:bg-state-success/[0.15]"
                     >
                       <Icon name="refresh-cw" size={14} />
                       {t("courses.restart")}
@@ -273,7 +273,7 @@ const Courses = () => {
                       variant="ghost"
                       size="sm"
                       onClick={() => openCourse(course)}
-                      className="flex-none border-state-success/30 bg-state-success/[0.08] text-state-success hover:bg-state-success/[0.15]"
+                      className="w-full mediumPhone:w-auto flex-none border-state-success/30 bg-state-success/[0.08] text-state-success hover:bg-state-success/[0.15]"
                     >
                       {t("courses.continueLearning")}
                     </Button>
@@ -281,13 +281,17 @@ const Courses = () => {
                     <Button
                       size="sm"
                       onClick={() => openCourse(course)}
-                      className="flex-none gap-1.5 border-state-warning/30 bg-state-warning/[0.10] text-state-warning hover:bg-state-warning/[0.18]"
+                      className="w-full mediumPhone:w-auto flex-none gap-1.5 border-state-warning/30 bg-state-warning/[0.10] text-state-warning hover:bg-state-warning/[0.18]"
                     >
                       <Icon name="refresh-cw" size={14} />
                       {t("courses.rejoin")}
                     </Button>
                   ) : (
-                    <Button size="sm" className="flex-none" onClick={() => openCourse(course)}>
+                    <Button
+                      size="sm"
+                      className="w-full mediumPhone:w-auto flex-none"
+                      onClick={() => openCourse(course)}
+                    >
                       {t("courses.viewCourse")}
                     </Button>
                   )}
