@@ -1,5 +1,5 @@
 import { test, expect, describe } from "vitest";
-import { getLevelInfo, LEVEL_THRESHOLDS } from "./levels";
+import { getLevelInfo, getLevelName, LEVEL_THRESHOLDS } from "./levels";
 
 // Levels are pure arithmetic over XP, and every learner sees them on the
 // dashboard. Checking them here costs a millisecond; through the app it costs a
@@ -36,5 +36,12 @@ describe("getLevelInfo", () => {
     expect(info.level).toBe(top.level);
     expect(info.nextLevel).toBe(undefined);
     expect(info.progressPct).toBeLessThanOrEqual(100);
+  });
+
+  test("level name translates when translator function is provided", () => {
+    const fakeT = (key, fallback) => (key === "levelNames.level1" ? "Novato Coder" : fallback);
+    expect(getLevelInfo(0, fakeT).name).toBe("Novato Coder");
+    expect(getLevelInfo(0).name).toBe("Rookie Coder");
+    expect(getLevelName(1, fakeT)).toBe("Novato Coder");
   });
 });

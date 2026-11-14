@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Icon from "../ui/Icon";
 import { quizzes } from "../../data/quizData";
 import { getLevelInfo } from "../../utils/levels";
+import { getLocalizedQuiz } from "../../utils/localizationUtils";
 import { useLanguage } from "../../context/LanguageContext";
 import { reducedMotion, fitCanvas } from "../../utils/pointerField";
 import { CHANNEL, tone } from "../../utils/paletteTokens";
@@ -10,16 +11,13 @@ import { CHANNEL, tone } from "../../utils/paletteTokens";
 const XP_FOR_RIGHT = 10;
 const LETTERS = ["A", "B", "C", "D"];
 
-/** The first question of the first quiz, read from the real quiz data. */
-const QUESTION = quizzes[0]?.questions?.[0] || null;
-
 /**
  * A question the visitor can actually answer, in the hero.
  *
  * Letting someone play for five seconds says more about a learning game
  * than a paragraph describing one. Everything in it is real: the question
- * comes from `quizData`, and the level name and the XP needed for the next
- * level come from `levels.js`, so nothing here is invented for display.
+ * comes from `quizData` (localized via `getLocalizedQuiz`), and the level
+ * name and the XP needed for the next level come from `levels.js`.
  */
 const TryQuestion = () => {
   const { t } = useLanguage();
@@ -28,9 +26,11 @@ const TryQuestion = () => {
   const chipRef = useRef(null);
   const wrapRef = useRef(null);
 
-  const level = getLevelInfo(0);
+  const localizedQuiz = useMemo(() => getLocalizedQuiz(quizzes[0], t), [t]);
+  const question = localizedQuiz?.questions?.[0] || null;
+  const level = useMemo(() => getLevelInfo(0, t), [t]);
   const toNextLevel = level.xpNeeded;
-  const right = picked !== null && QUESTION && QUESTION.options[picked] === QUESTION.correctAnswer;
+  const right = picked !== null && question && question.options[picked] === question.correctAnswer;
   const earned = right ? XP_FOR_RIGHT : 0;
 
   // The reward: spokes thrown out of the XP chip, once, then cleared.
@@ -95,11 +95,11 @@ const TryQuestion = () => {
     return () => cancelAnimationFrame(frame);
   }, [right]);
 
-  if (!QUESTION) return null;
+  if (!question) return null;
 
   const style = (index) => {
     if (picked === null) return "bg-surface-2 text-ink hover:bg-surface-3 hover:text-ink-hi";
-    if (QUESTION.options[index] === QUESTION.correctAnswer) {
+    if (question.options[index] === question.correctAnswer) {
       return "border-state-success/50 bg-state-success/[0.12] text-state-success";
     }
     if (index === picked) return "border-state-danger/50 bg-state-danger/10 text-state-danger";
@@ -131,11 +131,11 @@ const TryQuestion = () => {
         </div>
 
         <p className="font-display text-[1.14rem] font-semibold leading-snug text-ink-hi">
-          {QUESTION.questionText}
+          {question.questionText}
         </p>
 
         <div className="mt-4 grid gap-2.5" role="group" aria-label={t("home.tryEyebrow")}>
-          {QUESTION.options.map((option, index) => (
+          {question.options.map((option, index) => (
             <button
               key={option}
               type="button"

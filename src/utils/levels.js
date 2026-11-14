@@ -13,7 +13,14 @@ export const LEVEL_THRESHOLDS = [
   { level: 5, name: "Grandmaster", minXP: 1000, icon: "trophy" },
 ];
 
-export const getLevelInfo = (xp) => {
+export const getLevelName = (level, t) => {
+  if (!level) return "";
+  const num = typeof level === "number" ? level : level.level;
+  const fallback = typeof level === "object" ? level.name : "";
+  return t ? t(`levelNames.level${num}`, fallback) : fallback;
+};
+
+export const getLevelInfo = (xp, t) => {
   let currentLevel = LEVEL_THRESHOLDS[0];
   for (let i = LEVEL_THRESHOLDS.length - 1; i >= 0; i--) {
     if (xp >= LEVEL_THRESHOLDS[i].minXP) {
@@ -25,6 +32,7 @@ export const getLevelInfo = (xp) => {
   const xpInLevel = xp - currentLevel.minXP;
   const xpNeeded = nextLevel ? nextLevel.minXP - currentLevel.minXP : 100;
   const progressPct = Math.min(100, Math.round((xpInLevel / xpNeeded) * 100));
+  const name = t ? t(`levelNames.level${currentLevel.level}`, currentLevel.name) : currentLevel.name;
 
-  return { ...currentLevel, nextLevel, xpInLevel, xpNeeded, progressPct };
+  return { ...currentLevel, name, nextLevel, xpInLevel, xpNeeded, progressPct };
 };
