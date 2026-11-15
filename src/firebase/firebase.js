@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { connectAuthEmulator, getAuth, GoogleAuthProvider } from "firebase/auth";
+import { connectAuthEmulator, getAuth, GoogleAuthProvider, signInWithEmailAndPassword } from "firebase/auth";
 import {
   connectFirestoreEmulator,
   initializeFirestore,
@@ -81,6 +81,9 @@ export const db = initializeFirestore(app, {
 if (USE_EMULATORS) {
   connectAuthEmulator(auth, "http://127.0.0.1:9099", { disableWarnings: true });
   connectFirestoreEmulator(db, "127.0.0.1", 8080);
+  if (typeof window !== "undefined") {
+    window.__signIn = (email, password) => signInWithEmailAndPassword(auth, email, password);
+  }
 }
 
 export default app;

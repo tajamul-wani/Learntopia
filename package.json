@@ -7,6 +7,8 @@
     "dev": "vite",
     "build": "node scripts/check-build-env.mjs && vite build && node scripts/check-dist-no-emulator.mjs",
     "lint": "eslint .",
+    "precommit": "node scripts/pre-commit.mjs",
+    "prepare": "git config core.hooksPath .githooks",
     "preview": "vite preview",
     "test:palette": "vitest run test/palette.test.js",
     "test:unit": "vitest run",

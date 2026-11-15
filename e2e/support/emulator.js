@@ -16,12 +16,38 @@ export * from "./emulator-api.js";
 import { createLearner } from "./emulator-api.js";
 
 export async function signIn(page, { email, password }) {
+  // If on a blank browser context, open the app root to establish the origin
+  if (page.url() === "about:blank") {
+    await page.goto("/", { waitUntil: "domcontentloaded" });
+    await expect(page.getByLabel("Loading page")).toBeHidden({ timeout: 20000 });
+  }
+
+  // Fast path: authenticate directly via client SDK connected to local Auth emulator
+  const fastAuthReady = await page
+    .evaluate(() => typeof window !== "undefined" && typeof window.__signIn === "function")
+    .catch(() => false);
+
+  if (fastAuthReady) {
+    const isAdmin = await page.evaluate(
+      async ({ email, password }) => {
+        const userCredential = await window.__signIn(email, password);
+        const tokenResult = await userCredential.user.getIdTokenResult();
+        return tokenResult.claims?.admin === true;
+      },
+      { email, password }
+    );
+    if (isAdmin) {
+      await page.goto("/admin", { waitUntil: "domcontentloaded" });
+      await expect(page.getByLabel("Loading page")).toBeHidden({ timeout: 20000 });
+    }
+    return;
+  }
+
+  // Fallback: drive the full login form if fast path is unavailable
   await page.goto("/login", { waitUntil: "domcontentloaded" });
-  // Login is lazy-loaded; wait for the Suspense skeleton to clear before typing.
   await expect(page.getByLabel("Loading page")).toBeHidden({ timeout: 20000 });
   await page.locator("#email").fill(email);
   await page.locator("#password").fill(password);
-  // Submit via Enter so we don't depend on the button's translated label.
   await page.locator("#password").press("Enter");
   await expect(page, "sign-in against the Auth emulator did not succeed").not.toHaveURL(/\/login$/, {
     timeout: 25000,

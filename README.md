@@ -138,6 +138,7 @@ npm run dev            # dev server with hot reload
 npm run build          # production build into dist/
 npm run preview        # serve the production build locally
 npm run lint           # ESLint
+npm run precommit      # fast pre-commit gate (lint staged files + unit tests)
 npm run test:e2e       # Playwright suite against the emulators
 npm run test:e2e:ui    # Playwright watch mode (run npm run emulators first)
 npm run emulators      # Auth + Firestore emulators, for iterating on tests
