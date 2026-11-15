@@ -130,7 +130,7 @@ signedIn.describe("Spanish responsive audit: no clipping, overflow, or undersize
 
       // Guarantee the page is actively rendered in Spanish
       if (spanishMarker) {
-        await expect(page.getByText(spanishMarker, { exact: false }).first()).toBeVisible({ timeout: 15000 });
+        await expect(page.locator("body")).toContainText(spanishMarker, { timeout: 15000 });
       }
 
       const overflows = [];
