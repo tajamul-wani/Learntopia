@@ -28,12 +28,18 @@ export async function signIn(page, { email, password }) {
     .catch(() => false);
 
   if (fastAuthReady) {
-    await page.evaluate(
+    const isAdmin = await page.evaluate(
       async ({ email, password }) => {
-        await window.__signIn(email, password);
+        const userCredential = await window.__signIn(email, password);
+        const tokenResult = await userCredential.user.getIdTokenResult();
+        return tokenResult.claims?.admin === true;
       },
       { email, password }
     );
+    if (isAdmin) {
+      await page.goto("/admin", { waitUntil: "domcontentloaded" });
+      await expect(page.getByLabel("Loading page")).toBeHidden({ timeout: 20000 });
+    }
     return;
   }
 
