@@ -1,412 +1,193 @@
 <div align="center">
 
-<img src="public/logo.svg" alt="Learntopia" width="112" height="112" />
+<img src="public/logo.svg" alt="Learntopia" width="96" height="96" />
 
 # Learntopia
 
-**A free e-learning platform for children and teenagers, ages 7 to 16.**
-Interactive courses, timed quizzes, XP and badges, and a global leaderboard.
+**A free e-learning platform for children and teenagers, ages 7 to 16.**  
+Interactive courses, timed quizzes, gamified progression, and an AI tutor.
 
 [![Live](https://img.shields.io/badge/Live-learntopia--react.web.app-7c3aed?style=for-the-badge&logo=firebase&logoColor=white)](https://learntopia-react.web.app)
 [![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://reactjs.org)
 [![Firebase](https://img.shields.io/badge/Firebase-Firestore%20%2B%20Auth-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)](https://firebase.google.com)
 [![Vite](https://img.shields.io/badge/Vite-7-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev)
-[![Vitest](https://img.shields.io/badge/Tested_with-Vitest-6E9F18?style=for-the-badge&logo=vitest&logoColor=white)](https://vitest.dev)
-[![Playwright](https://img.shields.io/badge/Tested_with-Playwright-2EAD33?style=for-the-badge&logo=playwright&logoColor=white)](https://playwright.dev)
+[![Tested with Playwright](https://img.shields.io/badge/Tested_with-Playwright-2EAD33?style=for-the-badge&logo=playwright&logoColor=white)](https://playwright.dev)
+
+---
+
+### [Introduction and use](#introduction-and-use) &nbsp;&bull;&nbsp; [Collaborator tab](#collaborator-tab) &nbsp;&bull;&nbsp; [Security](#security) &nbsp;&bull;&nbsp; [Licence](#licence)
+
+---
 
 </div>
 
----
+<details open id="introduction-and-use">
+<summary><h2>Introduction and use</h2></summary>
 
-## Contents
+### What Learntopia Is
+Learntopia is a free e-learning platform designed for children and teenagers aged 7 to 16. It teaches programming, mathematics, finance, and creative skills through bite-sized interactive modules, gamified milestones, timed quizzes, and personalized assistance.
 
-- [Overview](#overview)
-- [Features](#features)
-- [Tech stack](#tech-stack)
-- [Getting started](#getting-started)
-- [Testing](#testing)
-- [Project structure](#project-structure)
-- [Environment variables](#environment-variables)
-- [Deployment](#deployment)
-- [Security and privacy](#security-and-privacy)
-- [Brand assets](#brand-assets)
-- [Contributing](#contributing)
-- [License](#license)
+### How It Works and What It Has
+- **Interactive Course Modules**: Structured curriculum tracks featuring conceptual reading, visual examples, interactive exercises (multiple choice, true/false, fill in the blank, matching pairs), and hands-on coding activities.
+- **Timed Quiz Engine**: Scored multiple-choice assessments with 15-second per-question countdowns, instantaneous score summaries, and per-topic leaderboard rankings.
+- **Gamification System**: XP gains, level progression from Rookie Coder to Grandmaster, badge collection, daily login streaks, and global rankings.
+- **AI Tutor (Leo)**: Course-aware virtual mentor powered by Google Gemini via a secure Cloudflare Worker proxy to provide age-appropriate hints in real time.
+- **Course Certificates**: Verified completion certificates generated directly in the browser with learner display names, verification IDs, and completion dates.
+- **Kid-Safe Accounts**: Email/password and Google authentication, 26 built-in avatars, customizable display names (no real names required), and full self-serve account deletion.
+- **Bilingual Interface**: Full interface and curriculum localization in both English and Spanish.
 
----
+### Tech Stack
+| Component | Technology | Description |
+|---|---|---|
+| Frontend Framework | React 18, Vite 7 | Fast Single Page Application with optimized code splitting |
+| Routing | React Router 7 | Client-side routing with route guards |
+| Styling | Tailwind CSS | Custom dark claymorphism design tokens |
+| Typography | Fredoka, Poppins | Font packages bundled via `@fontsource` |
+| Animations | GSAP, dotLottie | Smooth UI micro-interactions with SVG fallbacks |
+| Backend & Auth | Firebase Auth & Firestore | User authentication and real-time document database |
+| Edge Infrastructure | Cloudflare Workers | Serverless proxy for Gemini AI and telemetry triage |
+| Test Frameworks | Vitest, Playwright | Unit, component, security rules, and E2E browser tests |
 
-## Overview
+### Local Installation and Setup
 
-Learntopia teaches coding, maths, money and creative skills to learners aged 7
-to 16. Courses are split into short modules with lessons and exercises, quizzes
-are timed and scored, and progress earns XP, levels and badges. Everything is
-free, with no ads.
+#### Prerequisites
+- Node.js (v20+ recommended)
+- npm (v10+)
+- Java Runtime Environment (JRE 11+) for Firebase Local Emulators
+- Git
 
-Visitors can browse courses and take quizzes as guests. Signing in saves
-progress, unlocks the dashboard and the leaderboard, and lets a learner pick a
-display name and avatar.
-
-The app is a React single-page app on Firebase: Authentication for sign-in,
-Firestore for data, Hosting for delivery, and two Cloudflare Workers for jobs
-that must not run in the browser. It is built to work on phones first and is
-translated into English and Spanish.
-
----
-
-## Features
-
-- **Home**: the catalogue in figures, counted from the courses themselves —
-  courses, modules, lessons, exercises, activities, XP, quizzes and questions.
-  A visitor can answer a real quiz question before signing up.
-- **Courses**: multi-module tracks on a syllabus map. Each module opens with a
-  short read, then exercises (multiple choice, true/false, fill in the blank,
-  matching pairs) and a hands-on activity. That shape is enforced by a test, so
-  a new course cannot ship as reading alone.
-- **Quizzes**: timed, scored, with a leaderboard per quiz.
-- **AI tutor**: Leo, one assistant across every course, on Google Gemini with
-  the key held in a Cloudflare Worker. Each request carries the course and the
-  module the learner is on, so answers stay on topic.
-- **Progress**: XP, levels, badges, daily streaks and a global leaderboard.
-  Rank, XP and the streak stay in the header across the home page, the
-  catalogue, a course and the quizzes. My Profile holds the rest: what is being
-  learned, what is finished, quiz scores, badges earned, and a year calendar of
-  the days the learner turned up.
-- **Certificates**: a finished course issues one, drawn in the browser and
-  saved as a PNG. It carries the learner's chosen display name, the course, the
-  badge earned, the date and an id derived from the account and the course, so
-  the same course always issues the same number.
-- **Accounts**: email and password or Google sign-in, 26 built-in avatars,
-  guest scores carried into a new account, and full account deletion.
-- **Anti-cheat**: XP is granted once per module, a retake rewards only a better
-  score, and Firestore rules cap what a client can write.
-- **Interface**: dark clay design system built on tokens, English and Spanish,
-  phone-first navigation.
-- **Operations**: Sentry error monitoring, SEO metadata and generated social
-  images.
-
----
-
-## Tech stack
-
-| Layer | Technology |
-|---|---|
-| Framework | React 18, Vite 7, React Router 7 |
-| Styling | Tailwind CSS with custom design tokens |
-| Fonts | Fredoka and Poppins, bundled via `@fontsource` |
-| Animation | GSAP, dotLottie player with self-hosted runtime and SVG fallbacks |
-| Backend | Firebase Authentication and Cloud Firestore |
-| Hosting | Firebase Hosting, deployed by GitHub Actions on merge to `main` |
-| AI tutor | Google Gemini behind a Cloudflare Worker proxy (`worker/`) |
-| Error triage | Sentry, with a Cloudflare Worker for issue routing (`worker-sentry-linear/`) |
-| Certificates | Drawn on an HTML canvas in the browser and saved as a PNG, with no added dependency |
-| Home motion | Hand-written canvas and `requestAnimationFrame`, no animation library; every scene stops when off screen and under `prefers-reduced-motion` |
-| Testing | Vitest for logic and components, Playwright end-to-end, Firestore rules tests, and a palette guard |
-
----
-
-## Getting started
-
-### Prerequisites
-
-- **Node.js 22**, the version in `.nvmrc` and in CI. With nvm: `nvm use`.
-- **npm 9 or newer.**
-- **A Java 17 runtime**, only for the tests: Google ships the Firebase
-  emulators as Java programs. No part of this project is written in Java.
-- **A Firebase project** with Authentication and Firestore enabled, if you want
-  to run against your own backend. The tests do not need one.
-
-`npm install` warns that two packages' install scripts were not run (`esbuild`,
-`protobufjs`). That is deliberate: neither is needed, and running less
-third-party code during install is safer.
-
-### Install and run
-
+#### 1. Clone the repository
 ```bash
 git clone https://github.com/tajamul-wani/Learntopia.git
-cd Learntopia
-nvm use                 # Node 22, from .nvmrc
+cd Learntopia/Learntopia
+```
+
+#### 2. Install dependencies
+```bash
 npm install
-
-cp .env.example .env    # then fill in your Firebase values
-npm run dev             # http://localhost:5173
 ```
 
-### Scripts
-
+#### 3. Configure environment variables
+Create a `.env` file in the project root:
 ```bash
-npm run dev            # dev server with hot reload
-npm run build          # production build into dist/
-npm run preview        # serve the production build locally
-npm run lint           # ESLint
-npm run precommit      # fast pre-commit gate (lint staged files + unit tests)
-npm run test:e2e       # Playwright suite against the emulators
-npm run test:e2e:ui    # Playwright watch mode (run npm run emulators first)
-npm run emulators      # Auth + Firestore emulators, for iterating on tests
-npm run sandbox        # the app on :5175 against the emulators, for hand-checking
-npm run sandbox:seed   # put the sandbox learner into a named state
-npm run test:rules:ci  # Firestore rules tests in the emulator
-npm run test:palette   # fails on colours outside the design system
-npm run test:unit      # Vitest: logic and component tests
-npm run test:watch     # Vitest in watch mode
-npm run gen:avatars    # regenerate the 26 character avatar SVGs
+cp .env.example .env
 ```
+Populate the required Firebase configuration keys from your Firebase project console.
 
----
-
-## Testing
-
-Four layers run in CI on every pull request, and a PR merges only when all of
-them pass.
-
-| Layer | What it covers |
-|---|---|
-| **End-to-end** (`e2e/`, Playwright) | Drives the real app in a browser: public pages, sign-in, courses, the profile page and its tabs, course certificates, the home page's counted figures and its reduced-motion behaviour, account deletion, navigation, brand assets and fonts, and a sweep of every breakpoint that no page scrolls sideways, cuts content off silently, or carries a control too small to hit |
-| **Security rules** (`test/firestore.rules.test.js`) | Runs the real `firestore.rules` in the Firestore emulator: per-user isolation, anti-cheat, account deletion, admin-only data, and the bounds on the one write an unauthenticated visitor can make |
-| **Unit and component** (`npm run test:unit`, Vitest) | Pure helpers and React components with no browser or database: identity and name rules, level maths, the legacy-name scrub's decisions, and component behaviour through Testing Library |
-| **Static** (`npm run lint`, `npm run build`, `npm run test:palette`) | Lint errors, build breakage, and colours outside the design system |
-
-Four guards run inside the unit layer and will fail a pull request on their
-own: `test/palette.test.js` rejects a colour that is not a design token,
-`test/no-untranslated-ui.test.js` rejects a string written into JSX instead of
-`src/i18n/translations.js`, `test/course-content-standard.test.js` holds
-course content to the shape every course shares and checks that the Spanish
-lesson content still lines up with the English index for index, and
-`test/content-overlay-split.test.js` keeps every string that is read before the
-first paint in the dictionary that ships with the page.
-
-**No credentials, and no internet.** The app under test talks to the local
-Firebase Auth and Firestore emulators under the emulator-only
-`demo-learntopia` project, so tests never read or write production data. Each
-signed-in test creates a fresh account and signs in through the normal login
-form; the app has no test mode or auth bypass. Every spec imports `test` from
-`e2e/support/test.js`, which blocks requests to any host other than the local
-machine and fails the test with the URL, so a new third-party dependency is
-obvious immediately.
-
+#### 4. Run the development server
 ```bash
-npm run test:e2e        # starts the emulators, runs everything, stops them
-
-# iterating on one spec
-npm run emulators         # terminal 1
-npx playwright test --ui  # terminal 2
+npm run dev
 ```
+The app will be available at `http://localhost:5173`.
 
-**Checking something by hand.** Screens like the first-time course preview or
-the moment a certificate unlocks can only be reached once per account. The
-sandbox serves the same app against the emulators on port 5175 and seeds a
-learner into any state, so those are repeatable:
-
+#### 5. Run with local Firebase emulators (offline mode)
+To develop without touching production data, run the emulators:
 ```bash
-npm run sandbox                 # terminal 1
-npm run sandbox:seed            # terminal 2: lists the states
-npm run sandbox:seed -- fresh   # no courses yet; re-run it to reset
+npm run emulators
 ```
+This spins up the Auth emulator (port 9099), Firestore emulator (port 8080), and Emulator UI (port 4000).
 
-Run `npm run sandbox:seed` with no argument to list the states: `fresh`,
-`learning`, `nearly`, `completed`, `paused`, `veteran` and `wipe`.
+</details>
 
-Ports are deliberately separate — 5173 is `npm run dev` against the real
-project, 5174 is Playwright, 5175 is the sandbox — so a dev server can keep
-running and a stale tab cannot be mistaken for the other.
+<details open id="collaborator-tab">
+<summary><h2>Collaborator tab</h2></summary>
 
-The sandbox cannot reach production: it runs against the local emulators under
-the project id `demo-learntopia`, which Firebase refuses to use against real
-services. To confirm it, open DevTools on port 5175 and check that every
-Firebase request goes to `127.0.0.1`.
+### Contribution Workflow
+All contributions follow a clean Git branching workflow. Every pull request must be self-contained and accompanied by test coverage.
 
-Locally the suite runs three tests at a time; CI runs one. Override with
-`npx playwright test --workers=N`. Run one suite at a time: two runs share the
-same ports and will interrupt each other.
-
-The emulator connection in `src/firebase/firebase.js` exists only in
-development builds, and `npm run build` fails if any of it reaches `dist/`.
-
----
-
-## Project structure
-
-```
-src/
-├── Authentication/     Login and SignUp pages
-├── Components/         App components, plus ui/ design-system primitives
-├── assets/             Images, course art and Lottie animations
-├── Components/home/    The home page: backdrop, the try-a-question card, the
-│                       counted-figures ring and the closing card
-├── Components/profile/ The My Profile page: header, tabs and one file per panel
-├── context/            Auth, gamification, language, sound, toast, nav chrome
-├── data/               Courses, quizzes and avatar definitions
-├── config/             Single-source app constants, such as the AI tutor
-├── firebase/           Firebase setup, including the emulator switch
-├── hooks/              Shared React hooks
-├── i18n/               English and Spanish strings. translations.js ships with
-│                       the page; content/<lang>.js is fetched per route
-├── layout/             Root and admin layouts
-├── lib/                Monitoring and DOM guards
-├── pages/              Routed pages (home, courses, quiz, dashboard, docs, legal)
-├── services/           Gemini client, account deletion
-├── utils/              Profile, localisation, enrolment state, course facts, badges, certificates,
-│                       content totals, design tokens for canvas
-├── App.jsx             Routes
-└── main.jsx            Entry point
-
-e2e/                    Playwright specs, with shared setup in support/
-                        support/emulator-api.js is shared with the sandbox
-test/                   Firestore rules tests, the palette guard and the i18n guards
-scripts/                Brand and avatar generation, build checks
-public/                 Brand SVG sources and generated PNGs
-worker/                 Cloudflare Worker: Gemini proxy
-worker-sentry-linear/   Cloudflare Worker: Sentry error triage
-```
-
----
-
-## Environment variables
-
-Create `.env` in the project root. `.env.example` is the template.
-
-```env
-# Firebase: Console > Project settings > SDK setup and configuration
-VITE_API_KEY=
-VITE_MESSAGING_SENDER_ID=
-VITE_APP_ID=
-
-# AI tutor: URL of the deployed Gemini proxy Worker (see worker/README.md)
-VITE_GEMINI_PROXY_URL=
-
-# Optional. Each feature stays off while its value is blank.
-VITE_SENTRY_DSN=              # Sentry error monitoring
-VITE_RECAPTCHA_SITE_KEY=      # Firebase App Check (reCAPTCHA v3)
-```
-
-Every `VITE_` value is embedded in the JavaScript that users download, so **no
-real secret may be a `VITE_` variable.** The values above are safe to publish:
-the Firebase web API key identifies the project and is protected by security
-rules and authorised domains, the Sentry DSN can only submit crash reports, the
-reCAPTCHA site key is designed to be public, and the Worker URL is a public
-endpoint.
-
-Billable and privileged keys live outside the app: the **Gemini API key** and
-the **Linear API key** are stored as Cloudflare Worker secrets, and CI reads
-Firebase values from GitHub Actions secrets.
-
----
-
-## Deployment
-
-GitHub Actions handles every deploy.
-
-| Trigger | What happens |
-|---|---|
-| Pull request | Rules tests, Playwright suite and a preview deploy on its own URL. Both test jobs must pass, and the branch must be up to date, before the pull request can merge |
-| Merge to `main` | Production deploy to Firebase Hosting. The Firestore rules deploy waits for the rules tests to pass on that commit first, so a rule change cannot go live unverified |
-
-Manual deploy, if ever needed, requires Firebase project access:
-
-```bash
-firebase deploy --only hosting
-firebase deploy --only firestore:rules
-```
-
----
-
-## Security and privacy
-
-Learntopia is used by children, so data access is deliberately narrow.
-
-- **Security rules are the boundary.** `firestore.rules` denies everything by
-  default. A signed-in user can read and write only their own profile, course
-  progress and quiz history. Admin access comes from a server-set claim, never
-  from an email address in the client.
-- **Anti-cheat in the database.** XP and points can only increase, badges can
-  only be added one per write, a quiz score cannot exceed its question count,
-  and a course cannot be marked complete before its modules are.
-- **Deleting an account deletes the data**: profile, progress, quiz history,
-  every leaderboard entry and the login itself. Progress records can only be
-  deleted as part of that flow, so they cannot be wiped to re-earn XP.
-- **Photos stay private.** A Google profile photo is shown only to the learner
-  on their own screens, never on the leaderboard.
-- **No real names.** The app asks for a display name and nothing else, and a
-  certificate carries that same chosen name, so finishing a course adds nothing
-  to what is stored about a learner.
-- **Figures are counted, not claimed.** Everything the home page says about the
-  catalogue is derived from the course content at build time, so a signed-out
-  visitor reads real numbers and the page cannot go stale.
-- **The one door a stranger can open is bounded.** The contact form takes a
-  message from someone with no account, because a guardian has to be able to
-  reach us without signing up for anything. The rules hold that write to an
-  exact set of five fields, a size cap on every one of them, an
-  address-shaped email, and a timestamp set by the server rather than by the
-  sender.
-- **App Check** (reCAPTCHA v3) is wired in and activates when
-  `VITE_RECAPTCHA_SITE_KEY` is set, so Firebase can tell requests from the real
-  app apart from scripted ones.
-- **Secrets never reach the client.** Billable keys live in Cloudflare Worker
-  secrets; CI injects Firebase config from GitHub Actions secrets; `.env` is
-  git-ignored.
-- **Rules are tested, not assumed.** The rules suite runs on every pull
-  request, so a change that reopens a hole fails before merge.
-
----
-
-## Brand assets
-
-The logo is a glowing faceted bulb with paper-cut rays on a transparent
-background. The SVGs in `public/` are the sources:
-
-| File | Used for |
-|---|---|
-| `logo.svg` | Navbar, footer and this README |
-| `favicon.svg` | Browser tab and the startup splash, with heavier strokes so it stays clear at 16px |
-| `og-image.svg` | Social share card, with text stored as outlines |
-
-Every colour in them is a design token, and `npm run test:palette` fails
-otherwise. After editing an SVG, regenerate the PNGs:
-
-```bash
-npm i --no-save sharp
-node scripts/gen-brand.mjs
-```
-
----
-
-## Contributing
-
-The project is maintained by **Tajamul Wani**. Pull requests follow one rule
-above all: a change ships with the tests that prove it.
-
-1. Branch from an up-to-date `main`, named `feat/`, `fix/`, `chore/`,
-   `design/`, `docs/`, `test/` or `ci/` plus a short description.
-2. Keep one concern per branch and per pull request.
-3. Add or update tests in the same branch: a Playwright spec for behaviour,
-   rules tests for anything touching Firestore access.
-4. Update the README in the same branch when the change affects setup, testing
-   or how the app behaves.
-5. Run everything before opening the PR:
+1. **Branching**: Branch off the latest `main`:
    ```bash
-   npm run lint && npm run build && npm run test:palette
-   npm run test:rules:ci
-   npm run test:e2e
+   git checkout main
+   git pull origin main
+   git checkout -b <type>/<short-description>
    ```
-6. Write commits that can be reverted on their own: group by what would be
-   undone together, not by file. Use `type: imperative summary`.
-7. Keep to the design system. New colours need discussion first, and the
-   palette guard enforces the rest.
-8. Put every string a learner reads under English and Spanish, and render it
-   with `t()`. Which file depends on when it is read: `src/i18n/translations.js`
-   ships with the page and holds anything read while rendering or from an effect
-   on mount, and `src/i18n/content/<lang>.js` is fetched when a route opens and
-   holds that route's body copy. The i18n guard fails the build on hardcoded
-   text, and the overlay guard fails it when an early string goes in the
-   fetched half, where `t()` would return the key path instead of the string.
-9. Course content is translated by array index. Adding, removing or reordering a
-   lesson section in `src/data/coursesData.js` means doing the same in
-   `src/i18n/content/es.js`, or the Spanish text lands on the wrong
-   block. The content guard fails the build when the two drift.
+   Allowed types: `feat/`, `fix/`, `chore/`, `test/`, `ci/`, `docs/`.
+2. **One Concern**: Keep each branch focused on a single feature or bug fix.
+3. **Commit Messages**: Follow standard conventional commits format (`type: brief imperative summary`).
+4. **Pre-Commit Verification**: Run the local pre-commit check before opening a PR:
+   ```bash
+   npm run precommit
+   ```
 
----
+### Verification Commands
+Collaborators must ensure all checks pass before submitting a pull request:
 
-## License
+```bash
+# Run unit and component tests
+npm run test:unit
 
-All rights reserved. The content, code and design of Learntopia are the
-intellectual property of the project owner. Reproduction or redistribution
-without permission is prohibited.
+# Run static linting
+npm run lint
+
+# Check production build bundle
+npm run build
+
+# Validate color palette design tokens
+npm run test:palette
+
+# Run Firestore security rules tests in emulator
+npm run test:rules:ci
+
+# Run Playwright end-to-end test suite
+npm run test:e2e
+```
+
+### Design and Code Standards
+- **Color Palette**: All user-interface colors must use tokens defined in `tailwind.config.js` (`ground`, `surface`, `ink-hi`, `ink-low`, `violet`, `sky`, `state-success`, `state-danger`). Direct hex codes in components are prohibited and blocked by `test/palette.test.js`.
+- **Localization**: User-facing copy must never be hardcoded into JSX. Strings must be defined in `src/i18n/translations.js` (for synchronous render and mount strings) or `src/i18n/content/<lang>.js` (for course and page body copy) and rendered with `t()`.
+- **Writing Style**: Use clear, concise technical language. Do not use em dashes or marketing hyperbole.
+- **Responsive Layout**: Interfaces must be fully responsive and verified across mobile (320px to 420px), tablet (768px), and desktop (1024px to 1350px) viewports with zero horizontal scrolling or clipped controls.
+
+### Project Structure
+```
+Learntopia/
+├── e2e/                # Playwright end-to-end specs and emulator test fixtures
+├── public/             # Static assets, SVG logos, and avatars
+├── scripts/            # Build guards, pre-commit scripts, and utilities
+├── src/
+│   ├── Authentication/ # Login, SignUp, and password recovery views
+│   ├── Components/     # Reusable UI components, modals, and profile panels
+│   ├── context/        # React Context providers (Auth, Language, Sound, Theme)
+│   ├── data/           # Course content, quizzes, and learning track data
+│   ├── firebase/       # Firebase client initialization and emulator wiring
+│   ├── i18n/           # Translation dictionaries and content packs (en, es)
+│   ├── pages/          # Primary application routes
+│   └── utils/          # Pure helper utilities, sound triggers, and math
+├── test/               # Vitest unit tests, rules tests, and palette guards
+├── worker/             # Cloudflare Worker proxy for AI tutor
+└── firestore.rules     # Firestore security rules
+```
+
+</details>
+
+<details open id="security">
+<summary><h2>Security</h2></summary>
+
+### Data Boundary and Access Control
+Learntopia is designed with privacy and security as core requirements for young learners:
+
+- **Strict Firestore Rules**: All access is denied by default in `firestore.rules`. Signed-in learners can read and write only their own user profile, active course progress, and quiz history documents.
+- **Administrative Separation**: Administrative routes and collections require custom server-set claims (`admin: true`), never client-side email string comparisons.
+- **Anti-Cheat Validation**: Database rules prevent manipulation of XP, streaks, and quiz results. XP can only increase, badge increments are capped to one per write, and quiz scores cannot exceed available questions.
+- **Public Form Hardening**: The public contact form write is constrained to an exact schema with strict length limits, valid email format validation, and server-generated timestamps.
+
+### Privacy by Design
+- **No Real Names Required**: Profiles only store chosen display names and built-in avatars.
+- **Private Profile Photos**: Google account profile photos are only rendered locally on the learner's own private dashboard and are excluded from the public leaderboard.
+- **Right to Erasure**: Self-serve account deletion securely wipes the user's Firestore profile, progress, quiz submissions, and authentication record in a single transaction.
+
+### Secret Management and Bot Protection
+- **No Client Secrets**: Third-party API keys (such as Google Gemini) are isolated in Cloudflare Worker secrets and never exposed in browser bundles.
+- **App Check**: Firebase App Check with reCAPTCHA v3 validates genuine browser traffic and mitigates automated bot abuse.
+- **Automated Verification**: Security rules are continuously tested in CI against the Firestore emulator on every pull request (`test/firestore.rules.test.js`).
+
+</details>
+
+<details open id="licence">
+<summary><h2>Licence</h2></summary>
+
+All rights reserved.
+
+The source code, user interface designs, curriculum content, and brand assets of Learntopia are the proprietary intellectual property of the project owner. Unauthorized reproduction, distribution, reverse engineering, or commercial use without prior written authorization is strictly prohibited.
+
+</details>
