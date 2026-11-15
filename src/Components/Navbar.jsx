@@ -75,7 +75,7 @@ const Navbar = () => {
         </NavLink>
 
         {/* Zone 2 (Center): Flex-Centered Desktop Links */}
-        <ul className="hidden flex-1 items-center justify-center gap-5 px-4 lg:flex lg:gap-8">
+        <ul className="hidden flex-1 items-center justify-center gap-5 px-2 lg:flex lg:gap-3.5 xl:gap-6 2xl:gap-8 xl:px-4">
           {navItems.map((item) => (
             <li key={item.to}>
               <NavLink
