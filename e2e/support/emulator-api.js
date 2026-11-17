@@ -55,6 +55,7 @@ function toFirestoreFields(data) {
     if (Array.isArray(v)) return { arrayValue: { values: v.map(encode) } };
     if (typeof v === "number") return { integerValue: String(v) };
     if (typeof v === "boolean") return { booleanValue: v };
+    if (v instanceof Date) return { timestampValue: v.toISOString() };
     return { stringValue: String(v) };
   };
   return Object.fromEntries(Object.entries(data).map(([k, v]) => [k, encode(v)]));
