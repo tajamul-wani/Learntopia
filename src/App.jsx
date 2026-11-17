@@ -44,6 +44,7 @@ const Privacy = withContent(() => import("./pages/Privacy"));
 const Leaderboard = lazy(() => import("./pages/Leaderboard"));
 const ThankYou = lazy(() => import("./pages/ThankYou"));
 const Admin = lazy(() => import("./pages/Admin"));
+const UserDetailPage = lazy(() => import("./pages/admin/UserDetailPage"));
 
 // Declare router outside App function so it remains stable across component re-renders
 const router = createBrowserRouter(
@@ -70,6 +71,7 @@ const router = createBrowserRouter(
       {/* ── Isolated Admin shell (no student Navbar/Footer) ── */}
       <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<Admin />} />
+        <Route path="users/:uid" element={<UserDetailPage />} />
       </Route>
     </>
   )

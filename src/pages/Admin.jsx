@@ -10,7 +10,6 @@ import Card from "../Components/ui/Card";
 import Modal from "../Components/ui/Modal";
 import { Skeleton } from "../Components/ui/Skeleton";
 import { toast } from "../context/ToastContext";
-import StudentDetail from "./admin/StudentDetail";
 import google from "../assets/Icons/google.png";
 
 /* ── Live Clock Hook ── */
@@ -52,7 +51,6 @@ const Admin = () => {
   const [totals, setTotals] = useState({ enrollments: null, quizzes: null });
   const [searchQuery, setSearchQuery] = useState("");
 
-  const [selectedStudent, setSelectedStudent] = useState(null);
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [showNewBugModal, setShowNewBugModal] = useState(false);
   const [newBug, setNewBug] = useState({ title: "", description: "", priority: "Medium" });
@@ -602,7 +600,7 @@ const Admin = () => {
                             <td className="px-5 py-3.5 text-right font-semibold tabular-nums text-gold-400">{s.streak || 1}d</td>
                             <td className="px-5 py-3.5 text-right tabular-nums text-sky">{(s.badges || []).length}</td>
                             <td className="px-5 py-3.5 text-right">
-                              <Button size="sm" variant="ghost" onClick={() => setSelectedStudent(s)}>View</Button>
+                              <Button size="sm" variant="ghost" onClick={() => navigate(`/admin/users/${s.uid}`)}>View</Button>
                             </td>
                           </tr>
                         ))}
@@ -676,9 +674,6 @@ const Admin = () => {
 
           </main>
         </div>
-
-      {/* ── Student detail ── */}
-      {selectedStudent && <StudentDetail student={selectedStudent} onClose={() => setSelectedStudent(null)} />}
 
       {/* ── Message detail modal ── */}
       {selectedMessage && (
