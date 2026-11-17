@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { db } from "../firebase/firebase";
-import { collection, getDocs, getCountFromServer, addDoc, serverTimestamp, query, orderBy } from "firebase/firestore";
+import { collection, onSnapshot, getCountFromServer, addDoc, serverTimestamp, query, orderBy } from "firebase/firestore";
 import { useAuth } from "../context/AuthContext";
 import { useLanguage } from "../context/LanguageContext";
 import Button from "../Components/ui/Button";
@@ -10,6 +10,9 @@ import Card from "../Components/ui/Card";
 import Modal from "../Components/ui/Modal";
 import { Skeleton } from "../Components/ui/Skeleton";
 import { toast } from "../context/ToastContext";
+import { Bars } from "./admin/ActivityChart";
+import { lastDays } from "./admin/days";
+import { ONLINE_WINDOW_MS } from "../hooks/usePresence";
 import google from "../assets/Icons/google.png";
 
 /* ── Live Clock Hook ── */
@@ -51,6 +54,8 @@ const Admin = () => {
   const [totals, setTotals] = useState({ enrollments: null, quizzes: null });
   const [searchQuery, setSearchQuery] = useState("");
 
+  const [onlineOnly, setOnlineOnly] = useState(false);
+  const [totalsAt, setTotalsAt] = useState(null);
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [showNewBugModal, setShowNewBugModal] = useState(false);
   const [newBug, setNewBug] = useState({ title: "", description: "", priority: "Medium" });
@@ -104,73 +109,60 @@ const Admin = () => {
       return;
     }
 
-    const fetchAdminData = async () => {
-      setLoading(true);
-      let studentCount = 0;
-      let msgCount = 0;
-      let bugCount = 0;
-      try {
-        // 1. Fetch all real user profiles. Exclude admin.
-        const usersSnap = await getDocs(collection(db, "Users"));
-        const studentList = [];
-        usersSnap.forEach((docSnap) => {
+    // Live subscriptions: every figure below follows the database without a
+    // refresh. Only the totals are aggregated, and they say when they were taken.
+    setLoading(true);
+    const docsOf = (snap) => snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+    const unsubs = [
+      onSnapshot(
+        collection(db, "Users"),
+        (snap) => {
           // Skip the admin's own profile (the current viewer).
-          if (docSnap.id === currentUser.uid) return;
-          const data = docSnap.data();
-          studentList.push({ id: docSnap.id, uid: docSnap.id, ...data });
-        });
-        setStudents(studentList);
-        studentCount = studentList.length;
-
-        // Aggregate counts only (one read per 1000 entries), not the documents.
-        const sumCounts = async (sub) => {
-          const counts = await Promise.all(
-            studentList.map((st) => getCountFromServer(collection(db, "Users", st.uid, sub)).then((r) => r.data().count))
-          );
-          return counts.reduce((a, b) => a + b, 0);
-        };
-        Promise.all([sumCounts("enrolledCourses"), sumCounts("quizAttempts")])
-          .then(([enrollments, quizzes]) => setTotals({ enrollments, quizzes }))
-          .catch((err) => console.warn("Could not load activity totals:", err));
-
-        // 2. Contact messages
-        try {
-          const messagesQuery = query(collection(db, "ContactMessages"), orderBy("submittedAt", "desc"));
-          const msgSnap = await getDocs(messagesQuery);
-          const msgList = [];
-          msgSnap.forEach((docSnap) => msgList.push({ id: docSnap.id, ...docSnap.data() }));
-          setContactMessages(msgList);
-          msgCount = msgList.length;
-        } catch {
-          const msgSnap = await getDocs(collection(db, "ContactMessages"));
-          const msgList = [];
-          msgSnap.forEach((docSnap) => msgList.push({ id: docSnap.id, ...docSnap.data() }));
-          setContactMessages(msgList);
-          msgCount = msgList.length;
+          setStudents(snap.docs.filter((d) => d.id !== currentUser.uid).map((d) => ({ id: d.id, uid: d.id, ...d.data() })));
+          setLoading(false);
+        },
+        (err) => {
+          console.error("Error fetching admin data:", err);
+          toast.error(t("toasts.loadDataFailed"));
+          setLoading(false);
         }
-
-        // 3. Bug reports / system notes
-        try {
-          const bugSnap = await getDocs(collection(db, "BugReports"));
-          const bugList = [];
-          bugSnap.forEach((docSnap) => bugList.push({ id: docSnap.id, ...docSnap.data() }));
-          setBugReports(bugList);
-          bugCount = bugList.length;
-        } catch (err) {
-          console.warn("No BugReports collection yet:", err);
-        }
-
-        toast.success(`Loaded ${studentCount} student${studentCount === 1 ? "" : "s"} · ${msgCount} message${msgCount === 1 ? "" : "s"} · ${bugCount} log${bugCount === 1 ? "" : "s"}`);
-      } catch (err) {
-        console.error("Error fetching admin data:", err);
-        toast.error(t("toasts.loadDataFailed"));
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchAdminData();
+      ),
+      onSnapshot(
+        query(collection(db, "ContactMessages"), orderBy("submittedAt", "desc")),
+        (snap) => setContactMessages(docsOf(snap)),
+        (err) => console.warn("Could not read contact messages:", err)
+      ),
+      onSnapshot(
+        collection(db, "BugReports"),
+        (snap) => setBugReports(docsOf(snap)),
+        (err) => console.warn("No BugReports collection yet:", err)
+      ),
+    ];
+    return () => unsubs.forEach((u) => u());
   }, [isAdmin, authLoading, currentUser, t]);
+
+  // Activity totals are counts, not live documents: refreshed every minute.
+  const studentKey = students.map((st) => st.uid).sort().join(",");
+  useEffect(() => {
+    if (!isAdmin || !studentKey) return undefined;
+    const uids = studentKey.split(",");
+    const sumCounts = async (sub) => {
+      const counts = await Promise.all(
+        uids.map((uid) => getCountFromServer(collection(db, "Users", uid, sub)).then((r) => r.data().count))
+      );
+      return counts.reduce((a, b) => a + b, 0);
+    };
+    const refresh = () =>
+      Promise.all([sumCounts("enrolledCourses"), sumCounts("quizAttempts")])
+        .then(([enrollments, quizzes]) => {
+          setTotals({ enrollments, quizzes });
+          setTotalsAt(new Date());
+        })
+        .catch((err) => console.warn("Could not load activity totals:", err));
+    refresh();
+    const id = setInterval(refresh, 60000);
+    return () => clearInterval(id);
+  }, [isAdmin, studentKey]);
 
   const handleCreateBugReport = async (e) => {
     e.preventDefault();
@@ -245,6 +237,16 @@ const Admin = () => {
   };
 
   const clock = useLiveClock();
+  const isOnline = (st) => {
+    const t = st.lastActive?.toMillis ? st.lastActive.toMillis() : 0;
+    return t > 0 && clock.getTime() - t < ONLINE_WINDOW_MS;
+  };
+  const onlineCount = students.filter(isOnline).length;
+  const shownStudents = onlineOnly ? filteredStudents.filter(isOnline) : filteredStudents;
+  const activeByDay = lastDays(14).map((key) => ({
+    key,
+    value: students.filter((st) => Array.isArray(st.activeDays) && st.activeDays.includes(key)).length,
+  }));
   const timeStr = clock.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true });
   const dateStr = clock.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" });
 
@@ -325,6 +327,7 @@ const Admin = () => {
     { label: "Messages", value: contactMessages.length, icon: "mail", tint: "text-sky", ring: "border-sky/25" },
     { label: "System Logs", value: bugReports.length, icon: "alert-circle", tint: "text-gold-300", ring: "border-gold-500/25" },
     { label: "Total Points", value: totalPoints, icon: "trophy", tint: "text-state-success", ring: "border-state-success/25" },
+    { label: "Online now", value: onlineCount, icon: "users", tint: "text-state-success", ring: "border-state-success/25" },
     { label: "Enrollments", value: totals.enrollments ?? "—", icon: "book-open", tint: "text-violet-300", ring: "border-violet-500/25" },
     { label: "Quizzes taken", value: totals.quizzes ?? "—", icon: "check-circle", tint: "text-sky", ring: "border-sky/25" },
   ];
@@ -477,7 +480,7 @@ const Admin = () => {
             {activeTab === "overview" && (
               <div className="mt-6 space-y-6">
                 {/* KPI cards */}
-                <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
+                <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
                   {KPIS.map((k) => (
                     <div key={k.label} className={`rounded-xl border bg-surface shadow-clay p-5 ${k.ring}`}>
                       <div className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-wider ${k.tint}`}>
@@ -486,6 +489,16 @@ const Admin = () => {
                       <p className="mt-3 text-3xl font-extrabold tabular-nums text-white">{loading ? "—" : k.value}</p>
                     </div>
                   ))}
+                </div>
+
+                <div className="rounded-xl border border-white/10 bg-surface p-5 shadow-clay">
+                  <div className="mb-3 flex items-center justify-between gap-3">
+                    <h3 className="text-sm font-bold text-white">Learners active per day, last 14 days</h3>
+                    <span className="flex-none text-[11px] text-ink-faint">
+                      Live{totalsAt ? ` · totals as of ${totalsAt.toLocaleTimeString()}` : ""}
+                    </span>
+                  </div>
+                  <Bars data={activeByDay} label="Learners who opened the app, per day, last 14 days" />
                 </div>
 
                 {/* Recent activity split */}
@@ -550,7 +563,16 @@ const Admin = () => {
             {activeTab === "students" && (
               <div className="mt-6">
                 <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <p className="text-sm text-ink-low">{filteredStudents.length} of {students.length} students</p>
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={() => setOnlineOnly((v) => !v)}
+                      aria-pressed={onlineOnly}
+                      className={`rounded-lg border px-3 py-1.5 text-xs font-semibold transition-colors ${onlineOnly ? "border-violet-500/40 bg-violet-500/15 text-violet-300" : "border-white/10 bg-surface-2 text-ink-low"}`}
+                    >
+                      Online now ({onlineCount})
+                    </button>
+                  <p className="text-sm text-ink-low">{shownStudents.length} of {students.length} students</p>
+                  </div>
                   <div className="relative w-full sm:w-72">
                     <Icon name="search" size={16} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-low" />
                     <input
@@ -565,7 +587,7 @@ const Admin = () => {
 
                 {loading ? (
                   <div className="space-y-2">{[...Array(5)].map((_, i) => <Skeleton key={i} className="h-14 w-full rounded-xl" />)}</div>
-                ) : filteredStudents.length === 0 ? (
+                ) : shownStudents.length === 0 ? (
                   <div className="rounded-xl border border-white/10 bg-surface shadow-clay py-14 text-center text-ink-low">
                     <Icon name="users" size={36} className="mx-auto mb-3 text-ink-faint" />
                     <p className="font-semibold">No students found</p>
@@ -585,13 +607,14 @@ const Admin = () => {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-white/[0.04]">
-                        {filteredStudents.map((s) => (
+                        {shownStudents.map((s) => (
                           <tr key={s.id} className="transition-colors hover:bg-white/[0.02]">
                             <td className="px-5 py-3.5">
                               <div className="flex items-center gap-3">
                                 <div className="grid h-9 w-9 flex-none place-items-center rounded-full bg-gradient-to-tr from-violet-600 to-sky text-sm font-bold text-white">
                                   {s.fullName ? s.fullName.charAt(0).toUpperCase() : "S"}
                                 </div>
+                                <span className={`h-2 w-2 flex-none rounded-full ${isOnline(s) ? "bg-state-success" : "bg-white/20"}`} title={isOnline(s) ? "Online now" : "Offline"} />
                                 <span className="font-semibold text-white">{s.fullName || "Learner"}</span>
                               </div>
                             </td>
