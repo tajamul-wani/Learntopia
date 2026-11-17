@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { db } from "../firebase/firebase";
-import { collection, getDocs, addDoc, serverTimestamp, query, orderBy } from "firebase/firestore";
+import { collection, getDocs, getCountFromServer, addDoc, serverTimestamp, query, orderBy } from "firebase/firestore";
 import { useAuth } from "../context/AuthContext";
 import { useLanguage } from "../context/LanguageContext";
 import Button from "../Components/ui/Button";
@@ -49,6 +49,7 @@ const Admin = () => {
   const [students, setStudents] = useState([]);
   const [contactMessages, setContactMessages] = useState([]);
   const [bugReports, setBugReports] = useState([]);
+  const [totals, setTotals] = useState({ enrollments: null, quizzes: null });
   const [searchQuery, setSearchQuery] = useState("");
 
   const [selectedStudent, setSelectedStudent] = useState(null);
@@ -122,6 +123,17 @@ const Admin = () => {
         });
         setStudents(studentList);
         studentCount = studentList.length;
+
+        // Aggregate counts only (one read per 1000 entries), not the documents.
+        const sumCounts = async (sub) => {
+          const counts = await Promise.all(
+            studentList.map((st) => getCountFromServer(collection(db, "Users", st.uid, sub)).then((r) => r.data().count))
+          );
+          return counts.reduce((a, b) => a + b, 0);
+        };
+        Promise.all([sumCounts("enrolledCourses"), sumCounts("quizAttempts")])
+          .then(([enrollments, quizzes]) => setTotals({ enrollments, quizzes }))
+          .catch((err) => console.warn("Could not load activity totals:", err));
 
         // 2. Contact messages
         try {
@@ -315,6 +327,8 @@ const Admin = () => {
     { label: "Messages", value: contactMessages.length, icon: "mail", tint: "text-sky", ring: "border-sky/25" },
     { label: "System Logs", value: bugReports.length, icon: "alert-circle", tint: "text-gold-300", ring: "border-gold-500/25" },
     { label: "Total Points", value: totalPoints, icon: "trophy", tint: "text-state-success", ring: "border-state-success/25" },
+    { label: "Enrollments", value: totals.enrollments ?? "—", icon: "book-open", tint: "text-violet-300", ring: "border-violet-500/25" },
+    { label: "Quizzes taken", value: totals.quizzes ?? "—", icon: "check-circle", tint: "text-sky", ring: "border-sky/25" },
   ];
 
   const meta = SECTION_META[activeTab];
@@ -465,7 +479,7 @@ const Admin = () => {
             {activeTab === "overview" && (
               <div className="mt-6 space-y-6">
                 {/* KPI cards */}
-                <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+                <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
                   {KPIS.map((k) => (
                     <div key={k.label} className={`rounded-xl border bg-surface shadow-clay p-5 ${k.ring}`}>
                       <div className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-wider ${k.tint}`}>
