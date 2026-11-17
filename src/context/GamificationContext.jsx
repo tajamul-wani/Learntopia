@@ -16,6 +16,7 @@ import {
 import { parseProfileName } from "../utils/profileUtils";
 import { getLevelInfo } from "../utils/levels";
 import { courseGrant, streakGrant } from "../utils/xpGrants";
+import usePresence from "../hooks/usePresence";
 
 const GamificationContext = createContext();
 
@@ -65,6 +66,7 @@ export const GamificationProvider = ({ children }) => {
   // account picks up XP, a streak, celebration popups and — through
   // awardPoints — a row on the world-readable leaderboard.
   const uid = isAdmin ? null : currentUser?.uid;
+  usePresence(uid, Boolean(uid));
 
   // ── Single source of truth: a LIVE subscription to the canonical Users doc.
   // Because every device reads the same doc via onSnapshot, XP / points / streak

@@ -79,10 +79,13 @@ test.describe("admin and learner accounts stay separate", () => {
     if (await start.isVisible().catch(() => false)) {
       await start.click();
       // Answer whatever is on screen; the timer finishes the quiz either way.
-      for (let i = 0; i < 12; i += 1) {
+      // Time-boxed rather than a fixed number of rounds: on a slow machine a
+      // round can take seconds, and twelve of them outran the test timeout.
+      const until = Date.now() + 8000;
+      while (Date.now() < until) {
         const option = page.locator("button", { hasText: /^[A-D][).]|\w/ }).nth(1);
         if (await option.isVisible().catch(() => false)) await option.click().catch(() => {});
-        await page.waitForTimeout(400);
+        await page.waitForTimeout(400).catch(() => {});
       }
     }
 

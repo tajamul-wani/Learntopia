@@ -80,6 +80,35 @@ const seed = (path, data) =>
     await setDoc(doc(ctx.firestore(), path), data);
   });
 
+describe("presence heartbeat (LT-49)", () => {
+  beforeEach(async () => {
+    await seed("Users/alice", validProfile());
+  });
+
+  test("a learner can stamp their own lastActive", async () => {
+    await assertSucceeds(setDoc(doc(alice(), "Users/alice"), { lastActive: new Date() }, { merge: true }));
+  });
+
+  test("lastActive must be a timestamp", async () => {
+    await assertFails(setDoc(doc(alice(), "Users/alice"), { lastActive: "now" }, { merge: true }));
+  });
+
+  test("a learner cannot stamp someone else", async () => {
+    await assertFails(setDoc(doc(bob(), "Users/alice"), { lastActive: new Date() }, { merge: true }));
+  });
+
+  test("the heartbeat does not let XP rise", async () => {
+    await assertFails(
+      setDoc(doc(alice(), "Users/alice"), { lastActive: new Date(), xp: 999, totalPoints: 999 }, { merge: true })
+    );
+  });
+
+  test("an admin can read it, a stranger cannot", async () => {
+    await assertSucceeds(getDoc(doc(admin(), "Users/alice")));
+    await assertFails(getDoc(doc(bob(), "Users/alice")));
+  });
+});
+
 describe("XP ledger (LT-83)", () => {
   // XP used to be whatever a client wrote, checked only for never decreasing.
   // A learner could open the console on the live site and type any number. XP

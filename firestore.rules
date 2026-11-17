@@ -59,7 +59,7 @@ service cloud.firestore {
                                'totalPoints', 'streak', 'lastLoginDate',
                                'badges', 'xp', 'quizPoints', 'updatedAt',
                                'lastStreakClaimDate', 'lastStreakPopupDate',
-                               'identityConfirmedAt', 'lastGrantKey', 'activeDays'])
+                               'identityConfirmedAt', 'lastGrantKey', 'activeDays', 'lastActive'])
           && d.email is string
           && d.fullName is string
           && (!('displayName' in d) || d.displayName is string)
@@ -72,6 +72,9 @@ service cloud.firestore {
           // Set once, when the learner picks or skips their identity, so the
           // prompt never comes back.
           && (!('identityConfirmedAt' in d) || d.identityConfirmedAt is timestamp)
+          // Presence heartbeat: when the learner last had the app open. Only the
+          // admin dashboard reads it, to show who is online.
+          && (!('lastActive' in d) || d.lastActive is timestamp)
           // Names the ledger entry that pays for an xp increase in this write.
           && (!('lastGrantKey' in d) || d.lastGrantKey is string)
           // The days this learner actually opened the app, one "YYYY-MM-DD" per

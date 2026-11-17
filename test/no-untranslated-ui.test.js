@@ -16,8 +16,10 @@ import { join } from "node:path";
 const ALLOWED = {
   "src/pages/Admin.jsx":
     "admin-only surface, claim-gated, never shown to a learner (LT-49)",
-  "src/pages/admin/StudentDetail.jsx":
+  "src/pages/admin/UserDetailPage.jsx":
     "admin-only surface split out of Admin.jsx, claim-gated, never shown to a learner (LT-49)",
+  "src/pages/admin/ActivityChart.jsx":
+    "admin-only chart helpers, never shown to a learner (LT-49)",
   "src/Components/ui/PageSkeleton.jsx":
     'the "Loading page" label is the handle the whole e2e suite waits on; ' +
     "translating it needs a stable test id first",
