@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { db } from "../firebase/firebase";
-import { collection, getDocs, addDoc, serverTimestamp, query, orderBy } from "firebase/firestore";
+import { collection, getDocs, getCountFromServer, addDoc, serverTimestamp, query, orderBy } from "firebase/firestore";
 import { useAuth } from "../context/AuthContext";
 import { useLanguage } from "../context/LanguageContext";
 import Button from "../Components/ui/Button";
@@ -10,6 +10,7 @@ import Card from "../Components/ui/Card";
 import Modal from "../Components/ui/Modal";
 import { Skeleton } from "../Components/ui/Skeleton";
 import { toast } from "../context/ToastContext";
+import StudentDetail from "./admin/StudentDetail";
 import google from "../assets/Icons/google.png";
 
 /* ── Live Clock Hook ── */
@@ -48,6 +49,7 @@ const Admin = () => {
   const [students, setStudents] = useState([]);
   const [contactMessages, setContactMessages] = useState([]);
   const [bugReports, setBugReports] = useState([]);
+  const [totals, setTotals] = useState({ enrollments: null, quizzes: null });
   const [searchQuery, setSearchQuery] = useState("");
 
   const [selectedStudent, setSelectedStudent] = useState(null);
@@ -121,6 +123,17 @@ const Admin = () => {
         });
         setStudents(studentList);
         studentCount = studentList.length;
+
+        // Aggregate counts only (one read per 1000 entries), not the documents.
+        const sumCounts = async (sub) => {
+          const counts = await Promise.all(
+            studentList.map((st) => getCountFromServer(collection(db, "Users", st.uid, sub)).then((r) => r.data().count))
+          );
+          return counts.reduce((a, b) => a + b, 0);
+        };
+        Promise.all([sumCounts("enrolledCourses"), sumCounts("quizAttempts")])
+          .then(([enrollments, quizzes]) => setTotals({ enrollments, quizzes }))
+          .catch((err) => console.warn("Could not load activity totals:", err));
 
         // 2. Contact messages
         try {
@@ -314,6 +327,8 @@ const Admin = () => {
     { label: "Messages", value: contactMessages.length, icon: "mail", tint: "text-sky", ring: "border-sky/25" },
     { label: "System Logs", value: bugReports.length, icon: "alert-circle", tint: "text-gold-300", ring: "border-gold-500/25" },
     { label: "Total Points", value: totalPoints, icon: "trophy", tint: "text-state-success", ring: "border-state-success/25" },
+    { label: "Enrollments", value: totals.enrollments ?? "—", icon: "book-open", tint: "text-violet-300", ring: "border-violet-500/25" },
+    { label: "Quizzes taken", value: totals.quizzes ?? "—", icon: "check-circle", tint: "text-sky", ring: "border-sky/25" },
   ];
 
   const meta = SECTION_META[activeTab];
@@ -464,7 +479,7 @@ const Admin = () => {
             {activeTab === "overview" && (
               <div className="mt-6 space-y-6">
                 {/* KPI cards */}
-                <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+                <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
                   {KPIS.map((k) => (
                     <div key={k.label} className={`rounded-xl border bg-surface shadow-clay p-5 ${k.ring}`}>
                       <div className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-wider ${k.tint}`}>
@@ -662,36 +677,8 @@ const Admin = () => {
           </main>
         </div>
 
-      {/* ── Student detail modal ── */}
-      {selectedStudent && (
-        <Modal isOpen={!!selectedStudent} onClose={() => setSelectedStudent(null)} title={selectedStudent.fullName || "Learner"}>
-          <div className="space-y-4 text-sm text-ink-hi">
-            <div className="space-y-2 rounded-xl clay-inset p-4">
-              <p><span className="text-ink-low">Email:</span> {selectedStudent.email || "N/A"}</p>
-              <p><span className="text-ink-low">User ID:</span> <code className="font-mono text-xs text-violet-300">{selectedStudent.uid || selectedStudent.id}</code></p>
-              <p><span className="text-ink-low">Total points:</span> <strong className="text-gold-300">{selectedStudent.totalPoints || 0}</strong></p>
-              <p><span className="text-ink-low">Streak:</span> <strong className="text-gold-400">{selectedStudent.streak || 1} days</strong></p>
-            </div>
-            <div>
-              <h5 className="mb-2 font-bold text-white">Earned badges</h5>
-              <div className="flex flex-wrap gap-2">
-                {selectedStudent.badges && selectedStudent.badges.length > 0 ? (
-                  selectedStudent.badges.map((b, i) => (
-                    <span key={i} className="inline-flex items-center gap-1 rounded-full border border-gold-500/30 bg-gold-500/10 px-3 py-1 text-xs font-bold text-gold-300">
-                      <Icon name={typeof b === "string" ? "award" : (b.icon || "award")} size={14} /> {typeof b === "string" ? b : b.name}
-                    </span>
-                  ))
-                ) : (
-                  <span className="text-xs text-ink-low">No badges earned yet.</span>
-                )}
-              </div>
-            </div>
-            <div className="flex justify-end pt-2">
-              <Button variant="ghost" onClick={() => setSelectedStudent(null)}>Close</Button>
-            </div>
-          </div>
-        </Modal>
-      )}
+      {/* ── Student detail ── */}
+      {selectedStudent && <StudentDetail student={selectedStudent} onClose={() => setSelectedStudent(null)} />}
 
       {/* ── Message detail modal ── */}
       {selectedMessage && (
