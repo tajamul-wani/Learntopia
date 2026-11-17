@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { Outlet } from "react-router-dom";
 import { Skeleton } from "../Components/ui/Skeleton";
 import ChunkErrorBoundary from "../Components/ChunkErrorBoundary";
+import useAdminSession from "../pages/admin/useAdminSession";
 
 /* ── Admin-specific skeleton (no student Navbar/Footer) ── */
 const AdminSkeleton = () => (
@@ -34,6 +35,7 @@ const AdminSkeleton = () => (
  * – Full-screen executive layout
  */
 const AdminLayout = () => {
+  useAdminSession();
   return (
     <div className="flex min-h-screen flex-col bg-surface-primary">
       <ChunkErrorBoundary>
